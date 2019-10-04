@@ -4,7 +4,12 @@
 
 <div id="app">
     <div class="container m-5">
-        <h1>{{traildata}}</h1>
+        <h1>Trail Data</h1>
+        <table>
+            <tr v-for="point in points">
+                <td>{{ point }}</td>
+            </tr>
+        </table>
     </div>
 </div>
 
@@ -12,6 +17,13 @@
 
 <script>
 
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            points: []
+        }
+    });
+    
     // hardcode sample data for now
     let txt = `
         <trk>
@@ -50,24 +62,17 @@
         xmlDoc.async = false;
         xmlDoc.loadXML(txt);
     }
-    console.log(xmlDoc);
 
     // extract data from XML
     let points = xmlDoc.getElementsByTagName("trkpt");
     for (let p in points) {
-        let newPoint = [ // [time, lat, long, ele]
-            points[p].getElementsByTagName("time")[0].innerHTML,
-            points[p].getAttribute("lat"),
-            points[p].getAttribute("lon"),
-            points[p].getElementsByTagName("ele")[0].innerHTML
-        ];
-        console.log(newPoint);
+        let newPoint = {
+            "time": points[p].getElementsByTagName("time")[0].innerHTML,
+            "latitude": points[p].getAttribute("lat"),
+            "longitude": points[p].getAttribute("lon"),
+            "elevation": points[p].getElementsByTagName("ele")[0].innerHTML
+        };
+        vm.points.push(newPoint);
     }
 
-    new Vue({
-        el: '#app',
-        data: {
-            traildata: '(placeholder)'
-        }
-    });
 </script>
