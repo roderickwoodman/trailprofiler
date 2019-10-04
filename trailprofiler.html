@@ -9,12 +9,14 @@
             <tr>
                 <th>Name</th>
                 <th>Points</th>
+                <th>Times</th>
             </tr>
             <tr v-for="sequence in sequences">
                 <td>{{ sequence.name }}</td>
                 <td>{{ sequence.points.length }}</td>
-                <!-- <tr v-for="point in sequence.points"> -->
-                    <!-- <td>{{ point }}</td> -->
+                <td v-for="point in sequence.points">
+                    <p>{{ point.time }}</p>
+                </td>
             </tr>
         </table>
     </div>
@@ -154,8 +156,9 @@
         new_sequence["points"] = [];
         let points = xml_doc.getElementsByTagName("trkpt");
         for (p of points) {
+            let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
             let new_point = {
-                "time": p.getElementsByTagName("time")[0].innerHTML,
+                "time": new_time,
                 "latitude": p.getAttribute("lat"),
                 "longitude": p.getAttribute("lon"),
                 "elevation": p.getElementsByTagName("ele")[0].innerHTML
