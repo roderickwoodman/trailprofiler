@@ -25,7 +25,9 @@
     });
     
     // hardcode sample data for now
-    let txt = `
+
+    // Track_2014-06-30 (A) UNESCO.gpx
+    let file0_txt = `
         <trk>
         <name>2014-06-30 HIKE #1 THINGVELLIR</name>
         <extensions>
@@ -48,31 +50,103 @@
         </trkpt>
         </trkseg>
         </trk>
-    `
+    `;
 
-    // convert to xml doc
-    if (window.DOMParser)
-    {
-        parser = new DOMParser();
-        xmlDoc = parser.parseFromString(txt, "text/xml");
-    }
-    else // Internet Explorer
-    {
-        xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-        xmlDoc.async = false;
-        xmlDoc.loadXML(txt);
-    }
+    // 071119LaPlanchedesBellesFillesLepuix.gpx
+    let file1_txt = `
+        <trk>
+        <name>La Planche des Belles Filles to Lepuix</name>
+        <type>hiking</type>
+        <trkseg>
+        <trkpt lat="47.76858796365559101104736328125" lon="6.77142717875540256500244140625">
+            <ele>1087</ele>
+            <time>2019-07-11T16:17:56.000Z</time>
+            <extensions>
+            <ns3:TrackPointExtension/>
+            </extensions>
+        </trkpt>
+        <trkpt lat="47.7685836888849735260009765625" lon="6.771421730518341064453125">
+            <ele>1087.199951171875</ele>
+            <time>2019-07-11T16:17:57.000Z</time>
+            <extensions>
+            <ns3:TrackPointExtension/>
+            </extensions>
+        </trkpt>
+        <trkpt lat="47.76855493895709514617919921875" lon="6.7713813297450542449951171875">
+            <ele>1087.5999755859375</ele>
+            <time>2019-07-11T16:18:03.000Z</time>
+            <extensions>
+            <ns3:TrackPointExtension/>
+            </extensions>
+        </trkpt>
+        </trkseg>
+        </trk>
+    `;
 
-    // extract data from XML
-    let points = xmlDoc.getElementsByTagName("trkpt");
-    for (let p in points) {
-        let newPoint = {
-            "time": points[p].getElementsByTagName("time")[0].innerHTML,
-            "latitude": points[p].getAttribute("lat"),
-            "longitude": points[p].getAttribute("lon"),
-            "elevation": points[p].getElementsByTagName("ele")[0].innerHTML
-        };
-        vm.points.push(newPoint);
+    // 061919MontStMichel.gpx
+    let file2_txt = `
+    <trk>
+    <name>Mont Saint-Michel Bay Walk</name>
+    <type>walking</type>
+    <trkseg>
+      <trkpt lat="48.68752551265060901641845703125" lon="-1.49716020561754703521728515625">
+        <ele>-19.3999996185302734375</ele>
+        <time>2019-06-19T10:30:09.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>89</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="48.6875022947788238525390625" lon="-1.4972189627587795257568359375">
+        <ele>-18.3999996185302734375</ele>
+        <time>2019-06-19T10:30:12.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>93</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="48.6874810047447681427001953125" lon="-1.49728895165026187896728515625">
+        <ele>-19</ele>
+        <time>2019-06-19T10:30:19.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>95</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      </trkseg>
+      </trk>
+    `;
+
+    let files = [file0_txt, file1_txt, file2_txt];
+    for (f of files) {
+
+        let parser, xmlDoc;
+
+        if (window.DOMParser)
+        {
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(f, "text/xml");
+        }
+        else // Internet Explorer
+        {
+            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = false;
+            xmlDoc.loadXML(f);
+        }
+
+        let points = xmlDoc.getElementsByTagName("trkpt");
+        for (p of points) {
+            let newPoint = {
+                "time": p.getElementsByTagName("time")[0].innerHTML,
+                "latitude": p.getAttribute("lat"),
+                "longitude": p.getAttribute("lon"),
+                "elevation": p.getElementsByTagName("ele")[0].innerHTML
+            };
+            vm.points.push(newPoint);
+        }
     }
 
 </script>
