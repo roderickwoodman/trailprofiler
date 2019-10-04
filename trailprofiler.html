@@ -15,7 +15,7 @@
                 <td>{{ sequence.name }}</td>
                 <td>{{ sequence.points.length }}</td>
                 <td v-for="point in sequence.points">
-                    <p>{{ point.time }}</p>
+                    <p>{{ point.time | to_datestring }}</p>
                 </td>
             </tr>
         </table>
@@ -30,6 +30,13 @@
         el: '#app',
         data: {
             sequences: []
+        },
+        filters: {
+            to_datestring: function (epoch) {
+                if (!epoch) return ''
+                converted = new Date(epoch);
+                return converted.toDateString();
+            }
         }
     });
 
