@@ -6,8 +6,15 @@
     <div class="container m-5">
         <h1>Trail Data</h1>
         <table>
-            <tr v-for="point in points">
-                <td>{{ point }}</td>
+            <tr>
+                <th>Name</th>
+                <th>Points</th>
+            </tr>
+            <tr v-for="sequence in sequences">
+                <td>{{ sequence.name }}</td>
+                <td>{{ sequence.points.length }}</td>
+                <!-- <tr v-for="point in sequence.points"> -->
+                    <!-- <td>{{ point }}</td> -->
             </tr>
         </table>
     </div>
@@ -20,9 +27,14 @@
     let vm = new Vue({
         el: '#app',
         data: {
-            points: []
+            sequences: []
         }
     });
+
+    // sequence = {
+    //     name: '',
+    //     points: []
+    // }
     
     // hardcode sample data for now
 
@@ -123,30 +135,35 @@
     let files = [file0_txt, file1_txt, file2_txt];
     for (f of files) {
 
-        let parser, xmlDoc;
+        let parser, xml_doc;
+        let new_sequence = {};
 
         if (window.DOMParser)
         {
             parser = new DOMParser();
-            xmlDoc = parser.parseFromString(f, "text/xml");
+            xml_doc = parser.parseFromString(f, "text/xml");
         }
         else // Internet Explorer
         {
-            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-            xmlDoc.async = false;
-            xmlDoc.loadXML(f);
+            xml_doc = new ActiveXObject("Microsoft.XMLDOM");
+            xml_doc.async = false;
+            xml_doc.loadXML(f);
         }
 
-        let points = xmlDoc.getElementsByTagName("trkpt");
+        new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
+        new_sequence["points"] = [];
+        let points = xml_doc.getElementsByTagName("trkpt");
         for (p of points) {
-            let newPoint = {
+            let new_point = {
                 "time": p.getElementsByTagName("time")[0].innerHTML,
                 "latitude": p.getAttribute("lat"),
                 "longitude": p.getAttribute("lon"),
                 "elevation": p.getElementsByTagName("ele")[0].innerHTML
             };
-            vm.points.push(newPoint);
+            new_sequence.points.push(new_point);
         }
+
+        vm.sequences.push(new_sequence);
     }
 
 </script>
