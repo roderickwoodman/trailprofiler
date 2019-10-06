@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
 
-<div id="app">
-    <div class="container m-5">
-        <h1>Trail Data</h1>
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Points</th>
-                <th>Time (sec)</th>
-                <th>Distance (mi)</th>
-            </tr>
-            <tr v-for="sequence in sequences">
-                <td>{{ sequence.points[0].time | to_datestring }}</td>
-                <th>{{ sequence.name }}</th>
-                <td>{{ sequence.points.length }}</td>
-                <td>{{ sequence.total_time }}</td>
-                <td>{{ sequence.total_distance }}</td>
-            </tr>
-        </table>
+<body>
+    <div id="app">
+        <div class="container m-5 table-responsive-sm">
+            <h1>Trail Data</h1>
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Points</th>
+                        <th scope="col">Time (sec)</th>
+                        <th scope="col">Distance (mi)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="sequence in sequences">
+                        <td scope="row">{{ sequence.points[0].time | to_datestring }}</td>
+                        <th>{{ sequence.name }}</th>
+                        <td>{{ sequence.points.length }}</td>
+                        <td>{{ sequence.total_time }}</td>
+                        <td>{{ sequence.total_distance }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+</body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
