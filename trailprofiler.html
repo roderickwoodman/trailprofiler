@@ -7,18 +7,16 @@
         <h1>Trail Data</h1>
         <table>
             <tr>
+                <th>Date</th>
                 <th>Name</th>
                 <th>Points</th>
                 <th>Distance (mi)</th>
-                <th>Times</th>
             </tr>
             <tr v-for="sequence in sequences">
-                <td>{{ sequence.name }}</td>
+                <td>{{ sequence.points[0].time | to_datestring }}</td>
+                <th>{{ sequence.name }}</th>
                 <td>{{ sequence.points.length }}</td>
                 <td>{{ sequence.distance }}</td>
-                <td v-for="point in sequence.points">
-                    <p>{{ point.time | to_datestring }}</p>
-                </td>
             </tr>
         </table>
     </div>
