@@ -10,13 +10,15 @@
                 <th>Date</th>
                 <th>Name</th>
                 <th>Points</th>
+                <th>Time (sec)</th>
                 <th>Distance (mi)</th>
             </tr>
             <tr v-for="sequence in sequences">
                 <td>{{ sequence.points[0].time | to_datestring }}</td>
                 <th>{{ sequence.name }}</th>
                 <td>{{ sequence.points.length }}</td>
-                <td>{{ sequence.distance }}</td>
+                <td>{{ sequence.total_time }}</td>
+                <td>{{ sequence.total_distance }}</td>
             </tr>
         </table>
     </div>
@@ -179,7 +181,8 @@ let file0_txt = `
         new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
         new_sequence["points"] = [];
         let points = xml_doc.getElementsByTagName("trkpt");
-        let prev_lat, prev_long, distance = 0;
+        let prev_lat, prev_long, total_distance = 0;
+        let prev_time, total_time = 0;
         for (p of points) {
             let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
             let new_point = {
@@ -189,15 +192,19 @@ let file0_txt = `
                 "elevation": p.getElementsByTagName("ele")[0].innerHTML
             };
             if (new_sequence.points.length > 0) {
-                distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+                total_distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+                total_time += new_point.time - prev_time;
             }
             prev_lat = new_point.latitude;
             prev_lon = new_point.longitude;
-            new_sequence["distance"] = distance;
+            new_sequence["total_distance"] = total_distance;
+            prev_time = new_point.time;
+            new_sequence["total_time"] = total_time;
 
             new_sequence.points.push(new_point);
         }
 
+        new_sequence["total_time"] /= 1000;
         vm.sequences.push(new_sequence);
     }
 
