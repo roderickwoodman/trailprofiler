@@ -10,8 +10,8 @@
             <h1>Trail Data</h1>
             <form id="file-input-form">
                 <p>
-                    <label for="my-file" class="btn btn-primary">Add GPX file</label>
-                    <input id="my-file" style="visibility:hidden;" class="m-3" name="files[]" accept=".gpx" multiple="" type="file" />
+                    <label for="my-file" class="btn btn-primary">Add GPX file(s)</label>
+                    <input id="my-file" style="visibility:hidden;" class="m-3" name="files[]" accept=".gpx" multiple type="file" />
                 </p>
             </form>
             <table class="table table-sm table-hover">
@@ -56,11 +56,6 @@
         }
     });
 
-    // sequence = {
-    //     name: '',
-    //     points: []
-    // }
-    
 function getDeltaDistanceInMiles(lat1, lon1, lat2, lon2) {
     var R = 3956; // Radius of the earth in miles
     var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -127,20 +122,15 @@ function parseGpxData(gpx_xml) {
 }
 
 document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
-
-    if(!window.FileReader) return; // Browser is not compatible
-
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-        if(evt.target.readyState != 2) return;
-        if(evt.target.error) {
-            alert('Error while reading file');
-            return;
-        }
+  const files = evt.currentTarget.files;
+  Object.keys(files).forEach(i => {
+    const file = files[i];
+    const reader = new FileReader();
+    reader.onload = (evt) => {
         parseGpxData(evt.target.result);
-    };
-
-    reader.readAsText(evt.target.files[0]);
+    }
+    reader.readAsText(file);
+  })
 };
 
 // hardcode sample data for now
@@ -148,7 +138,7 @@ document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
 // Track_2014-06-30 (A) UNESCO.gpx
 let file0_txt = `
         <trk>
-        <name>2014-06-30 HIKE #1 THINGVELLIR</name>
+        <name>HARDCODE 2014-06-30 HIKE #1 THINGVELLIR</name>
         <extensions>
         <gpxx:TrackExtension>
             <gpxx:DisplayColor>Cyan</gpxx:DisplayColor>
@@ -174,7 +164,7 @@ let file0_txt = `
     // 071119LaPlanchedesBellesFillesLepuix.gpx
     let file1_txt = `
         <trk>
-        <name>La Planche des Belles Filles to Lepuix</name>
+        <name>HARDCODE La Planche des Belles Filles to Lepuix</name>
         <type>hiking</type>
         <trkseg>
         <trkpt lat="47.76858796365559101104736328125" lon="6.77142717875540256500244140625">
@@ -205,7 +195,7 @@ let file0_txt = `
     // 061919MontStMichel.gpx
     let file2_txt = `
     <trk>
-    <name>Mont Saint-Michel Bay Walk</name>
+    <name>HARDCODE Mont Saint-Michel Bay Walk</name>
     <type>walking</type>
     <trkseg>
       <trkpt lat="48.68752551265060901641845703125" lon="-1.49716020561754703521728515625">
