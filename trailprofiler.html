@@ -19,15 +19,17 @@
                     <tr>
                         <th scope="col">Date</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Actions</th>
                         <th scope="col">Points</th>
                         <th scope="col">Time (sec)</th>
                         <th scope="col">Distance (mi)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="sequence in sequences">
+                    <tr v-for="(sequence,index) in sequences">
                         <td scope="row">{{ sequence.points[0].time | to_datestring }}</td>
                         <th>{{ sequence.name }}</th>
+                        <td><button class="btn btn-xs btn-primary" v-on:click="deleteSequence(index)">d</button></td>
                         <td>{{ sequence.points.length }}</td>
                         <td>{{ sequence.total_time }}</td>
                         <td>{{ sequence.total_distance }}</td>
@@ -52,6 +54,11 @@
                 if (!epoch) return ''
                 converted = new Date(epoch);
                 return converted.toDateString();
+            }
+        },
+        methods: {
+            deleteSequence: function (sequence_num) {
+                this.sequences.splice(sequence_num, 1);
             }
         }
     });
