@@ -8,6 +8,11 @@
     <div id="app">
         <div class="container m-5 table-responsive-sm">
             <h1>Trail Data</h1>
+            <form id="file-input-form">
+                <p>
+                    <input id="my-file" class="m-3" name="files[]" accept=".gpx" multiple="" type="file" />
+                </p>
+            </form>
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
@@ -71,6 +76,71 @@ function getDeltaDistanceInMiles(lat1, lon1, lat2, lon2) {
 function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
+
+function parseGpxData(gpx_xml) {
+
+    let parser, xml_doc;
+    let new_sequence = {};
+
+    if (window.DOMParser)
+    {
+        parser = new DOMParser();
+        xml_doc = parser.parseFromString(gpx_xml, "text/xml");
+    }
+    else // Internet Explorer
+    {
+        xml_doc = new ActiveXObject("Microsoft.XMLDOM");
+        xml_doc.async = false;
+        xml_doc.loadXML(gpx_xml);
+    }
+
+    new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
+    new_sequence["points"] = [];
+    let points = xml_doc.getElementsByTagName("trkpt");
+    let prev_lat, prev_long, total_distance = 0;
+    let prev_time, total_time = 0;
+    for (p of points) {
+        let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
+        let new_point = {
+            "time": new_time,
+            "latitude": p.getAttribute("lat"),
+            "longitude": p.getAttribute("lon"),
+            "elevation": p.getElementsByTagName("ele")[0].innerHTML
+        };
+        if (new_sequence.points.length > 0) {
+            total_distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+            total_time += new_point.time - prev_time;
+        }
+        prev_lat = new_point.latitude;
+        prev_lon = new_point.longitude;
+        new_sequence["total_distance"] = total_distance;
+        prev_time = new_point.time;
+        new_sequence["total_time"] = total_time;
+
+        new_sequence.points.push(new_point);
+    }
+
+    new_sequence["total_time"] /= 1000;
+    vm.sequences.push(new_sequence);
+
+}
+
+document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
+
+    if(!window.FileReader) return; // Browser is not compatible
+
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+        if(evt.target.readyState != 2) return;
+        if(evt.target.error) {
+            alert('Error while reading file');
+            return;
+        }
+        parseGpxData(evt.target.result);
+    };
+
+    reader.readAsText(evt.target.files[0]);
+};
 
 // hardcode sample data for now
 
@@ -170,50 +240,7 @@ let file0_txt = `
 
     let files = [file0_txt, file1_txt, file2_txt];
     for (f of files) {
-
-        let parser, xml_doc;
-        let new_sequence = {};
-
-        if (window.DOMParser)
-        {
-            parser = new DOMParser();
-            xml_doc = parser.parseFromString(f, "text/xml");
-        }
-        else // Internet Explorer
-        {
-            xml_doc = new ActiveXObject("Microsoft.XMLDOM");
-            xml_doc.async = false;
-            xml_doc.loadXML(f);
-        }
-
-        new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
-        new_sequence["points"] = [];
-        let points = xml_doc.getElementsByTagName("trkpt");
-        let prev_lat, prev_long, total_distance = 0;
-        let prev_time, total_time = 0;
-        for (p of points) {
-            let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
-            let new_point = {
-                "time": new_time,
-                "latitude": p.getAttribute("lat"),
-                "longitude": p.getAttribute("lon"),
-                "elevation": p.getElementsByTagName("ele")[0].innerHTML
-            };
-            if (new_sequence.points.length > 0) {
-                total_distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
-                total_time += new_point.time - prev_time;
-            }
-            prev_lat = new_point.latitude;
-            prev_lon = new_point.longitude;
-            new_sequence["total_distance"] = total_distance;
-            prev_time = new_point.time;
-            new_sequence["total_time"] = total_time;
-
-            new_sequence.points.push(new_point);
-        }
-
-        new_sequence["total_time"] /= 1000;
-        vm.sequences.push(new_sequence);
+        parseGpxData(f);
     }
 
 </script>
