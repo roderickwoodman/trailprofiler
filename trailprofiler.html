@@ -111,6 +111,11 @@ function addGpxData(gpx_xml) {
     }
 
     new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
+    for (sequence of vm.sequences) {
+        if (sequence.name === new_sequence.name) {
+            return; // don't add duplicates
+        }
+    }
     new_sequence["points"] = [];
     let points = xml_doc.getElementsByTagName("trkpt");
     let prev_lat, prev_long, total_distance = 0;
@@ -137,7 +142,6 @@ function addGpxData(gpx_xml) {
     }
 
     new_sequence["total_time"] /= 1000;
-    // vm.sequences.push(new_sequence);
 
     vm.sequences.push(new_sequence);
 
