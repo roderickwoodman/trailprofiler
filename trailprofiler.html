@@ -135,25 +135,28 @@ function addGpxData(gpx_xml) {
         };
         if (new_sequence.points.length > 0) {
             total_distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+            new_point["agg_distance"] = total_distance;
             total_time += new_point.time - prev_time;
+            new_point["agg_time"] = total_time/1000;
             max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
             min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
         } else {
+            new_point["agg_distance"] = 0;
+            new_point["agg_time"] = 0;
             max_ele = new_point.elevation;
             min_ele = new_point.elevation;
         }
         prev_lat = new_point.latitude;
         prev_lon = new_point.longitude;
-        new_sequence["total_distance"] = total_distance;
         prev_time = new_point.time;
-        new_sequence["total_time"] = total_time;
 
         new_sequence.points.push(new_point);
     }
 
+    new_sequence["total_distance"] = total_distance;
+    new_sequence["total_time"] = total_time/1000;
     new_sequence["maximum_elevation"] = max_ele;
     new_sequence["minimum_elevation"] = min_ele;
-    new_sequence["total_time"] /= 1000;
 
     vm.sequences.push(new_sequence);
 
