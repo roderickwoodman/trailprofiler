@@ -23,6 +23,8 @@
                         <th scope="col">Points</th>
                         <th scope="col">Time (sec)</th>
                         <th scope="col">Distance (mi)</th>
+                        <th scope="col">Min Elev. (ft)</th>
+                        <th scope="col">Max Elev. (ft)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +35,8 @@
                         <td>{{ sequence.points.length }}</td>
                         <td>{{ sequence.total_time }}</td>
                         <td>{{ sequence.total_distance }}</td>
+                        <td>{{ sequence.minimum_elevation }}</td>
+                        <td>{{ sequence.maximum_elevation }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -120,17 +124,23 @@ function addGpxData(gpx_xml) {
     let points = xml_doc.getElementsByTagName("trkpt");
     let prev_lat, prev_long, total_distance = 0;
     let prev_time, total_time = 0;
+    let min_ele, max_ele = 0;
     for (p of points) {
         let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
         let new_point = {
             "time": new_time,
             "latitude": p.getAttribute("lat"),
             "longitude": p.getAttribute("lon"),
-            "elevation": p.getElementsByTagName("ele")[0].innerHTML
+            "elevation": parseInt(p.getElementsByTagName("ele")[0].innerHTML)
         };
         if (new_sequence.points.length > 0) {
             total_distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
             total_time += new_point.time - prev_time;
+            max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
+            min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
+        } else {
+            max_ele = new_point.elevation;
+            min_ele = new_point.elevation;
         }
         prev_lat = new_point.latitude;
         prev_lon = new_point.longitude;
@@ -141,6 +151,8 @@ function addGpxData(gpx_xml) {
         new_sequence.points.push(new_point);
     }
 
+    new_sequence["maximum_elevation"] = max_ele;
+    new_sequence["minimum_elevation"] = min_ele;
     new_sequence["total_time"] /= 1000;
 
     vm.sequences.push(new_sequence);
