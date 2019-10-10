@@ -102,19 +102,22 @@ let vm = new Vue({
     }
 });
 
-let chart = new Chartist.Line('#chart1', {
-  labels: ['0mi', '1mi', '2mi', '3mi', '4mi'],
-  series: [
-    [12, 9, 7, 8, 5],
-    [2, 1, 3.5, 7, 3],
-    [1, 3, 4, 5, 6]
-  ]
-}, {
-  fullWidth: true,
-  chartPadding: {
-    right: 40
-  }
-});
+let chart = new Chartist.Line('#chart1', 
+    {
+        labels: ['0mi', '1mi', '2mi', '3mi', '4mi'],
+        series: [
+            [12, 9, 7, 8, 5],
+            [2, 1, 3.5, 7, 3],
+            [1, 3, 4, 5, 6]
+        ]
+    }, {
+        height: '400px',
+        fullWidth: true,
+        chartPadding: {
+            right: 40
+        }
+    }
+);
 
 function getDeltaDistanceInMiles(lat1, lon1, lat2, lon2) {
     var R = 3956; // Radius of the earth in miles
