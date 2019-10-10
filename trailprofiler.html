@@ -115,6 +115,11 @@ let chart = new Chartist.Line('#chart1',
         fullWidth: true,
         chartPadding: {
             right: 40
+        },
+        axisX: {
+            labelInterpolationFnc: function skipLabels(value, index) {
+                return index % 150 === 0 ? Math.round(10*value)/10 : null;
+            }
         }
     }
 );
