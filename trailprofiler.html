@@ -76,8 +76,8 @@ let vm = new Vue({
     },
     watch: {
         sequences: {
-            handler: function (newval) {
-                localStorage.sequences = JSON.stringify(newval);
+            handler: function (new_sequences) {
+                localStorage.sequences = JSON.stringify(new_sequences);
             },
             deep: true
         }
@@ -96,7 +96,7 @@ let vm = new Vue({
     }
 });
 
-new Chartist.Line('#chart1', {
+let chart = new Chartist.Line('#chart1', {
   labels: ['0mi', '1mi', '2mi', '3mi', '4mi'],
   series: [
     [12, 9, 7, 8, 5],
@@ -189,7 +189,21 @@ function addGpxData(gpx_xml) {
     new_sequence["minimum_elevation"] = min_ele;
 
     vm.sequences.push(new_sequence);
+    new_chart_data = getChartDataFromSequence(new_sequence);
+    chart.update(new_chart_data);
+}
 
+function getChartDataFromSequence(sequence) {
+    let chart_data = {};
+    let labels = [], series = [], all_series = [];
+    sequence.points.forEach(function(point) {
+        labels.push(point.agg_distance);
+        series.push(point.elevation);
+    })
+    all_series.push(series);
+    chart_data["labels"] = labels;
+    chart_data["series"] = all_series;
+    return chart_data;
 }
 
 document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
