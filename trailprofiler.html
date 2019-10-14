@@ -92,7 +92,7 @@ let vm = new Vue({
             return converted.toDateString();
         },
         to_tenths: function (number) {
-            return Math.round(10*number)/10;
+            return (Math.round(10*number)/10).toFixed(1);
         }
     },
     methods: {
