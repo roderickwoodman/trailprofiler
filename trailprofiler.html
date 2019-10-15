@@ -105,9 +105,30 @@ let vm = new Vue({
     }
 });
 
-let chart = new Chartist.Line('#chart1', 
+let default_options = {
+    height: '400px',
+    fullWidth: true,
+    chartPadding: {
+        right: 40
+    },
+    axisX: {
+        type: Chartist.FixedScaleAxis,
+        divisor: 13,
+        labelInterpolationFnc: function (value) {
+            return Math.round(10*value)/10;
+        }
+    },
+    axisY: {
+        type: Chartist.FixedScaleAxis,
+        divisor: 10,
+        labelInterpolationFnc: function (value) {
+            return Math.round(value/100)*100;
+        }
+    }
+};
+
+let default_data = 
     {
-        // labels: ['0mi', '1mi', '2mi', '3mi', '4mi'],
         series: [
             {
                 name: "MSM sample data",
@@ -533,8 +554,7 @@ let chart = new Chartist.Line('#chart1',
                     { x: 1.2910274777026451, y: 257 },
                     { x: 1.2912022312444564, y: 258 },
                     { x: 1.2924242038152969, y: 257 },
-                    { x: 1.2989719534502504, y: 257 },
-                    ]
+                    { x: 1.2989719534502504, y: 257 } ]
             }, {
                 name: "PDBF sample data",
                 data: [
@@ -646,33 +666,12 @@ let chart = new Chartist.Line('#chart1',
                     { x: 0.9952769326003589, y: 978 },
                     { x: 0.9971383195211051, y: 977 },
                     { x: 0.9985560078559669, y: 977 },
-                    { x: 0.999285208150086, y: 977 },
-
-                ]
+                    { x: 0.999285208150086, y: 977 } ]
             }
         ]
-    }, {
-        height: '400px',
-        fullWidth: true,
-        chartPadding: {
-            right: 40
-        },
-        axisX: {
-            type: Chartist.FixedScaleAxis,
-            divisor: 13,
-            labelInterpolationFnc: function (value) {
-                return Math.round(10*value)/10;
-            }
-        },
-        axisY: {
-            type: Chartist.FixedScaleAxis,
-            divisor: 10,
-            labelInterpolationFnc: function (value) {
-                return Math.round(value/100)*100;
-            }
-        }
-    }
-);
+    };
+
+let chart = new Chartist.Line('#chart1', default_data, default_options);
 
 function getDeltaDistanceInMiles(lat1, lon1, lat2, lon2) {
     var R = 3956; // Radius of the earth in miles
