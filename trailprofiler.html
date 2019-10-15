@@ -5,16 +5,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     <style>
-        body{
+        body {
             padding: 20px;
             font-family:arial;
         }
-        #chart1{
+        #chart1 {
             padding-top:20px;
             border: 1px solid silver;
             border-radius: 10px;
             background-color: lightyellow;
             text-align: center;
+        }
+        button {
+            margin: 2px 6px;
+        }
+        .isPlotted {
+            border: 3px solid black;
+            background-color: yellow;
         }
     </style>
 </head>
@@ -48,7 +55,7 @@
                         <td scope="row">{{ sequence.points[0].time | to_datestring }}</td>
                         <th>{{ sequence.name }}</th>
                         <td>
-                            <button class="btn btn-xs btn-primary" v-on:click="plotSequence(index)">p</button>
+                            <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="plotSequence(index)">p</button>
                             <button class="btn btn-xs btn-primary" v-on:click="deleteSequence(index)">d</button>
                         </td>
                         <td>{{ sequence.points.length }}</td>
@@ -665,6 +672,7 @@ let vm = new Vue({
     },
     methods: {
         plotSequence: function (sequence_num) {
+            this.sequences[sequence_num].is_plotted = true;
             addSequenceToChart(this.sequences[sequence_num]);
         },
         deleteSequence: function (sequence_num) {
@@ -692,7 +700,7 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
-function addGpxData(gpx_xml) {
+function addSequence(gpx_xml) {
 
     let parser, xml_doc;
     let new_sequence = {};
@@ -747,14 +755,13 @@ function addGpxData(gpx_xml) {
 
         new_sequence.points.push(new_point);
     }
-
+    new_sequence["is_plotted"] = false;
     new_sequence["total_distance"] = total_distance;
     new_sequence["total_time"] = total_time/1000;
     new_sequence["maximum_elevation"] = max_ele;
     new_sequence["minimum_elevation"] = min_ele;
 
     vm.sequences.push(new_sequence);
-    addSequenceToChart(new_sequence);
 }
 
 function addSequenceToChart(sequence) {
@@ -780,7 +787,7 @@ document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
     const file = files[i];
     const reader = new FileReader();
     reader.onload = (evt) => {
-        addGpxData(evt.target.result);
+        addSequence(evt.target.result);
     }
     reader.readAsText(file);
   })
