@@ -672,8 +672,13 @@ let vm = new Vue({
     },
     methods: {
         plotSequence: function (sequence_num) {
-            this.sequences[sequence_num].is_plotted = true;
-            addSequenceToChart(this.sequences[sequence_num]);
+            if (this.sequences[sequence_num].is_plotted) {
+                removeSequenceNumFromChart(sequence_num);
+                this.sequences[sequence_num].is_plotted = false;
+            } else {
+                addSequenceToChart(this.sequences[sequence_num]);
+                this.sequences[sequence_num].is_plotted = true;
+            }
         },
         deleteSequence: function (sequence_num) {
             this.sequences.splice(sequence_num, 1);
@@ -762,6 +767,18 @@ function addSequence(gpx_xml) {
     new_sequence["minimum_elevation"] = min_ele;
 
     vm.sequences.push(new_sequence);
+}
+
+function removeSequenceNumFromChart(sequence_num) {
+    let new_chart_data = JSON.parse(JSON.stringify(vm.chart_data));
+    for ([index,series] of vm.chart_data.series.entries()) {
+        if (series.name === vm.sequences[sequence_num].name) {
+            new_chart_data.series.splice(index, 1);
+            break;
+        }
+    }
+    vm.chart_data = new_chart_data;
+    chart.update(vm.chart_data, vm.chart_options);
 }
 
 function addSequenceToChart(sequence) {
