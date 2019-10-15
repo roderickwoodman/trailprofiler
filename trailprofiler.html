@@ -658,8 +658,17 @@ let chart = new Chartist.Line('#chart1',
             right: 40
         },
         axisX: {
-            labelInterpolationFnc: function skipLabels(value, index) {
-                return index % 150 === 0 ? Math.round(10*value)/10 : null;
+            type: Chartist.FixedScaleAxis,
+            divisor: 13,
+            labelInterpolationFnc: function (value) {
+                return Math.round(10*value)/10;
+            }
+        },
+        axisY: {
+            type: Chartist.FixedScaleAxis,
+            divisor: 10,
+            labelInterpolationFnc: function (value) {
+                return Math.round(value/100)*100;
             }
         }
     }
