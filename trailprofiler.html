@@ -97,7 +97,7 @@ let vm = new Vue({
     },
     methods: {
         plotSequence: function (sequence_num) {
-            chart.update(getChartDataFromSequence(this.sequences[sequence_num]));
+            addSequenceToChart(this.sequences[sequence_num]);
         },
         deleteSequence: function (sequence_num) {
             this.sequences.splice(sequence_num, 1);
@@ -752,26 +752,23 @@ function addGpxData(gpx_xml) {
     new_sequence["minimum_elevation"] = min_ele;
 
     vm.sequences.push(new_sequence);
-    new_chart_data = getChartDataFromSequence(new_sequence);
-    chart.update(new_chart_data);
+    addSequenceToChart(new_sequence);
 }
 
-function getChartDataFromSequence(sequence) {
-    let chart_data = {};
-    let labels = [], series = [], all_series = [];
-    // debug_logit = "";  // quick formatter for debugging with hardcoded data
+function addSequenceToChart(sequence) {
+    let new_chart_data = {}, new_series = {}, new_series_data = [];
+    new_series["name"] = sequence.name;
     sequence.points.forEach(function(point) {
-        // if (point.agg_distance < 1.0 && point.agg_distance > 0.8) {
-        //     debug_logit += "{ x: "+point.agg_distance+", y: "+point.elevation+" },\n"
-        // }
-        labels.push(point.agg_distance);
-        series.push(point.elevation);
+        let chart_point = { x: point.agg_distance, y: point.elevation };
+        new_series_data.push(chart_point);
     })
-    // console.log(debug_logit);
-    all_series.push(series);
-    chart_data["labels"] = labels;
-    chart_data["series"] = all_series;
-    return chart_data;
+    new_series["data"] = new_series_data;
+    if (new_chart_data.hasOwnProperty("series")) {
+        new_chart_data.series.push(new_series);
+    } else {
+        new_chart_data["series"] = [new_series];
+    }
+    chart.update(new_chart_data, default_options);
 }
 
 document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
