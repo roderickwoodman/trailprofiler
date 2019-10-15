@@ -758,7 +758,7 @@ function addGpxData(gpx_xml) {
 }
 
 function addSequenceToChart(sequence) {
-    let new_chart_data = {}, new_series = {}, new_series_data = [];
+    let new_chart_data = vm.chart_data, new_series = {}, new_series_data = [];
     new_series["name"] = sequence.name;
     sequence.points.forEach(function(point) {
         let chart_point = { x: point.agg_distance, y: point.elevation };
@@ -770,7 +770,8 @@ function addSequenceToChart(sequence) {
     } else {
         new_chart_data["series"] = [new_series];
     }
-    chart.update(new_chart_data, default_options);
+    vm.chart_data = new_chart_data;
+    chart.update(vm.chart_data, vm.chart_options);
 }
 
 document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
