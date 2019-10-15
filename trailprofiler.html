@@ -20,8 +20,8 @@
 </head>
 
 <body>
-    <div id="chart1" class="ct-chart" ><strong>Elevation Profile</strong></div>
     <div id="app">
+        <div id="chart1" class="ct-chart" ><strong>Elevation Profile</strong></div>
         <div class="container m-5 table-responsive-sm">
             <h1>Trail Data</h1>
             <form id="file-input-form">
@@ -66,66 +66,6 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script>
-
-let vm = new Vue({
-    el: '#app',
-    data: {
-        sequences: []
-    },
-    mounted() {
-        if (localStorage.sequences) {
-            this.sequences = JSON.parse(localStorage.sequences);
-        }
-    },
-    watch: {
-        sequences: {
-            handler: function (new_sequences) {
-                localStorage.sequences = JSON.stringify(new_sequences);
-            },
-            deep: true
-        }
-    },
-    filters: {
-        to_datestring: function (epoch) {
-            if (!epoch) return ''
-            converted = new Date(epoch);
-            return converted.toDateString();
-        },
-        to_tenths: function (number) {
-            return (Math.round(10*number)/10).toFixed(1);
-        }
-    },
-    methods: {
-        plotSequence: function (sequence_num) {
-            addSequenceToChart(this.sequences[sequence_num]);
-        },
-        deleteSequence: function (sequence_num) {
-            this.sequences.splice(sequence_num, 1);
-        }
-    }
-});
-
-let default_options = {
-    height: '400px',
-    fullWidth: true,
-    chartPadding: {
-        right: 40
-    },
-    axisX: {
-        type: Chartist.FixedScaleAxis,
-        divisor: 13,
-        labelInterpolationFnc: function (value) {
-            return Math.round(10*value)/10;
-        }
-    },
-    axisY: {
-        type: Chartist.FixedScaleAxis,
-        divisor: 10,
-        labelInterpolationFnc: function (value) {
-            return Math.round(value/100)*100;
-        }
-    }
-};
 
 let default_data = 
     {
@@ -671,7 +611,69 @@ let default_data =
         ]
     };
 
-let chart = new Chartist.Line('#chart1', default_data, default_options);
+let default_options = {
+    height: '400px',
+    fullWidth: true,
+    chartPadding: {
+        right: 40
+    },
+    axisX: {
+        type: Chartist.FixedScaleAxis,
+        divisor: 13,
+        labelInterpolationFnc: function (value) {
+            return Math.round(10*value)/10;
+        }
+    },
+    axisY: {
+        type: Chartist.FixedScaleAxis,
+        divisor: 10,
+        labelInterpolationFnc: function (value) {
+            return Math.round(value/100)*100;
+        }
+    }
+};
+
+let vm = new Vue({
+    el: '#app',
+    data: {
+        sequences: [],
+        chart_data: default_data,
+        chart_options: default_options
+    },
+    mounted() {
+        if (localStorage.sequences) {
+            this.sequences = JSON.parse(localStorage.sequences);
+        }
+    },
+    watch: {
+        sequences: {
+            handler: function (new_sequences) {
+                localStorage.sequences = JSON.stringify(new_sequences);
+            },
+            deep: true
+        }
+    },
+    filters: {
+        to_datestring: function (epoch) {
+            if (!epoch) return ''
+            converted = new Date(epoch);
+            return converted.toDateString();
+        },
+        to_tenths: function (number) {
+            return (Math.round(10*number)/10).toFixed(1);
+        }
+    },
+    methods: {
+        plotSequence: function (sequence_num) {
+            addSequenceToChart(this.sequences[sequence_num]);
+        },
+        deleteSequence: function (sequence_num) {
+            this.sequences.splice(sequence_num, 1);
+        }
+    }
+});
+
+let chart = new Chartist.Line('#chart1', vm.chart_data, vm.chart_options);
 
 function getDeltaDistanceInMiles(lat1, lon1, lat2, lon2) {
     var R = 3956; // Radius of the earth in miles
