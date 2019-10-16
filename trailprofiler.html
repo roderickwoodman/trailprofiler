@@ -681,6 +681,8 @@ let vm = new Vue({
             }
         },
         deleteSequence: function (sequence_num) {
+            removeSequenceNumFromChart(sequence_num);
+            this.sequences[sequence_num].is_plotted = false;
             this.sequences.splice(sequence_num, 1);
         }
     }
