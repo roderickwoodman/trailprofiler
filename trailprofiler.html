@@ -43,7 +43,6 @@
                         <th scope="col">Date</th>
                         <th scope="col">Name</th>
                         <th scope="col">Actions</th>
-                        <th scope="col">Points</th>
                         <th scope="col">Time (sec)</th>
                         <th scope="col">Distance (mi)</th>
                         <th scope="col">Min Elev. (m)</th>
@@ -58,7 +57,6 @@
                             <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
                             <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
                         </td>
-                        <td>{{ sequence.points.length }}</td>
                         <td>{{ sequence.total_time | to_hmm }}</td>
                         <td>{{ sequence.total_distance | to_tenths }}</td>
                         <td>{{ sequence.minimum_elevation }}</td>
