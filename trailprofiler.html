@@ -60,9 +60,9 @@
                             <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
                         </td>
                         <td>{{ sequence.total_time | to_hmm }}</td>
-                        <td>{{ sequence.mean_time }} | {{ sequence.stdv_time }} </td>
+                        <td>{{ sequence.med_time }} | {{ sequence.stdv_time }} </td>
                         <td>{{ sequence.total_distance | to_tenths }}</td>
-                        <td>{{ sequence.mean_distance }} | {{ sequence.stdv_distance }} </td>
+                        <td>{{ sequence.med_distance }} | {{ sequence.stdv_distance }} </td>
                         <td>{{ sequence.minimum_elevation }}</td>
                         <td>{{ sequence.maximum_elevation }}</td>
                     </tr>
@@ -737,16 +737,39 @@ var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
 	mean: function(array) {
 		return arr.sum(array) / array.length;
 	},
+
+    median: function(array) {
+		array.sort(function(a, b) {
+			return a - b;
+		});
+		var mid = array.length / 2;
+		return mid % 1 ? array[mid - 0.5] : (array[mid - 1] + array[mid]) / 2;
+	},
 	
 	variance: function(array) {
-		var mean = arr.mean(array);
-		return arr.mean(array.map(function(num) {
-			return Math.pow(num - mean, 2);
+		var median = arr.median(array);
+		return arr.median(array.map(function(num) {
+			return Math.pow(num - median, 2);
 		}));
 	},
 	
 	standardDeviation: function(array) {
 		return Math.sqrt(arr.variance(array));
+	},
+
+    medianAbsoluteDeviation: function(array) {
+		var median = arr.median(array);
+		return arr.median(array.map(function(num) {
+			return Math.abs(num - median);
+		}));
+	},
+	
+	zScores: function(array) {
+		var median = arr.median(array);
+		var standardDeviation = arr.standardDeviation(array);
+		return array.map(function(num) {
+			return (num - median) / standardDeviation;
+		});
 	}
 };
 
@@ -814,8 +837,8 @@ function addSequence(gpx_xml) {
     }
     new_sequence["stdv_distance"] = arr.standardDeviation(array_distances);
     new_sequence["stdv_time"] = arr.standardDeviation(array_distances);
-    new_sequence["mean_distance"] = arr.sum(array_distances);
-    new_sequence["mean_time"] = arr.sum(array_times);
+    new_sequence["med_distance"] = arr.median(array_distances);
+    new_sequence["med_time"] = arr.median(array_times);
     new_sequence["is_plotted"] = false;
     new_sequence["total_distance"] = total_distance;
     new_sequence["total_time"] = total_time/1000;
