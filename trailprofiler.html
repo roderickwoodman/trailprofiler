@@ -44,7 +44,9 @@
                         <th scope="col">Name</th>
                         <th scope="col">Actions</th>
                         <th scope="col">Time (sec)</th>
+                        <th scope="col">Time Stats</th>
                         <th scope="col">Distance (mi)</th>
+                        <th scope="col">Distance Stats</th>
                         <th scope="col">Min Elev. (m)</th>
                         <th scope="col">Max Elev. (m)</th>
                     </tr>
@@ -58,7 +60,9 @@
                             <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
                         </td>
                         <td>{{ sequence.total_time | to_hmm }}</td>
+                        <td>{{ sequence.mean_time }} | {{ sequence.stdv_time }} </td>
                         <td>{{ sequence.total_distance | to_tenths }}</td>
+                        <td>{{ sequence.mean_distance }} | {{ sequence.stdv_distance }} </td>
                         <td>{{ sequence.minimum_elevation }}</td>
                         <td>{{ sequence.maximum_elevation }}</td>
                     </tr>
@@ -723,6 +727,29 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
+var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
+	sum: function(array) {
+		var num = 0;
+		for (var i = 0, l = array.length; i < l; i++) num += array[i];
+		return num;
+	},
+	
+	mean: function(array) {
+		return arr.sum(array) / array.length;
+	},
+	
+	variance: function(array) {
+		var mean = arr.mean(array);
+		return arr.mean(array.map(function(num) {
+			return Math.pow(num - mean, 2);
+		}));
+	},
+	
+	standardDeviation: function(array) {
+		return Math.sqrt(arr.variance(array));
+	}
+};
+
 function addSequence(gpx_xml) {
 
     let parser, xml_doc;
@@ -751,6 +778,8 @@ function addSequence(gpx_xml) {
     let prev_lat, prev_long, total_distance = 0;
     let prev_time, total_time = 0;
     let min_ele, max_ele = 0;
+    let array_distances = [];
+    let array_times = [];
     for (p of points) {
         let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
         let new_point = {
@@ -760,24 +789,33 @@ function addSequence(gpx_xml) {
             "elevation": parseInt(p.getElementsByTagName("ele")[0].innerHTML)
         };
         if (new_sequence.points.length > 0) {
-            total_distance += getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+            new_point["delta_distance"] = getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+            total_distance += new_point.delta_distance;
             new_point["agg_distance"] = total_distance;
+            new_point["delta_time"] = (new_point.time - prev_time) / 1000;
             total_time += new_point.time - prev_time;
-            new_point["agg_time"] = total_time/1000;
+            new_point["agg_time"] = total_time / 1000;
             max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
             min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
         } else {
             new_point["agg_distance"] = 0;
             new_point["agg_time"] = 0;
+            new_point["delta_distance"] = 0;
+            new_point["delta_time"] = 0;
             max_ele = new_point.elevation;
             min_ele = new_point.elevation;
         }
         prev_lat = new_point.latitude;
         prev_lon = new_point.longitude;
         prev_time = new_point.time;
-
+        array_distances.push(new_point.delta_distance);
+        array_times.push(new_point.delta_time);
         new_sequence.points.push(new_point);
     }
+    new_sequence["stdv_distance"] = arr.standardDeviation(array_distances);
+    new_sequence["stdv_time"] = arr.standardDeviation(array_distances);
+    new_sequence["mean_distance"] = arr.sum(array_distances);
+    new_sequence["mean_time"] = arr.sum(array_times);
     new_sequence["is_plotted"] = false;
     new_sequence["total_distance"] = total_distance;
     new_sequence["total_time"] = total_time/1000;
