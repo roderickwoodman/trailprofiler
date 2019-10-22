@@ -835,15 +835,25 @@ function addSequence(gpx_xml) {
         array_times.push(new_point.delta_time);
         new_sequence.points.push(new_point);
     }
+    // stats
     new_sequence["stdv_distance"] = arr.standardDeviation(array_distances);
     new_sequence["stdv_time"] = arr.standardDeviation(array_distances);
     new_sequence["med_distance"] = arr.median(array_distances);
     new_sequence["med_time"] = arr.median(array_times);
+    // summary
     new_sequence["is_plotted"] = false;
     new_sequence["total_distance"] = total_distance;
     new_sequence["total_time"] = total_time/1000;
     new_sequence["maximum_elevation"] = max_ele;
     new_sequence["minimum_elevation"] = min_ele;
+
+    // remove outliers
+    new_sequence["stats_distances"] = array_distances;
+    new_sequence["stats_distance_zscores"] = arr.zScores(array_distances);
+    new_sequence["stats_times"] = array_times;
+    new_sequence["stats_time_zscores"] = arr.zScores(array_times);
+
+    // do removal here
 
     vm.sequences.push(new_sequence);
 }
