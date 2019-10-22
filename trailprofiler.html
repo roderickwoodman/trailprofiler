@@ -739,11 +739,12 @@ var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
 	},
 
     median: function(array) {
-		array.sort(function(a, b) {
+        let cloned_array = [...array]; // to preserve the original order
+		cloned_array.sort(function(a, b) {
 			return a - b;
 		});
-		var mid = array.length / 2;
-		return mid % 1 ? array[mid - 0.5] : (array[mid - 1] + array[mid]) / 2;
+		var mid = cloned_array.length / 2;
+		return mid % 1 ? cloned_array[mid - 0.5] : (cloned_array[mid - 1] + array[mid]) / 2;
 	},
 	
 	variance: function(array) {
@@ -768,7 +769,7 @@ var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
 		var median = arr.median(array);
 		var standardDeviation = arr.standardDeviation(array);
 		return array.map(function(num) {
-			return (num - median) / standardDeviation;
+			return parseFloat(((num - median) / standardDeviation).toFixed(2));
 		});
 	}
 };
@@ -813,9 +814,11 @@ function addSequence(gpx_xml) {
         };
         if (new_sequence.points.length > 0) {
             new_point["delta_distance"] = getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+            array_distances.push(new_point.delta_distance);
             total_distance += new_point.delta_distance;
             new_point["agg_distance"] = total_distance;
             new_point["delta_time"] = (new_point.time - prev_time) / 1000;
+            array_times.push(new_point.delta_time);
             total_time += new_point.time - prev_time;
             new_point["agg_time"] = total_time / 1000;
             max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
@@ -831,15 +834,13 @@ function addSequence(gpx_xml) {
         prev_lat = new_point.latitude;
         prev_lon = new_point.longitude;
         prev_time = new_point.time;
-        array_distances.push(new_point.delta_distance);
-        array_times.push(new_point.delta_time);
         new_sequence.points.push(new_point);
     }
     // stats
-    new_sequence["stdv_distance"] = arr.standardDeviation(array_distances);
-    new_sequence["stdv_time"] = arr.standardDeviation(array_distances);
-    new_sequence["med_distance"] = arr.median(array_distances);
-    new_sequence["med_time"] = arr.median(array_times);
+    // new_sequence["stdv_distance"] = arr.standardDeviation(array_distances);
+    // new_sequence["stdv_time"] = arr.standardDeviation(array_times);
+    // new_sequence["med_distance"] = arr.median(array_distances);
+    // new_sequence["med_time"] = arr.median(array_times);
     // summary
     new_sequence["is_plotted"] = false;
     new_sequence["total_distance"] = total_distance;
@@ -847,13 +848,44 @@ function addSequence(gpx_xml) {
     new_sequence["maximum_elevation"] = max_ele;
     new_sequence["minimum_elevation"] = min_ele;
 
-    // remove outliers
+    // identify outliers
     new_sequence["stats_distances"] = array_distances;
-    new_sequence["stats_distance_zscores"] = arr.zScores(array_distances);
+    new_sequence["stats_distances_zscores"] = arr.zScores(array_distances);
     new_sequence["stats_times"] = array_times;
-    new_sequence["stats_time_zscores"] = arr.zScores(array_times);
+    new_sequence["stats_times_zscores"] = arr.zScores(array_times);
 
     // do removal here
+    // console.log("array_distances: ", array_distances);
+    // console.log("stats_distances_zscores: ", arr.zScores(array_distances));
+    // console.log("array_times: ", array_times);
+    // console.log("stats_times_zscores: ", arr.zScores(array_times));
+    console.log("array_distances: ", new_sequence.stats_distances);
+    console.log("stats_distances_zscores: ", new_sequence.stats_distances_zscores);
+    // console.log("array_times: ", new_sequence.stats_times);
+    // console.log("stats_times_zscores: ", new_sequence.stats_times_zscores);
+
+console.log("foo:", new_sequence.stats_distances_zscores);
+    let outliers_distances = [];
+    let outliers_distances_indicies = [];
+    new_sequence.stats_distances_zscores.forEach(function (score, index) {
+        if (Math.abs(score) > 8) {
+            outliers_distances_indicies.push(index);
+            outliers_distances.push(score);
+        }
+    })
+    console.log("outliers_distances_indicies: ",outliers_distances_indicies);
+    console.log("outliers_distances: ",outliers_distances);
+    let outliers_times = [];
+    let outliers_times_indicies = [];
+    new_sequence.stats_times_zscores.forEach(function (score, index) {
+        if (Math.abs(score) > 8) {
+            outliers_times_indicies.push(index);
+            outliers_times.push(score);
+        }
+    })
+    console.log("outliers_times_indicies: ",outliers_times_indicies);
+    console.log("outliers_times: ",outliers_times);
+
 
     vm.sequences.push(new_sequence);
 }
