@@ -869,14 +869,32 @@ function addSequence(gpx_xml) {
         new_sequence.name = "ORIG " + new_sequence.name;
         vm.sequences.push(new_sequence);
 
+        let splice_idx = outliers_times_indicies[0];
+
         part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
         part1_new_sequence.name = "PART1 " + part1_new_sequence.name;
-        part1_new_sequence.points.splice(0, outliers_times_indicies[0] + 1);
+        part1_new_sequence.points.splice(splice_idx);
+        part1_new_sequence.arr_distance_deltas.splice(splice_idx);
+        part1_new_sequence.arr_distance_aggrs.splice(splice_idx);
+        part1_new_sequence.arr_time_deltas.splice(splice_idx);
+        part1_new_sequence.arr_time_aggrs.splice(splice_idx);
         vm.sequences.push(part1_new_sequence);
 
         part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
         part2_new_sequence.name = "PART2 " + part2_new_sequence.name;
-        part2_new_sequence.points.splice(outliers_times_indicies[0]);
+        part2_new_sequence.points.splice(0, splice_idx);
+        part2_new_sequence.arr_distance_deltas.splice(0, splice_idx);
+        part2_new_sequence.arr_distance_aggrs.splice(0, splice_idx);
+        let offset_distance = part2_new_sequence.arr_distance_aggrs[0];
+        part2_new_sequence.arr_distance_aggrs.forEach(function(ele, idx) {
+            this[idx] -= offset_distance;
+        }, part2_new_sequence.arr_distance_aggrs);
+        part2_new_sequence.arr_time_deltas.splice(0, splice_idx);
+        part2_new_sequence.arr_time_aggrs.splice(0, splice_idx);
+        let offset_time = part2_new_sequence.arr_time_aggrs[0];
+        part2_new_sequence.arr_time_aggrs.forEach(function(ele, idx) {
+            this[idx] -= offset_time;
+        }, part2_new_sequence.arr_time_aggrs);
         vm.sequences.push(part2_new_sequence);
 
     } else {
