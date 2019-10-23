@@ -724,6 +724,7 @@ function deg2rad(deg) {
 }
 
 var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
+
 	sum: function(array) {
 		var num = 0;
 		for (var i = 0, l = array.length; i < l; i++) num += array[i];
@@ -870,31 +871,62 @@ function addSequence(gpx_xml) {
         vm.sequences.push(new_sequence);
 
         let splice_idx = outliers_times_indicies[0];
+        let new_length, new_max_elevation, new_min_elevation;
 
         part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
         part1_new_sequence.name = "PART1 " + part1_new_sequence.name;
         part1_new_sequence.points.splice(splice_idx);
+        new_length = part1_new_sequence.points.length;
         part1_new_sequence.arr_distance_deltas.splice(splice_idx);
         part1_new_sequence.arr_distance_aggrs.splice(splice_idx);
+        part1_new_sequence.total_distance = part1_new_sequence.arr_distance_aggrs[new_length - 1];
         part1_new_sequence.arr_time_deltas.splice(splice_idx);
         part1_new_sequence.arr_time_aggrs.splice(splice_idx);
+        part1_new_sequence.total_time = part1_new_sequence.arr_time_aggrs[new_length - 1];
+        new_max_elevation = part1_new_sequence.points[0].elevation;
+        new_min_elevation = part1_new_sequence.points[0].elevation;
+        part1_new_sequence.points.forEach(function(point) {
+            if (point.elevation > new_max_elevation) {
+                new_max_elevation = point.elevation;
+            }
+            if (point.elevation < new_min_elevation) {
+                new_min_elevation = point.elevation;
+            }
+        })
+        part1_new_sequence.maximum_elevation = new_max_elevation;
+        part1_new_sequence.minimum_elevation = new_min_elevation;
         vm.sequences.push(part1_new_sequence);
 
         part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
         part2_new_sequence.name = "PART2 " + part2_new_sequence.name;
         part2_new_sequence.points.splice(0, splice_idx);
+        new_length = part2_new_sequence.points.length;
         part2_new_sequence.arr_distance_deltas.splice(0, splice_idx);
         part2_new_sequence.arr_distance_aggrs.splice(0, splice_idx);
         let offset_distance = part2_new_sequence.arr_distance_aggrs[0];
         part2_new_sequence.arr_distance_aggrs.forEach(function(ele, idx) {
             this[idx] -= offset_distance;
         }, part2_new_sequence.arr_distance_aggrs);
+        part2_new_sequence.total_distance = part2_new_sequence.arr_distance_aggrs[new_length - 1];
         part2_new_sequence.arr_time_deltas.splice(0, splice_idx);
         part2_new_sequence.arr_time_aggrs.splice(0, splice_idx);
         let offset_time = part2_new_sequence.arr_time_aggrs[0];
         part2_new_sequence.arr_time_aggrs.forEach(function(ele, idx) {
             this[idx] -= offset_time;
         }, part2_new_sequence.arr_time_aggrs);
+        part2_new_sequence.total_time = part2_new_sequence.arr_time_aggrs[new_length - 1];
+        new_max_elevation = part2_new_sequence.points[0].elevation;
+        new_min_elevation = part2_new_sequence.points[0].elevation;
+        part2_new_sequence.points.forEach(function(point) {
+            if (point.elevation > new_max_elevation) {
+                new_max_elevation = point.elevation;
+            }
+            if (point.elevation < new_min_elevation) {
+                new_min_elevation = point.elevation;
+            }
+        })
+        part2_new_sequence.maximum_elevation = new_max_elevation;
+        part2_new_sequence.minimum_elevation = new_min_elevation;
         vm.sequences.push(part2_new_sequence);
 
     } else {
