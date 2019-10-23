@@ -795,11 +795,12 @@ function addSequence(gpx_xml) {
     }
     new_sequence["points"] = [];
     let points = xml_doc.getElementsByTagName("trkpt");
-    let prev_lat, prev_long, total_distance = 0;
-    let prev_time, total_time = 0;
+    let prev_lat, prev_long, prev_time;
     let min_ele, max_ele = 0;
-    let array_distances = [];
-    let array_times = [];
+    let arr_distance_deltas = [];
+    let arr_distance_aggrs = [];
+    let arr_time_deltas = [];
+    let arr_time_aggrs = [];
     for (p of points) {
         let new_time = new Date(p.getElementsByTagName("time")[0].innerHTML).valueOf();
         let new_point = {
@@ -808,24 +809,23 @@ function addSequence(gpx_xml) {
             "longitude": p.getAttribute("lon"),
             "elevation": parseInt(p.getElementsByTagName("ele")[0].innerHTML)
         };
+        let new_distance_delta = 0, new_time_delta = 0;
         if (new_sequence.points.length > 0) {
-            new_point["delta_distance"] = getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
-            array_distances.push(new_point.delta_distance);
-            total_distance += new_point.delta_distance;
-            new_point["agg_distance"] = total_distance;
-            new_point["delta_time"] = (new_point.time - prev_time) / 1000;
-            array_times.push(new_point.delta_time);
-            total_time += new_point.time - prev_time;
-            new_point["agg_time"] = total_time / 1000;
+            new_distance_delta = getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+            arr_distance_deltas.push(new_distance_delta);
+            arr_distance_aggrs.push(arr_distance_aggrs[arr_distance_aggrs.length - 1] + new_distance_delta);
+            new_time_delta = (new_point.time - prev_time) / 1000;
+            arr_time_deltas.push(new_time_delta);
+            arr_time_aggrs.push(arr_time_aggrs[arr_time_aggrs.length - 1] + new_time_delta);
             max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
             min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
         } else {
-            new_point["agg_distance"] = 0;
-            new_point["agg_time"] = 0;
-            new_point["delta_distance"] = 0;
-            new_point["delta_time"] = 0;
             max_ele = new_point.elevation;
             min_ele = new_point.elevation;
+            arr_distance_deltas.push(0);
+            arr_distance_aggrs.push(0);
+            arr_time_deltas.push(0);
+            arr_time_aggrs.push(0);
         }
         prev_lat = new_point.latitude;
         prev_lon = new_point.longitude;
@@ -833,55 +833,36 @@ function addSequence(gpx_xml) {
         new_sequence.points.push(new_point);
     }
     // stats
+    new_sequence["arr_distance_deltas"] = arr_distance_deltas;
+    new_sequence["arr_distance_aggrs"] = arr_distance_aggrs;
+    new_sequence["arr_time_deltas"] = arr_time_deltas;
+    new_sequence["arr_time_aggrs"] = arr_time_aggrs;
     new_sequence["is_plotted"] = false;
-    new_sequence["total_distance"] = total_distance;
-    new_sequence["total_time"] = total_time/1000;
+    new_sequence["total_distance"] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
+    new_sequence["total_time"] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
     new_sequence["maximum_elevation"] = max_ele;
     new_sequence["minimum_elevation"] = min_ele;
 
     // identify outliers
-    new_sequence["stats_distances"] = array_distances;
-    new_sequence["stats_distances_zscores"] = arr.zScores(array_distances);
-    new_sequence["stats_times"] = array_times;
-    new_sequence["stats_times_zscores"] = arr.zScores(array_times);
-
-    // do removal here
-    // let outliers_distances_delta = [];
-    // let outliers_distances_agg = [];
-    // let outliers_distances_zscores = [];
+    new_sequence["stats_distances"] = arr_distance_deltas;
+    new_sequence["stats_distances_zscores"] = arr.zScores(arr_distance_deltas);
+    new_sequence["stats_times"] = arr_time_deltas;
+    new_sequence["stats_times_zscores"] = arr.zScores(arr_time_deltas);
     let outliers_distances_indicies = [];
     new_sequence.stats_distances_zscores.forEach(function (score, index) {
-        if (Math.abs(score) > 100) {
-            // outliers_distances_delta.push(new_sequence.points[index].delta_distance);
-            // outliers_distances_agg.push(new_sequence.points[index].agg_distance);
+        if (score > 100) {
             outliers_distances_indicies.push(index);
-            // outliers_distances_zscores.push(score);
         }
     })
-    // console.log("outliers_distances_indicies: ",outliers_distances_indicies);
-    // console.log("outliers_distances_delta: ",outliers_distances_delta);
-    // console.log("outliers_distances_agg: ",outliers_distances_agg);
-    // console.log("outliers_distances_zscores: ",outliers_distances_zscores);
-    // let outliers_times_delta = [];
-    // let outliers_times_agg = [];
-    // let outliers_times_zscores = [];
     let outliers_times_indicies = [];
     new_sequence.stats_times_zscores.forEach(function (score, index) {
-        if (Math.abs(score) > 100) {
-            // outliers_times_delta.push(new_sequence.points[index].delta_time);
-            // outliers_times_agg.push(new_sequence.points[index].agg_time);
+        if (score > 100) {
             outliers_times_indicies.push(index);
-            // outliers_times_zscores.push(score);
         }
     })
-    // console.log("outliers_times_indicies: ",outliers_times_indicies);
-    // console.log("outliers_times_delta: ",outliers_times_delta);
-    // console.log("outliers_times_agg: ",outliers_times_agg);
-    // console.log("outliers_times_zscores: ",outliers_times_zscores);
 
     // find the intersection of the distance outliers and the time outliers (by index)
     outliers_times_indicies.filter(index => outliers_distances_indicies.includes(index));
-    // console.log("identified outlier indicies: ",outliers_times_indicies);
 
     if (outliers_times_indicies.length > 0) {
 
@@ -918,8 +899,8 @@ function removeSequenceFromChart(sequence_num) {
 function addSequenceToChart(sequence) {
     let new_chart_data = vm.chart_data, new_series = {}, new_series_data = [];
     new_series["name"] = sequence.name;
-    sequence.points.forEach(function(point) {
-        let chart_point = { x: point.agg_distance, y: point.elevation };
+    sequence.points.forEach(function(point, idx) {
+        let chart_point = { x: sequence.arr_distance_aggrs[idx], y: point.elevation };
         new_series_data.push(chart_point);
     })
     new_series["data"] = new_series_data;
