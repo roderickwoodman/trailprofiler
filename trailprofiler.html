@@ -44,9 +44,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Actions</th>
                         <th scope="col">Time (sec)</th>
-                        <th scope="col">Time Stats</th>
                         <th scope="col">Distance (mi)</th>
-                        <th scope="col">Distance Stats</th>
                         <th scope="col">Min Elev. (m)</th>
                         <th scope="col">Max Elev. (m)</th>
                     </tr>
@@ -60,9 +58,7 @@
                             <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
                         </td>
                         <td>{{ sequence.total_time | to_hmm }}</td>
-                        <td>{{ sequence.med_time }} | {{ sequence.stdv_time }} </td>
                         <td>{{ sequence.total_distance | to_tenths }}</td>
-                        <td>{{ sequence.med_distance }} | {{ sequence.stdv_distance }} </td>
                         <td>{{ sequence.minimum_elevation }}</td>
                         <td>{{ sequence.maximum_elevation }}</td>
                     </tr>
@@ -885,9 +881,26 @@ function addSequence(gpx_xml) {
 
     // find the intersection of the distance outliers and the time outliers (by index)
     outliers_times_indicies.filter(index => outliers_distances_indicies.includes(index));
-    console.log("identified distance and time outlier indicies: ",outliers_times_indicies);
+    // console.log("identified outlier indicies: ",outliers_times_indicies);
 
-    vm.sequences.push(new_sequence);
+    if (outliers_times_indicies.length > 0) {
+
+        new_sequence.name = "ORIG " + new_sequence.name;
+        vm.sequences.push(new_sequence);
+
+        part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
+        part1_new_sequence.name = "PART1 " + part1_new_sequence.name;
+        part1_new_sequence.points.splice(0, outliers_times_indicies[0] + 1);
+        vm.sequences.push(part1_new_sequence);
+
+        part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
+        part2_new_sequence.name = "PART2 " + part2_new_sequence.name;
+        part2_new_sequence.points.splice(outliers_times_indicies[0]);
+        vm.sequences.push(part2_new_sequence);
+
+    } else {
+        vm.sequences.push(new_sequence);
+    }
 }
 
 function removeSequenceFromChart(sequence_num) {
