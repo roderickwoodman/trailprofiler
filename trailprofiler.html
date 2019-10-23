@@ -23,6 +23,9 @@
             border: 3px solid black;
             background-color: yellow;
         }
+        .wasSplit {
+            text-decoration: line-through;
+        }
     </style>
 </head>
 
@@ -51,16 +54,16 @@
                 </thead>
                 <tbody>
                     <tr v-for="(sequence,index) in sequences">
-                        <td scope="row">{{ sequence.points[0].time | to_datestring }}</td>
-                        <th>{{ sequence.name }}</th>
+                        <td scope="row" v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.points[0].time | to_datestring }}</td>
+                        <th v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.name }}</th>
                         <td>
                             <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
                             <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
                         </td>
-                        <td>{{ sequence.total_time | to_hmm }}</td>
-                        <td>{{ sequence.total_distance | to_tenths }}</td>
-                        <td>{{ sequence.minimum_elevation }}</td>
-                        <td>{{ sequence.maximum_elevation }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_time | to_hmm }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_distance | to_tenths }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -839,6 +842,7 @@ function addSequence(gpx_xml) {
     new_sequence["arr_time_deltas"] = arr_time_deltas;
     new_sequence["arr_time_aggrs"] = arr_time_aggrs;
     new_sequence["is_plotted"] = false;
+    new_sequence["was_split"] = false;
     new_sequence["total_distance"] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
     new_sequence["total_time"] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
     new_sequence["maximum_elevation"] = max_ele;
@@ -868,12 +872,14 @@ function addSequence(gpx_xml) {
     if (outliers_times_indicies.length > 0) {
 
         new_sequence.name = "ORIG " + new_sequence.name;
+        new_sequence["was_split"] = true;
         vm.sequences.push(new_sequence);
 
         let splice_idx = outliers_times_indicies[0];
         let new_length, new_max_elevation, new_min_elevation;
 
         part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
+        part1_new_sequence.was_split = false;
         part1_new_sequence.name = "PART1 " + part1_new_sequence.name;
         part1_new_sequence.points.splice(splice_idx);
         new_length = part1_new_sequence.points.length;
@@ -898,6 +904,7 @@ function addSequence(gpx_xml) {
         vm.sequences.push(part1_new_sequence);
 
         part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
+        part2_new_sequence.was_split = false;
         part2_new_sequence.name = "PART2 " + part2_new_sequence.name;
         part2_new_sequence.points.splice(0, splice_idx);
         new_length = part2_new_sequence.points.length;
