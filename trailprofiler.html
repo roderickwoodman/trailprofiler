@@ -880,7 +880,7 @@ function addSequence(gpx_xml) {
 
         part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
         part1_new_sequence.was_split = false;
-        part1_new_sequence.name = "PART1 " + part1_new_sequence.name;
+        part1_new_sequence.name = "PART1 " + part1_new_sequence.name.replace('ORIG ', '');
         part1_new_sequence.points.splice(splice_idx);
         new_length = part1_new_sequence.points.length;
         part1_new_sequence.arr_distance_deltas.splice(splice_idx);
@@ -905,7 +905,7 @@ function addSequence(gpx_xml) {
 
         part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
         part2_new_sequence.was_split = false;
-        part2_new_sequence.name = "PART2 " + part2_new_sequence.name;
+        part2_new_sequence.name = "PART2 " + part2_new_sequence.name.replace('ORIG ', '');
         part2_new_sequence.points.splice(0, splice_idx);
         new_length = part2_new_sequence.points.length;
         part2_new_sequence.arr_distance_deltas.splice(0, splice_idx);
