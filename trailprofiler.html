@@ -837,11 +837,6 @@ function addSequence(gpx_xml) {
         new_sequence.points.push(new_point);
     }
     // stats
-    // new_sequence["stdv_distance"] = arr.standardDeviation(array_distances);
-    // new_sequence["stdv_time"] = arr.standardDeviation(array_times);
-    // new_sequence["med_distance"] = arr.median(array_distances);
-    // new_sequence["med_time"] = arr.median(array_times);
-    // summary
     new_sequence["is_plotted"] = false;
     new_sequence["total_distance"] = total_distance;
     new_sequence["total_time"] = total_time/1000;
@@ -855,37 +850,42 @@ function addSequence(gpx_xml) {
     new_sequence["stats_times_zscores"] = arr.zScores(array_times);
 
     // do removal here
-    // console.log("array_distances: ", array_distances);
-    // console.log("stats_distances_zscores: ", arr.zScores(array_distances));
-    // console.log("array_times: ", array_times);
-    // console.log("stats_times_zscores: ", arr.zScores(array_times));
-    console.log("array_distances: ", new_sequence.stats_distances);
-    console.log("stats_distances_zscores: ", new_sequence.stats_distances_zscores);
-    // console.log("array_times: ", new_sequence.stats_times);
-    // console.log("stats_times_zscores: ", new_sequence.stats_times_zscores);
-
-console.log("foo:", new_sequence.stats_distances_zscores);
-    let outliers_distances = [];
+    // let outliers_distances_delta = [];
+    // let outliers_distances_agg = [];
+    // let outliers_distances_zscores = [];
     let outliers_distances_indicies = [];
     new_sequence.stats_distances_zscores.forEach(function (score, index) {
-        if (Math.abs(score) > 8) {
+        if (Math.abs(score) > 100) {
+            // outliers_distances_delta.push(new_sequence.points[index].delta_distance);
+            // outliers_distances_agg.push(new_sequence.points[index].agg_distance);
             outliers_distances_indicies.push(index);
-            outliers_distances.push(score);
+            // outliers_distances_zscores.push(score);
         }
     })
-    console.log("outliers_distances_indicies: ",outliers_distances_indicies);
-    console.log("outliers_distances: ",outliers_distances);
-    let outliers_times = [];
+    // console.log("outliers_distances_indicies: ",outliers_distances_indicies);
+    // console.log("outliers_distances_delta: ",outliers_distances_delta);
+    // console.log("outliers_distances_agg: ",outliers_distances_agg);
+    // console.log("outliers_distances_zscores: ",outliers_distances_zscores);
+    // let outliers_times_delta = [];
+    // let outliers_times_agg = [];
+    // let outliers_times_zscores = [];
     let outliers_times_indicies = [];
     new_sequence.stats_times_zscores.forEach(function (score, index) {
-        if (Math.abs(score) > 8) {
+        if (Math.abs(score) > 100) {
+            // outliers_times_delta.push(new_sequence.points[index].delta_time);
+            // outliers_times_agg.push(new_sequence.points[index].agg_time);
             outliers_times_indicies.push(index);
-            outliers_times.push(score);
+            // outliers_times_zscores.push(score);
         }
     })
-    console.log("outliers_times_indicies: ",outliers_times_indicies);
-    console.log("outliers_times: ",outliers_times);
+    // console.log("outliers_times_indicies: ",outliers_times_indicies);
+    // console.log("outliers_times_delta: ",outliers_times_delta);
+    // console.log("outliers_times_agg: ",outliers_times_agg);
+    // console.log("outliers_times_zscores: ",outliers_times_zscores);
 
+    // find the intersection of the distance outliers and the time outliers (by index)
+    outliers_times_indicies.filter(index => outliers_distances_indicies.includes(index));
+    console.log("identified distance and time outlier indicies: ",outliers_times_indicies);
 
     vm.sequences.push(new_sequence);
 }
