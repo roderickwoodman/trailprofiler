@@ -728,10 +728,6 @@ function deg2rad(deg) {
 
 var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
 
-	max: function(array) {
-		return Math.max.apply(null, array);
-	},
-
 	sum: function(array) {
 		var num = 0;
 		for (var i = 0, l = array.length; i < l; i++) num += array[i];
@@ -772,11 +768,36 @@ var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
 	zScores: function(array) {
 		var median = arr.median(array);
 		var standardDeviation = arr.standardDeviation(array);
-		return array.map(function(num) {
 			return parseFloat(((num - median) / standardDeviation).toFixed(2));
 		});
 	}
 };
+
+function get_index_of_common_maximum (arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return null;
+    }
+    let sorted_arr1 = [...arr1].sort();
+    let sorted_arr2 = [...arr2].sort();
+    let results = [];
+    for (let ele=sorted_arr1.length-1; ele>=0; ele--){
+        let arr1_idx = arr1.indexOf(sorted_arr1[ele]);
+        if (results.includes(arr1_idx)) {
+            console.log('RETURNING: ' + arr1_idx);
+            return arr1_idx;
+        } else {
+            results.push(arr1_idx);
+        }
+        let arr2_idx = arr2.indexOf(sorted_arr2[ele]);
+        if (results.includes(arr2_idx)) {
+            console.log('RETURNING: ' + arr2_idx);
+            return arr2_idx;
+        } else {
+            results.push(arr2_idx);
+        }
+    }
+    return null
+}
 
 function addSequence(gpx_xml) {
 
@@ -857,14 +878,14 @@ function addSequence(gpx_xml) {
     let time_zscores = arr.zScores(arr_time_deltas);
     let outliers_distances_indicies = [], outliers_distances_zscores = {};
     distance_zscores.forEach(function (score, index) {
-        if (score > 100) {
+        if (score > 25) {
             outliers_distances_indicies.push(index);
             outliers_distances_zscores[index] = score;
         }
     })
     let outliers_times_indicies = [], outliers_times_zscores = {};
     time_zscores.forEach(function (score, index) {
-        if (score > 100) {
+        if (score > 25) {
             outliers_times_indicies.push(index);
             outliers_times_zscores[index] = score;
         }
@@ -884,15 +905,12 @@ function addSequence(gpx_xml) {
             outliers_d_zscores.push(distance_zscores[o]);
             outliers_t_zscores.push(time_zscores[o]);
         }
-        let max = arr.max(outliers_times_indicies);
         // this pass, split on the biggest outlier
         console.log("common indicies: ", outliers_times_indicies);
         console.log("d scores: ", outliers_d_zscores);
         console.log("t scores: ", outliers_t_zscores);
-        // let splice_idx = arr.max(outliers_times_indicies);
-        let splice_idx = outliers_times_indicies[0];
+        let splice_idx = outliers_times_indicies[get_index_of_common_maximum (outliers_d_zscores, outliers_t_zscores)];
         console.log("splice_idx: ", splice_idx);
-        console.log("max: ", arr.max(outliers_times_indicies));
         let new_length, new_max_elevation, new_min_elevation;
 
         // create a new sequence from before the split index
