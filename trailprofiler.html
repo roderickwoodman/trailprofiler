@@ -768,7 +768,8 @@ var arr = {	 // https://gist.github.com/Daniel-Hug/7273430
 	zScores: function(array) {
 		var median = arr.median(array);
 		var standardDeviation = arr.standardDeviation(array);
-			return parseFloat(((num - median) / standardDeviation).toFixed(2));
+        return array.map(function(num) {
+            return parseFloat(((num - median) / standardDeviation).toFixed(2));
 		});
 	}
 };
