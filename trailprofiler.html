@@ -48,8 +48,8 @@
                         <th scope="col">Actions</th>
                         <th scope="col">Time (sec)</th>
                         <th scope="col">Distance (mi)</th>
-                        <th scope="col">Min Elev. (m)</th>
-                        <th scope="col">Max Elev. (m)</th>
+                        <th scope="col">Min Elev. (ft)</th>
+                        <th scope="col">Max Elev. (ft)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,8 +62,8 @@
                         </td>
                         <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_time | to_hmm }}</td>
                         <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_distance | to_tenths }}</td>
-                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation }}</td>
-                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation | to_ft }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation | to_ft }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -689,6 +689,9 @@ let vm = new Vue({
         },
         to_tenths: function (number) {
             return (Math.round(10*number)/10).toFixed(1);
+        },
+        to_ft: function (meters) {
+            return Math.round(meters * 3.28084);
         }
     },
     methods: {
