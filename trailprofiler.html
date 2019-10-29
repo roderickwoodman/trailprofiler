@@ -26,6 +26,15 @@
         .wasSplit {
             text-decoration: line-through;
         }
+        .sequence_name {
+            font-weight: 800;
+            line-height: 0.75em;
+        }
+        .sequence_filename {
+            font-size: 0.75em;
+            font-style: italic;
+            line-height: 0.75em;
+        }
     </style>
 </head>
 
@@ -55,7 +64,7 @@
                 <tbody>
                     <tr v-for="(sequence,index) in sequences">
                         <td scope="row" v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.points[0].time | to_datestring }}</td>
-                        <th v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.name }}</th>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }"><p class="sequence_name">{{ sequence.name }}</p><p class="sequence_filename">file: {{ sequence.filename }}</p></td>
                         <td>
                             <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
                             <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
