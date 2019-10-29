@@ -803,7 +803,7 @@ function get_index_of_common_maximum (arr1, arr2) {
     return null
 }
 
-function addSequence(gpx_xml) {
+function addSequence(filename, gpx_xml) {
 
     let parser, xml_doc;
     let new_sequence = {};
@@ -820,6 +820,7 @@ function addSequence(gpx_xml) {
         xml_doc.loadXML(gpx_xml);
     }
 
+    new_sequence["filename"] = filename;
     new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
     for (sequence of vm.sequences) {
         if (sequence.name.replace('ORIG ', '').replace('PART1 ', '').replace('PART2 ', '') === new_sequence.name) {
@@ -1020,7 +1021,7 @@ document.forms['file-input-form'].elements['my-file'].onchange = function(evt) {
     const file = files[i];
     const reader = new FileReader();
     reader.onload = (evt) => {
-        addSequence(evt.target.result);
+        addSequence(file.name, evt.target.result);
     }
     reader.readAsText(file);
   })
