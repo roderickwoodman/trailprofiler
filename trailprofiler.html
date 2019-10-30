@@ -49,6 +49,14 @@
                     <input id="my-file" style="visibility:hidden;" class="m-3" name="files[]" accept=".gpx" multiple type="file" />
                 </p>
             </form>
+
+            <span>Units: 
+            <select v-model="units">
+                <option value="english">English</option>
+                <option value="Metric">Metric</option>
+            </select>
+            </span>
+
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
@@ -56,9 +64,9 @@
                         <th scope="col">Name</th>
                         <th scope="col">Actions</th>
                         <th scope="col">Time (sec)</th>
-                        <th scope="col">Distance (mi)</th>
-                        <th scope="col">Min Elev. (ft)</th>
-                        <th scope="col">Max Elev. (ft)</th>
+                        <th scope="col">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
+                        <th scope="col">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+                        <th scope="col">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,8 +79,8 @@
                         </td>
                         <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_time | to_hmm }}</td>
                         <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_distance | to_tenths }}</td>
-                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation | to_ft }}</td>
-                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation | to_ft }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation | to_units }}</td>
+                        <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation | to_units }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -654,6 +662,7 @@ let vm = new Vue({
     el: '#app',
     data: {
         sequences: [],
+        units: 'english',
         chart_data: default_data,
         chart_options: default_options
     },
@@ -699,8 +708,12 @@ let vm = new Vue({
         to_tenths: function (number) {
             return (Math.round(10*number)/10).toFixed(1);
         },
-        to_ft: function (meters) {
-            return Math.round(meters * 3.28084);
+        to_units: function (meters) {
+            if (this.units === "english") {
+                return Math.round(meters * 3.28084);
+            } else {
+                return meters;
+            }
         }
     },
     methods: {
@@ -715,6 +728,15 @@ let vm = new Vue({
         clickedDeleteSequence: function (sequence_num) {
             removeSequenceFromChart(sequence_num);
             this.sequences.splice(sequence_num, 1);
+        }
+    },
+    computed: {
+        distances: function() {
+            let distances = [];
+            let factor = (this.units === 'english') ? 0.621371 : 1;
+            for (let s of this.sequences) {
+                distances.push(s.total_distance * factor);
+            }
         }
     }
 });
