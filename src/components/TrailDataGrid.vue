@@ -50,6 +50,18 @@
   <!-- </div> -->
 </template>
 
+
+<script>
+
+export default {
+  props: ['sequences'],
+  data() {
+    return {
+    }
+  }
+}
+
+</script>
 <style scoped>
     button {
         margin: 2px 6px;
