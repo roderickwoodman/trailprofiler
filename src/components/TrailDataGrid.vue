@@ -47,7 +47,7 @@
 <script>
 
 export default {
-  props: ['sequences'],
+  props: ['sequences', 'clickedDeleteSequence'],
   data() {
     return {
         units: "english"

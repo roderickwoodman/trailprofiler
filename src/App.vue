@@ -7,7 +7,7 @@
         </p>
     </form>
     <TrailDataChart />
-    <TrailDataGrid :sequences="sequences" />
+    <TrailDataGrid :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" />
   </div>
 </template>
 
@@ -333,7 +333,7 @@ export default {
             }
         }
         return null
-    }
+    },
     //   clickedPlotSequence: function (sequence_num) {
     //       if (this.sequences[sequence_num].is_plotted) {
     //           removeSequenceFromChart(sequence_num);
@@ -342,10 +342,10 @@ export default {
     //       }
     //       this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
     //   },
-    //   clickedDeleteSequence: function (sequence_num) {
-    //       removeSequenceFromChart(sequence_num);
-    //       this.sequences.splice(sequence_num, 1);
-    //   }
+    clickedDeleteSequence: function (sequence_num) {
+        // removeSequenceFromChart(sequence_num);
+        this.sequences.splice(sequence_num, 1);
+    }
   },
   computed: {
     //   distances: function() {
