@@ -7,7 +7,7 @@
         <h1>Trail Data</h1>
         <span>Units: 
         <select v-model="units">
-            <option value="english">English</option>
+            <option value="english" selected>English</option>
             <option value="Metric">Metric</option>
         </select>
         </span>
@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="index" v-for="(sequence,index) in sequences">
+                <tr v-bind:key="index" v-for="(sequence,index) in this.sequences">
                     <td scope="row" v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.points[0].time | to_datestring }}</td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }"><p class="sequence_name">{{ sequence.name }}</p><p class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
@@ -34,8 +34,8 @@
                     </td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_time | to_hmm }}</td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_distance | to_tenths }}</td>
-                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation | to_units }}</td>
-                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation | to_units }}</td>
+                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation }}</td>
+                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation }}</td>
                 </tr>
             </tbody>
         </table>
@@ -76,7 +76,8 @@ export default {
       to_tenths: function (number) {
           return (Math.round(10*number)/10).toFixed(1);
       },
-      to_units: function (meters) {
+      // FIXME: cannot apply filter in table because this.units is undefined
+      to_units: meters => {
           if (this.units === "english") {
               return Math.round(meters * 3.28084);
           } else {

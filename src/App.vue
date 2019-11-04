@@ -7,7 +7,7 @@
         </p>
     </form>
     <TrailDataChart />
-    <TrailDataGrid />
+    <TrailDataGrid :sequences="sequences" />
   </div>
 </template>
 
