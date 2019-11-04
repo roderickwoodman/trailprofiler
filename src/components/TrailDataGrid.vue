@@ -5,13 +5,6 @@
 
     <div class="container m-5 table-responsive-sm">
         <h1>Trail Data</h1>
-        <form id="file-input-form">
-            <p>
-                <label for="my-file" class="btn btn-primary">Add GPX file(s)</label>
-                <input id="my-file" style="visibility:hidden;" class="m-3" name="files[]" accept=".gpx" multiple type="file" />
-            </p>
-        </form>
-
         <span>Units: 
         <select v-model="units">
             <option value="english">English</option>
