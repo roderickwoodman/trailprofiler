@@ -1,13 +1,25 @@
 <template>
   <div id="app">
+
     <form id="file-input-form">
         <p>
             <label for="my-file" class="btn btn-primary">Add GPX file(s)</label>
             <input @change="onFileChange" id="my-file" style="visibility:hidden;" class="m-3" name="files[]" accept=".gpx" multiple type="file" />
         </p>
     </form>
+
     <TrailDataChart />
-    <TrailDataGrid :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" />
+
+    <h1>Trail Data</h1>
+    <span>Units: 
+    <select v-model="units">
+        <option value="english" selected>English</option>
+        <option value="Metric">Metric</option>
+    </select>
+    </span>
+
+    <TrailDataGrid :units="units" :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" />
+
   </div>
 </template>
 

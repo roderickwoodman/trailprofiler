@@ -4,14 +4,6 @@
     <!-- <HelloWorld msg="Hola"/> -->
 
     <div class="container m-5 table-responsive-sm">
-        <h1>Trail Data</h1>
-        <span>Units: 
-        <select v-model="units">
-            <option value="english" selected>English</option>
-            <option value="Metric">Metric</option>
-        </select>
-        </span>
-
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
@@ -34,8 +26,8 @@
                     </td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_time | to_hmm }}</td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.total_distance | to_tenths }}</td>
-                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.minimum_elevation }}</td>
-                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.maximum_elevation }}</td>
+                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ to_desired_units(sequence.minimum_elevation) }}</td>
+                    <td v-bind:class="{ wasSplit: sequence.was_split }">{{ to_desired_units(sequence.maximum_elevation) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -47,10 +39,18 @@
 <script>
 
 export default {
-  props: ['sequences', 'clickedDeleteSequence'],
+  props: ['units', 'sequences', 'clickedDeleteSequence'],
   data() {
     return {
-        units: "english"
+    }
+  },
+  methods: {
+    to_desired_units: function (meters) {
+        if (this.units === "english") {
+            return Math.round(meters * 3.28084);
+        } else {
+            return meters;
+        }
     }
   },
   filters: {
@@ -75,14 +75,6 @@ export default {
       },
       to_tenths: function (number) {
           return (Math.round(10*number)/10).toFixed(1);
-      },
-      // FIXME: cannot apply filter in table because this.units is undefined
-      to_units: meters => {
-          if (this.units === "english") {
-              return Math.round(meters * 3.28084);
-          } else {
-              return meters;
-          }
       }
   }
 }
