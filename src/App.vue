@@ -14,7 +14,7 @@
     <span>Units: 
     <select v-model="units">
         <option value="english" selected>English</option>
-        <option value="Metric">Metric</option>
+        <option value="metric">Metric</option>
     </select>
     </span>
 
@@ -109,7 +109,7 @@ export default {
             };
             let new_distance_delta = 0, new_time_delta = 0;
             if (new_sequence.points.length > 0) {
-                new_distance_delta = this.getDeltaDistanceInMiles(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+                new_distance_delta = this.getDeltaDistanceInKilometers(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
                 arr_distance_deltas.push(new_distance_delta);
                 arr_distance_aggrs.push(arr_distance_aggrs[arr_distance_aggrs.length - 1] + new_distance_delta);
                 new_time_delta = (new_point.time - prev_time) / 1000;
@@ -254,8 +254,8 @@ export default {
         }
     },
 
-    getDeltaDistanceInMiles: function(lat1, lon1, lat2, lon2) {
-        var R = 3956; // Radius of the earth in miles
+    getDeltaDistanceInKilometers: function(lat1, lon1, lat2, lon2) {
+        var R = 6371; // Radius of the earth in kilometers
         var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
         var dLon = this.deg2rad(lon2-lon1); 
         var a = 
@@ -263,7 +263,7 @@ export default {
             Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
             Math.sin(dLon/2) * Math.sin(dLon/2); 
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        var d = R * c; // Distance in miles
+        var d = R * c; // Distance in kilometers
         return d;
     },
 
