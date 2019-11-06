@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="index" v-for="(sequence,index) in this.sequences">
+                <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences">
                     <td scope="row" v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.points[0].time | to_datestring }}</td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }"><p class="sequence_name">{{ sequence.name }}</p><p class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
@@ -39,52 +39,60 @@
 <script>
 
 export default {
-  props: ['units', 'sequences', 'clickedDeleteSequence'],
-  data() {
-    return {
-    }
-  },
-  methods: {
-    to_desired_units: function (starting_units, value) {
-        if (starting_units === "m") {  // meters to feet
-            if (this.units === "english") {
-                return Math.round(value * 3.28084);
-            } else {
-                return value;
-            }
-        } else if (starting_units === "km") {  // kilometers to miles
-            if (this.units === "english") {
-                return Math.round(value * 0.621371);
-            } else {
-                return value;
+    props: ['units', 'sequences', 'clickedDeleteSequence'],
+    data() {
+        return {
+        }
+    },
+    computed: {
+        sortedSequences: function() {
+            let cloned = [...this.sequences];
+            return cloned.sort(function(a, b) {
+                return (a.maximum_elevation < b.maximum_elevation) ? 1 : -1;
+            })
+        }
+    },
+    methods: {
+        to_desired_units: function (starting_units, value) {
+            if (starting_units === "m") {  // meters to feet
+                if (this.units === "english") {
+                    return Math.round(value * 3.28084);
+                } else {
+                    return value;
+                }
+            } else if (starting_units === "km") {  // kilometers to miles
+                if (this.units === "english") {
+                    return Math.round(value * 0.621371);
+                } else {
+                    return value;
+                }
             }
         }
+    },
+    filters: {
+        to_datestring: function (epoch) {
+            if (!epoch) return ''
+            let converted = new Date(epoch);
+            return converted.toDateString();
+        },
+        to_hmm: function (seconds) {
+            let tot = Number(seconds);
+            let d = Math.floor(tot / 86400);
+            let h = Math.floor(tot % 86400 / 3600);
+            let m = Math.floor(tot % 86400 % 3600 / 60);
+            if (d < 1 && m < 10) {
+                m = '0' + m;
+            }
+            if (d > 0) {
+                return d + 'd ' + h + 'h ' + m + 'm';
+            } else {
+                return h + ':' + m;
+            }
+        },
+        to_tenths: function (number) {
+            return (Math.round(10*number)/10).toFixed(1);
+        }
     }
-  },
-  filters: {
-      to_datestring: function (epoch) {
-          if (!epoch) return ''
-          let converted = new Date(epoch);
-          return converted.toDateString();
-      },
-      to_hmm: function (seconds) {
-          let tot = Number(seconds);
-          let d = Math.floor(tot / 86400);
-          let h = Math.floor(tot % 86400 / 3600);
-          let m = Math.floor(tot % 86400 % 3600 / 60);
-          if (d < 1 && m < 10) {
-              m = '0' + m;
-          }
-          if (d > 0) {
-              return d + 'd ' + h + 'h ' + m + 'm';
-          } else {
-              return h + ':' + m;
-          }
-      },
-      to_tenths: function (number) {
-          return (Math.round(10*number)/10).toFixed(1);
-      }
-  }
 }
 
 </script>
