@@ -7,18 +7,18 @@
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
-                    <th scope="col" @click="do_sort('time')">Date</th>
-                    <th scope="col" @click="do_sort('name')">Name</th>
+                    <th scope="col" @click="do_sort('time')" v-bind:class="{ sort_key: sort_key==='time' }">Date</th>
+                    <th scope="col" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
                     <th scope="col">Actions</th>
-                    <th scope="col" @click="do_sort('total_time')">Time (sec)</th>
-                    <th scope="col" @click="do_sort('total_distance')">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
-                    <th scope="col" @click="do_sort('minimum_elevation')">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
-                    <th scope="col" @click="do_sort('maximum_elevation')">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+                    <th scope="col" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time (sec)</th>
+                    <th scope="col" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
+                    <th scope="col" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+                    <th scope="col" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences">
-                    <td scope="row" v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.points[0].time | to_datestring }}</td>
+                    <td scope="row" v-bind:class="{ wasSplit: sequence.was_split }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ wasSplit: sequence.was_split }"><p class="sequence_name">{{ sequence.name }}</p><p class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
                         <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
@@ -135,5 +135,8 @@ export default {
         font-size: 0.75em;
         font-style: italic;
         line-height: 0.75em;
+    }
+    .sort_key {
+        color: red;
     }
 </style>
