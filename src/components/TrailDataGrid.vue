@@ -42,21 +42,34 @@ export default {
     props: ['units', 'sequences', 'clickedDeleteSequence'],
     data() {
         return {
-            sort_key: "total_distance"
+            sort_key: "total_distance",
+            sort_dir_asc: true
         }
     },
     computed: {
         sortedSequences: function() {
             let cloned = [...this.sequences];
             let key = this.sort_key;
+            let direction_asc = this.sort_dir_asc;
             return cloned.sort(function(a, b) {
-                return (a[key] < b[key]) ? 1 : -1;
+                if (direction_asc === true) {
+                    return (a[key] < b[key]) ? 1 : -1;
+                } else {
+                    return (a[key] > b[key]) ? 1 : -1;
+                }
             })
         }
     },
     methods: {
         do_sort: function (new_sort_key) {
-            this.sort_key = new_sort_key;
+            if (new_sort_key !== this.sort_key) {
+                this.sort_key = new_sort_key;
+            } else {
+                this.change_sort_dir();
+            }
+        },
+        change_sort_dir: function() {
+            this.sort_dir_asc = !this.sort_dir_asc;
         },
         to_desired_units: function (starting_units, value) {
             if (starting_units === "m") {  // meters to feet
