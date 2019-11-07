@@ -7,13 +7,13 @@
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Name</th>
+                    <th scope="col" @click="do_sort('time')">Date</th>
+                    <th scope="col" @click="do_sort('name')">Name</th>
                     <th scope="col">Actions</th>
-                    <th scope="col">Time (sec)</th>
-                    <th scope="col">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
-                    <th scope="col">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
-                    <th scope="col">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+                    <th scope="col" @click="do_sort('total_time')">Time (sec)</th>
+                    <th scope="col" @click="do_sort('total_distance')">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
+                    <th scope="col" @click="do_sort('minimum_elevation')">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+                    <th scope="col" @click="do_sort('maximum_elevation')">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,17 +42,22 @@ export default {
     props: ['units', 'sequences', 'clickedDeleteSequence'],
     data() {
         return {
+            sort_key: "total_distance"
         }
     },
     computed: {
         sortedSequences: function() {
             let cloned = [...this.sequences];
+            let key = this.sort_key;
             return cloned.sort(function(a, b) {
-                return (a.maximum_elevation < b.maximum_elevation) ? 1 : -1;
+                return (a[key] < b[key]) ? 1 : -1;
             })
         }
     },
     methods: {
+        do_sort: function (new_sort_key) {
+            this.sort_key = new_sort_key;
+        },
         to_desired_units: function (starting_units, value) {
             if (starting_units === "m") {  // meters to feet
                 if (this.units === "english") {

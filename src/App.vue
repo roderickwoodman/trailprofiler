@@ -46,6 +46,7 @@ export default {
           this.sequences = JSON.parse(localStorage.sequences);
           // for ([index,sequence] of this.sequences.entries()) {
           //     if (sequence.is_plotted) {
+          //         // eslint-disable-next-line no-console
           //         console.log("plotting: ", index);
           //         // this.clickedPlotSequence(index);
           //     }
@@ -63,8 +64,6 @@ export default {
   methods: {
 
     onFileChange: function(evt) {
-        // eslint-disable-next-line no-console
-        // console.log(evt.target.files);
         const files = evt.target.files;
         Object.keys(files).forEach(i => {
             const file = files[i];
@@ -139,6 +138,7 @@ export default {
         new_sequence["was_split"] = false;
         new_sequence["total_distance"] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
         new_sequence["total_time"] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
+        new_sequence["start_time"] = new_sequence.points[0].time;
         new_sequence["maximum_elevation"] = max_ele;
         new_sequence["minimum_elevation"] = min_ele;
 
@@ -233,6 +233,7 @@ export default {
                 this[idx] -= offset_time;
             }, part2_new_sequence.arr_time_aggrs);
             part2_new_sequence.total_time = part2_new_sequence.arr_time_aggrs[new_length - 1];
+            part2_new_sequence["start_time"] = part2_new_sequence.points[0].time;
             // new subset of points, so redo the calculations
             new_max_elevation = part2_new_sequence.points[0].elevation;
             new_min_elevation = part2_new_sequence.points[0].elevation;
