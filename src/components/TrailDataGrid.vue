@@ -11,7 +11,7 @@
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
-                    <th scope="col" @click="do_sort('time')" v-bind:class="{ sort_key: sort_key==='time' }">Date</th>
+                    <th scope="col" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
                     <th scope="col" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
                     <th scope="col">Actions</th>
                     <th scope="col" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time (sec)</th>
