@@ -145,6 +145,7 @@ export default {
         new_sequence["arr_time_aggrs"] = arr_time_aggrs;
         new_sequence["is_plotted"] = false;
         new_sequence["was_split"] = false;
+        new_sequence["was_generated"] = false;
         new_sequence["total_distance"] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
         new_sequence["total_time"] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
         new_sequence["start_time"] = new_sequence.points[0].time;
@@ -198,6 +199,7 @@ export default {
             // create a new sequence from before the split index
             let part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
             part1_new_sequence.was_split = false;
+            part1_new_sequence["was_generated"] = true;
             uuid = this.generate_uuidv4();
             part1_new_sequence["uuid"] = uuid;
             part1_new_sequence.name = "PART1 " + part1_new_sequence.name.replace('ORIG ', '');
@@ -227,6 +229,7 @@ export default {
             // create a new sequence starting with the split index
             let part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
             part2_new_sequence.was_split = false;
+            part2_new_sequence["was_generated"] = true;
             uuid = this.generate_uuidv4();
             part2_new_sequence["uuid"] = uuid;
             part2_new_sequence.name = "PART2 " + part2_new_sequence.name.replace('ORIG ', '');

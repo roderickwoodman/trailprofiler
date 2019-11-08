@@ -20,16 +20,16 @@
             </thead>
             <tbody>
                 <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences">
-                    <td scope="row" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
-                    <td v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p></td>
+                    <td scope="row" v-bind:class="{ wasSplit: sequence.was_split, wasGenerated: sequence.was_generated, sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
+                    <td v-bind:class="{ wasSplit: sequence.was_split, wasGenerated: sequence.was_generated, sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
                         <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
                         <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)">d</button>
                     </td>
-                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, wasGenerated: sequence.was_generated, sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, wasGenerated: sequence.was_generated, sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, wasGenerated: sequence.was_generated, sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, wasGenerated: sequence.was_generated, sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -128,6 +128,10 @@ export default {
     }
     .wasSplit {
         text-decoration: line-through;
+    }
+    .wasGenerated {
+        font-weight: 800;
+        font-style: italic;
     }
     .sequence_name {
         font-weight: 800;
