@@ -200,6 +200,7 @@ export default {
             let part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
             part1_new_sequence.has_outliers = false;
             part1_new_sequence["matches_file"] = false;
+            part1_new_sequence.filename = "N/A (this is only part of an imported file)";
             uuid = this.generate_uuidv4();
             part1_new_sequence["uuid"] = uuid;
             part1_new_sequence.name = "PART1 " + part1_new_sequence.name.replace('ORIG ', '');
@@ -230,6 +231,7 @@ export default {
             let part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
             part2_new_sequence.has_outliers = false;
             part2_new_sequence["matches_file"] = false;
+            part2_new_sequence.filename = "N/A (this is only part of an imported file)";
             uuid = this.generate_uuidv4();
             part2_new_sequence["uuid"] = uuid;
             part2_new_sequence.name = "PART2 " + part2_new_sequence.name.replace('ORIG ', '');

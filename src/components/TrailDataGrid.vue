@@ -144,7 +144,7 @@ export default {
         line-height: 0.75em;
     }
     .info_message {
-        font-weight: 800;
+        font-style: italic;
     }
     .sort_key {
         color: red;
