@@ -19,12 +19,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers, needsSaving: !sequence.matches_file }">
+                <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers, matchesFile: !sequence.matches_file }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
-                        <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
-                        <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)">d</button>
+                        <button class="btn btn-sm btn-primary" v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)"><font-awesome-icon icon="chart-line" /></button>
+                        <button class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></button>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
@@ -126,14 +126,14 @@ export default {
         border: 3px solid black;
         background-color: yellow;
     }
-    tr.hasOutliers, tr.needsSaving {
+    tr.hasOutliers, tr.matchesFile {
         background-color: lightpink;
     }
     tr.hasOutliers > td {
         font-weight: 800;
         text-decoration: line-through;
     }
-    tr.needsSaving > td {
+    tr.matchesFile > td {
         font-weight: 800;
         font-style: italic;
     }
