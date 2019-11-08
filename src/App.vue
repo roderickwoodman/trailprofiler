@@ -18,7 +18,7 @@
     </select>
     </span>
 
-    <TrailDataGrid :units="units" :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :units="units" :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" :acknowledgeInfo="acknowledgeInfo" />
 
   </div>
 </template>
@@ -376,6 +376,11 @@ export default {
         this.sequences = this.sequences.filter(function (obj) {
             return obj.uuid !== sequence_uuid;
         })
+    },
+    acknowledgeInfo: function (sequence_uuid) {
+        let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+        this.sequences[sequence_num].has_outliers = false;
+        this.sequences[sequence_num].matches_file = true;
     }
   },
   computed: {

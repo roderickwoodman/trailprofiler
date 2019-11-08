@@ -24,8 +24,8 @@
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
                         <p class="sequence_name">{{ sequence.name }}</p>
                         <p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p>
-                        <p v-if="sequence.has_outliers" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers</p>
-                        <p v-if="!sequence.matches_file" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving</p>
+                        <p v-if="sequence.has_outliers" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></p>
+                        <p v-if="!sequence.matches_file" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></p>
                     </td>
                     <td>
                         <button class="btn btn-sm btn-primary" v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)"><font-awesome-icon icon="chart-line" /></button>
@@ -45,7 +45,7 @@
 <script>
 
 export default {
-    props: ['units', 'sequences', 'clickedDeleteSequence'],
+    props: ['units', 'sequences', 'acknowledgeInfo', 'clickedDeleteSequence'],
     data() {
         return {
             show_filenames: false,
