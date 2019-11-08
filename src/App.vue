@@ -63,6 +63,13 @@ export default {
   },
   methods: {
 
+    generate_uuidv4: function() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    },
+
     onFileChange: function(evt) {
         const files = evt.target.files;
         Object.keys(files).forEach(i => {
@@ -83,6 +90,8 @@ export default {
         parser = new DOMParser();
         xml_doc = parser.parseFromString(gpx_xml, "text/xml");
 
+        let uuid = this.generate_uuidv4();
+        new_sequence["uuid"] = uuid;
         new_sequence["filename"] = filename;
         new_sequence["name"] = xml_doc.getElementsByTagName("name")[0].innerHTML;
         for (let sequence of this.sequences) {
@@ -189,6 +198,8 @@ export default {
             // create a new sequence from before the split index
             let part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
             part1_new_sequence.was_split = false;
+            uuid = this.generate_uuidv4();
+            part1_new_sequence["uuid"] = uuid;
             part1_new_sequence.name = "PART1 " + part1_new_sequence.name.replace('ORIG ', '');
             part1_new_sequence.points.splice(splice_idx);
             new_length = part1_new_sequence.points.length;
@@ -216,6 +227,8 @@ export default {
             // create a new sequence starting with the split index
             let part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
             part2_new_sequence.was_split = false;
+            uuid = this.generate_uuidv4();
+            part2_new_sequence["uuid"] = uuid;
             part2_new_sequence.name = "PART2 " + part2_new_sequence.name.replace('ORIG ', '');
             part2_new_sequence.points.splice(0, splice_idx);
             new_length = part2_new_sequence.points.length;
@@ -355,9 +368,11 @@ export default {
     //       }
     //       this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
     //   },
-    clickedDeleteSequence: function (sequence_num) {
+    clickedDeleteSequence: function (sequence_uuid) {
         // removeSequenceFromChart(sequence_num);
-        this.sequences.splice(sequence_num, 1);
+        this.sequences = this.sequences.filter(function (obj) {
+            return obj.uuid !== sequence_uuid;
+        })
     }
   },
   computed: {

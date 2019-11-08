@@ -24,7 +24,7 @@
                     <td v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
                         <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
-                        <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
+                        <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)">d</button>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
