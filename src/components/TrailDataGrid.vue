@@ -19,9 +19,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers, matchesFile: !sequence.matches_file }">
+                <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers, needsSaving: !sequence.matches_file }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
-                    <td v-bind:class="{ sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p></td>
+                    <td v-bind:class="{ sort_key: sort_key==='name' }">
+                        <p class="sequence_name">{{ sequence.name }}</p>
+                        <p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p>
+                        <p v-if="sequence.has_outliers" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers</p>
+                        <p v-if="!sequence.matches_file" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving</p>
+                    </td>
                     <td>
                         <button class="btn btn-sm btn-primary" v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)"><font-awesome-icon icon="chart-line" /></button>
                         <button class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></button>
@@ -126,25 +131,20 @@ export default {
         border: 3px solid black;
         background-color: yellow;
     }
-    tr.hasOutliers, tr.matchesFile {
-        background-color: lightpink;
-    }
-    tr.hasOutliers > td {
-        font-weight: 800;
-        text-decoration: line-through;
-    }
-    tr.matchesFile > td {
-        font-weight: 800;
-        font-style: italic;
+    tr.hasOutliers, tr.needsSaving {
+        background-color: #ddd3ee;
     }
     .sequence_name {
         font-weight: 800;
         line-height: 0.75em;
     }
-    .sequence_filename {
+    .sequence_filename,
+    .info_message {
         font-size: 0.75em;
-        font-style: italic;
         line-height: 0.75em;
+    }
+    .info_message {
+        font-weight: 800;
     }
     .sort_key {
         color: red;
