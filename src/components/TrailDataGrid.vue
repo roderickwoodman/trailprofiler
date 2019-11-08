@@ -3,7 +3,11 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Hola"/> -->
 
-    <div class="container m-5 table-responsive-sm">
+<div class="container">
+    <input type="checkbox" id="show_filenames" value="true" v-model="show_filenames">
+    <label for="show_filenames">show filenames</label>
+
+    <div class="m-5 table-responsive-sm">
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
@@ -19,7 +23,7 @@
             <tbody>
                 <tr v-bind:key="index" v-for="(sequence,index) in this.sortedSequences">
                     <td scope="row" v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
-                    <td v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p class="sequence_filename">file: {{ sequence.filename }}</p></td>
+                    <td v-bind:class="{ wasSplit: sequence.was_split, sort_key: sort_key==='name' }"><p class="sequence_name">{{ sequence.name }}</p><p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p></td>
                     <td>
                         <button v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)">p</button>
                         <button class="btn btn-xs btn-primary" v-on:click="clickedDeleteSequence(index)">d</button>
@@ -32,7 +36,7 @@
             </tbody>
         </table>
     </div>
-  <!-- </div> -->
+  </div>
 </template>
 
 
@@ -42,6 +46,7 @@ export default {
     props: ['units', 'sequences', 'clickedDeleteSequence'],
     data() {
         return {
+            show_filenames: false,
             sort_key: "total_distance",
             sort_dir_asc: true
         }
