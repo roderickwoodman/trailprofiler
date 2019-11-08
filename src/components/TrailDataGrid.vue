@@ -3,11 +3,9 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Hola"/> -->
 
-<div class="container">
-    <input type="checkbox" id="show_filenames" value="true" v-model="show_filenames">
-    <label for="show_filenames">show filenames</label>
-
-    <div class="m-5 table-responsive-sm">
+    <div class="container m-5 table-responsive-sm">
+        <input type="checkbox" id="show_filenames" value="true" v-model="show_filenames">
+        <label for="show_filenames">show filenames</label>
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
@@ -36,7 +34,6 @@
             </tbody>
         </table>
     </div>
-  </div>
 </template>
 
 
