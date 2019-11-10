@@ -28,8 +28,8 @@
                         <p v-if="!sequence.matches_file" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></p>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-primary" v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)"><font-awesome-icon icon="chart-line" /></button>
-                        <button class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></button>
+                        <b-button v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(index)"><font-awesome-icon icon="chart-line" /></b-button>
+                        <b-button v-b-tooltip.hover title="Delete sequence" class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
