@@ -3,16 +3,16 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Hola"/> -->
 
-    <div class="container m-5 table-responsive-sm">
+    <div class="container table-responsive-sm">
         <input type="checkbox" id="show_filenames" value="true" v-model="show_filenames">
         <label for="show_filenames">show filenames</label>
-        <table class="table table-sm table-hover">
+        <table class="table table-sm table-hover table-striped">
             <thead>
                 <tr>
                     <th scope="col" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
                     <th scope="col" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
                     <th scope="col">Actions</th>
-                    <th scope="col" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time (sec)</th>
+                    <th scope="col" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
                     <th scope="col" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
                     <th scope="col" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                     <th scope="col" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>

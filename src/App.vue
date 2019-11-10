@@ -1,14 +1,13 @@
 <template>
   <div id="app">
 
-    <form id="file-input-form">
-        <p>
-            <label for="my-file" class="btn btn-primary">Add GPX file(s)</label>
-            <input @change="onFileChange" id="my-file" style="visibility:hidden;" class="m-3" name="files[]" accept=".gpx" multiple type="file" />
-        </p>
-    </form>
-
+    <h1>Trail Chart</h1>
     <TrailDataChart />
+
+    <form id="file-input-form" class="mx-auto pt-3" style="width: 300px">
+        <label for="my-file" class="btn btn-primary" style="width: 100%">Add GPX file(s)</label>
+        <input @change="onFileChange" id="my-file" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
+    </form>
 
     <h1>Trail Data</h1>
     <span>Units: 
