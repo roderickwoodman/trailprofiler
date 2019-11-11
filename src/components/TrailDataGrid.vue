@@ -67,6 +67,26 @@ export default {
             })
         }
     },
+    mounted() {
+        if (localStorage.sort_key) {
+            this.sort_key = JSON.parse(localStorage.sort_key);
+        }
+        if (localStorage.sort_dir_asc) {
+            this.sort_dir_asc = JSON.parse(localStorage.sort_dir_asc);
+        }
+    },
+    watch: {
+        sort_key: {
+            handler: function (new_sort_key) {
+                localStorage.sort_key = JSON.stringify(new_sort_key);
+            }
+        },
+        sort_dir_asc: {
+            handler: function (new_sort_dir_asc) {
+                localStorage.sort_dir_asc = JSON.stringify(new_sort_dir_asc);
+            }
+        }
+    },
     methods: {
         do_sort: function (new_sort_key) {
             if (new_sort_key !== this.sort_key) {

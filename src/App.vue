@@ -65,8 +65,7 @@ export default {
       units: {
           handler: function (new_units) {
               localStorage.units = JSON.stringify(new_units);
-          },
-          deep: true
+          }
       }
   },
   methods: {
