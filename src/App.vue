@@ -51,11 +51,20 @@ export default {
           //     }
           // }
       }
+      if (localStorage.units) {
+          this.units = JSON.parse(localStorage.units);
+      }
   },
   watch: {
       sequences: {
           handler: function (new_sequences) {
               localStorage.sequences = JSON.stringify(new_sequences);
+          },
+          deep: true
+      },
+      units: {
+          handler: function (new_units) {
+              localStorage.units = JSON.stringify(new_units);
           },
           deep: true
       }
