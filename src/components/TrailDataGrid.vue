@@ -74,6 +74,9 @@ export default {
         if (localStorage.sort_dir_asc) {
             this.sort_dir_asc = JSON.parse(localStorage.sort_dir_asc);
         }
+        if (localStorage.show_filenames) {
+            this.show_filenames = JSON.parse(localStorage.show_filenames);
+        }
     },
     watch: {
         sort_key: {
@@ -84,6 +87,11 @@ export default {
         sort_dir_asc: {
             handler: function (new_sort_dir_asc) {
                 localStorage.sort_dir_asc = JSON.stringify(new_sort_dir_asc);
+            }
+        },
+        show_filenames: {
+            handler: function (new_show_filenames) {
+                localStorage.show_filenames = JSON.stringify(new_show_filenames);
             }
         }
     },
