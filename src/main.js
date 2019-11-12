@@ -13,6 +13,7 @@ library.add(faChartLine)
 library.add(faTrash)
 library.add(faInfoCircle)
 
+Vue.use(require('vue-chartist'))
 Vue.use(BootstrapVue)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
