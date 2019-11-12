@@ -1,5 +1,5 @@
 <template>
-    <chartist id="chart1" class="ct-chart"><strong>Elevation Profile</strong></chartist>
+    <chartist type="Line" id="chart1" class="ct-chart"><strong>Elevation Profile</strong></chartist>
 </template>
 
 
@@ -11,6 +11,7 @@ export default {
   props: ['sequences'],
   data() {
     return {
+        chart_instance: null,
         default_data: {
             series: [
                 {
@@ -577,7 +578,27 @@ export default {
     }
   },
   mounted() {
-    this.chartInstance = new Chartist.Line('#chart1', this.default_data, this.default_options);
+    this.chart_instance = new Chartist.Line('#chart1', this.default_data, this.default_options);
+  },
+  methods: {
+      addSequenceToChart: function (sequence_uuid) {
+        // eslint-disable-next-line no-console
+        console.log(sequence_uuid);
+        // let new_chart_data = this.chart_instance.chart_data, new_series = {}, new_series_data = [];
+        // new_series["name"] = sequence.name;
+        // sequence.points.forEach(function(point, idx) {
+        //     let chart_point = { x: sequence.arr_distance_aggrs[idx], y: point.elevation };
+        //     new_series_data.push(chart_point);
+        // })
+        // new_series["data"] = new_series_data;
+        // if (new_chart_data.hasOwnProperty("series")) {
+        //     new_chart_data.series.push(new_series);
+        // } else {
+        //     new_chart_data["series"] = [new_series];
+        // }
+        // vm.chart_data = new_chart_data;
+        // chart.update(vm.chart_data, vm.chart_options);
+    }
   }
 }
 

@@ -17,7 +17,7 @@
     </select>
     </span>
 
-    <TrailDataGrid :units="units" :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" :acknowledgeInfo="acknowledgeInfo" />
+    <TrailDataGrid :units="units" :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" :clickedPlotSequence="clickedPlotSequence" :acknowledgeInfo="acknowledgeInfo" />
 
   </div>
 </template>
@@ -372,19 +372,20 @@ export default {
         }
         return null
     },
-    //   clickedPlotSequence: function (sequence_num) {
-    //       if (this.sequences[sequence_num].is_plotted) {
-    //           removeSequenceFromChart(sequence_num);
-    //       } else {
-    //           addSequenceToChart(this.sequences[sequence_num]);
-    //       }
-    //       this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
-    //   },
     clickedDeleteSequence: function (sequence_uuid) {
         // removeSequenceFromChart(sequence_num);
         this.sequences = this.sequences.filter(function (obj) {
             return obj.uuid !== sequence_uuid;
         })
+    },
+    clickedPlotSequence: function (sequence_uuid) {
+        let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+        if (this.sequences[sequence_num].is_plotted) {
+            // removeSequenceFromChart(sequence_num);
+        } else {
+            // addSequenceToChart(this.sequences[sequence_num]);
+        }
+        this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
     },
     acknowledgeInfo: function (sequence_uuid) {
         let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
