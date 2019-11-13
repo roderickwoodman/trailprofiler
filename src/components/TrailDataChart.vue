@@ -14,6 +14,7 @@ export default {
       add_these: [],
       remove_these: [],
         chart_instance: null,
+        chart_data: {},
         default_data: {
             series: [
                 {
@@ -585,21 +586,22 @@ export default {
     }
   },
   mounted() {
-    this.chart_instance = new Chartist.Line('#chart1', this.default_data, this.default_options);
+    this.chart_instance = new Chartist.Line('#chart1', this.chart_data, this.default_options);
   },
   watch: {
     isPlottedUuids: {
       handler: function (new_plotted_uuids, old_plotted_uuids) {
+
         let self = this;
         let add_these = [], remove_these = [];
 
-        // new sequence uuids will be added to chart
+        // new sequence uuids will be added to the chart
         add_these = new_plotted_uuids.filter(uuid => !old_plotted_uuids.includes(uuid));
         add_these.forEach(function (uuid) {
           self.addSequenceToChart(uuid);
         });
 
-        // missing sequence uuids will be removed from chart
+        // missing sequence uuids will be removed from the chart
         remove_these = old_plotted_uuids.filter(uuid => !new_plotted_uuids.includes(uuid));
         remove_these.forEach(function(uuid) {
           self.removeSequenceFromChart(uuid);
@@ -609,35 +611,33 @@ export default {
   },
   methods: {
       addSequenceToChart: function (sequence_uuid) {
-        // eslint-disable-next-line no-console
-        console.log("adding: ", sequence_uuid);
-        // let new_chart_data = this.chart_instance.chart_data, new_series = {}, new_series_data = [];
-        // new_series["name"] = sequence.name;
-        // sequence.points.forEach(function(point, idx) {
-        //     let chart_point = { x: sequence.arr_distance_aggrs[idx], y: point.elevation };
-        //     new_series_data.push(chart_point);
-        // })
-        // new_series["data"] = new_series_data;
-        // if (new_chart_data.hasOwnProperty("series")) {
-        //     new_chart_data.series.push(new_series);
-        // } else {
-        //     new_chart_data["series"] = [new_series];
-        // }
-        // vm.chart_data = new_chart_data;
-        // chart.update(vm.chart_data, vm.chart_options);
+        let sequence = this.sequences.find(s => s.uuid === sequence_uuid);
+        let new_chart_data = this.chart_data, new_series = {}, new_series_data = [];
+        new_series["uuid"] = sequence.uuid;
+        sequence.points.forEach(function(point, idx) {
+          let chart_point = { x: sequence.arr_distance_aggrs[idx], y: point.elevation };
+          new_series_data.push(chart_point);
+        })
+        new_series["data"] = new_series_data;
+        if (new_chart_data.hasOwnProperty("series")) {
+          new_chart_data.series.push(new_series);
+        } else {
+          new_chart_data["series"] = [new_series];
+        }
+        this.chart_data = new_chart_data;
+        this.chart_instance.update(this.chart_data, this.default_options);
       },
       removeSequenceFromChart: function (sequence_uuid) {
-        // eslint-disable-next-line no-console
-        console.log("removing: ", sequence_uuid)
-        // let new_chart_data = JSON.parse(JSON.stringify(vm.chart_data));
-        // for ([index,series] of vm.chart_data.series.entries()) {
-        //     if (series.name === vm.sequences[sequence_num].name) {
-        //         new_chart_data.series.splice(index, 1);
-        //         break;
-        //     }
-        // }
-        // vm.chart_data = new_chart_data;
-        // chart.update(vm.chart_data, vm.chart_options);
+        // let sequence_index = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+        let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
+        for (let [index,series] of this.chart_data.series.entries()) {
+          if (series.uuid === sequence_uuid) {
+            new_chart_data.series.splice(index, 1);
+            break;
+          }
+        }
+        this.chart_data = new_chart_data;
+        this.chart_instance.update(this.chart_data, this.default_options);
       }
   }
 }
