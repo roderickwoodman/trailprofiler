@@ -2,7 +2,7 @@
   <div id="app">
 
     <h1>Trail Chart</h1>
-    <TrailDataChart />
+    <TrailDataChart :sequences="sequences" />
 
     <form id="file-input-form" class="mx-auto pt-3" style="width: 300px">
         <label for="my-file" class="btn btn-primary" style="width: 100%">Add GPX file(s)</label>

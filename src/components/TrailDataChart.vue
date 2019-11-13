@@ -11,6 +11,8 @@ export default {
   props: ['sequences'],
   data() {
     return {
+      add_these: [],
+      remove_these: [],
         chart_instance: null,
         default_data: {
             series: [
@@ -577,13 +579,38 @@ export default {
         }
     }
   },
+  computed: {
+    isPlottedUuids: function() {
+      return this.sequences.filter(obj => obj.is_plotted === true).map(obj => obj.uuid);
+    }
+  },
   mounted() {
     this.chart_instance = new Chartist.Line('#chart1', this.default_data, this.default_options);
+  },
+  watch: {
+    isPlottedUuids: {
+      handler: function (new_plotted_uuids, old_plotted_uuids) {
+        let self = this;
+        let add_these = [], remove_these = [];
+
+        // new sequence uuids will be added to chart
+        add_these = new_plotted_uuids.filter(uuid => !old_plotted_uuids.includes(uuid));
+        add_these.forEach(function (uuid) {
+          self.addSequenceToChart(uuid);
+        });
+
+        // missing sequence uuids will be removed from chart
+        remove_these = old_plotted_uuids.filter(uuid => !new_plotted_uuids.includes(uuid));
+        remove_these.forEach(function(uuid) {
+          self.removeSequenceFromChart(uuid);
+        });
+      }
+    }
   },
   methods: {
       addSequenceToChart: function (sequence_uuid) {
         // eslint-disable-next-line no-console
-        console.log(sequence_uuid);
+        console.log("adding: ", sequence_uuid);
         // let new_chart_data = this.chart_instance.chart_data, new_series = {}, new_series_data = [];
         // new_series["name"] = sequence.name;
         // sequence.points.forEach(function(point, idx) {
@@ -598,7 +625,20 @@ export default {
         // }
         // vm.chart_data = new_chart_data;
         // chart.update(vm.chart_data, vm.chart_options);
-    }
+      },
+      removeSequenceFromChart: function (sequence_uuid) {
+        // eslint-disable-next-line no-console
+        console.log("removing: ", sequence_uuid)
+        // let new_chart_data = JSON.parse(JSON.stringify(vm.chart_data));
+        // for ([index,series] of vm.chart_data.series.entries()) {
+        //     if (series.name === vm.sequences[sequence_num].name) {
+        //         new_chart_data.series.splice(index, 1);
+        //         break;
+        //     }
+        // }
+        // vm.chart_data = new_chart_data;
+        // chart.update(vm.chart_data, vm.chart_options);
+      }
   }
 }
 
