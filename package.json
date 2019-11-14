@@ -5,8 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "format": "prettier --write \"./**/*.{js,jsx,json,css,md}\""
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
@@ -25,7 +24,6 @@
     "babel-eslint": "^10.0.3",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "prettier": "^1.19.1",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
@@ -50,5 +48,17 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "description": "These days, so many of the devices that we have can record where we've gone. And seeing those tracks on a map is certainly nice. But what then? The next track will likely be on a different map. And so will the next one.",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roderickwoodman/trailprofiler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roderickwoodman/trailprofiler/issues"
+  },
+  "homepage": "https://github.com/roderickwoodman/trailprofiler#readme"
 }
