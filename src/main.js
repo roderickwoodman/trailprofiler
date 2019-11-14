@@ -13,6 +13,7 @@ library.add(faChartLine);
 library.add(faTrash);
 library.add(faInfoCircle);
 
+// eslint-disable-next-line no-undef
 Vue.use(require('vue-chartist'));
 Vue.use(BootstrapVue);
 Vue.component('font-awesome-icon', FontAwesomeIcon);

@@ -45,108 +45,108 @@
 <script>
 
 export default {
-    props: ['units', 'sequences', 'acknowledgeInfo', 'clickedDeleteSequence', 'clickedPlotSequence'],
-    data() {
-        return {
-            show_filenames: false,
-            sort_key: "total_distance",
-            sort_dir_asc: true
-        }
-    },
-    computed: {
-        sortedSequences: function() {
-            let cloned = [...this.sequences];
-            let key = this.sort_key;
-            let direction_asc = this.sort_dir_asc;
-            return cloned.sort(function(a, b) {
-                if (direction_asc === true) {
-                    return (a[key] < b[key]) ? 1 : -1;
-                } else {
-                    return (a[key] > b[key]) ? 1 : -1;
-                }
-            })
-        }
-    },
-    mounted() {
-        if (localStorage.sort_key) {
-            this.sort_key = JSON.parse(localStorage.sort_key);
-        }
-        if (localStorage.sort_dir_asc) {
-            this.sort_dir_asc = JSON.parse(localStorage.sort_dir_asc);
-        }
-        if (localStorage.show_filenames) {
-            this.show_filenames = JSON.parse(localStorage.show_filenames);
-        }
-    },
-    watch: {
-        sort_key: {
-            handler: function (new_sort_key) {
-                localStorage.sort_key = JSON.stringify(new_sort_key);
-            }
-        },
-        sort_dir_asc: {
-            handler: function (new_sort_dir_asc) {
-                localStorage.sort_dir_asc = JSON.stringify(new_sort_dir_asc);
-            }
-        },
-        show_filenames: {
-            handler: function (new_show_filenames) {
-                localStorage.show_filenames = JSON.stringify(new_show_filenames);
-            }
-        }
-    },
-    methods: {
-        do_sort: function (new_sort_key) {
-            if (new_sort_key !== this.sort_key) {
-                this.sort_key = new_sort_key;
-            } else {
-                this.change_sort_dir();
-            }
-        },
-        change_sort_dir: function() {
-            this.sort_dir_asc = !this.sort_dir_asc;
-        },
-        to_desired_units: function (starting_units, value) {
-            if (starting_units === "m") {  // meters to feet
-                if (this.units === "english") {
-                    return Math.round(value * 3.28084);
-                } else {
-                    return value;
-                }
-            } else if (starting_units === "km") {  // kilometers to miles
-                if (this.units === "english") {
-                    return Math.round(value * 0.621371);
-                } else {
-                    return value;
-                }
-            }
-        }
-    },
-    filters: {
-        to_datestring: function (epoch) {
-            if (!epoch) return ''
-            let converted = new Date(epoch);
-            return converted.toDateString();
-        },
-        to_hmm: function (seconds) {
-            let tot = Number(seconds);
-            let d = Math.floor(tot / 86400);
-            let h = Math.floor(tot % 86400 / 3600);
-            let m = Math.floor(tot % 86400 % 3600 / 60);
-            if (d < 1 && m < 10) {
-                m = '0' + m;
-            }
-            if (d > 0) {
-                return d + 'd ' + h + 'h ' + m + 'm';
-            } else {
-                return h + ':' + m;
-            }
-        },
-        to_tenths: function (number) {
-            return (Math.round(10*number)/10).toFixed(1);
-        }
-    }
-}
+	props: ['units', 'sequences', 'acknowledgeInfo', 'clickedDeleteSequence', 'clickedPlotSequence'],
+	data() {
+		return {
+			show_filenames: false,
+			sort_key: 'total_distance',
+			sort_dir_asc: true
+		};
+	},
+	computed: {
+		sortedSequences: function() {
+			let cloned = [...this.sequences];
+			let key = this.sort_key;
+			let direction_asc = this.sort_dir_asc;
+			return cloned.sort(function(a, b) {
+				if (direction_asc === true) {
+					return (a[key] < b[key]) ? 1 : -1;
+				} else {
+					return (a[key] > b[key]) ? 1 : -1;
+				}
+			});
+		}
+	},
+	mounted() {
+		if (localStorage.sort_key) {
+			this.sort_key = JSON.parse(localStorage.sort_key);
+		}
+		if (localStorage.sort_dir_asc) {
+			this.sort_dir_asc = JSON.parse(localStorage.sort_dir_asc);
+		}
+		if (localStorage.show_filenames) {
+			this.show_filenames = JSON.parse(localStorage.show_filenames);
+		}
+	},
+	watch: {
+		sort_key: {
+			handler: function (new_sort_key) {
+				localStorage.sort_key = JSON.stringify(new_sort_key);
+			}
+		},
+		sort_dir_asc: {
+			handler: function (new_sort_dir_asc) {
+				localStorage.sort_dir_asc = JSON.stringify(new_sort_dir_asc);
+			}
+		},
+		show_filenames: {
+			handler: function (new_show_filenames) {
+				localStorage.show_filenames = JSON.stringify(new_show_filenames);
+			}
+		}
+	},
+	methods: {
+		do_sort: function (new_sort_key) {
+			if (new_sort_key !== this.sort_key) {
+				this.sort_key = new_sort_key;
+			} else {
+				this.change_sort_dir();
+			}
+		},
+		change_sort_dir: function() {
+			this.sort_dir_asc = !this.sort_dir_asc;
+		},
+		to_desired_units: function (starting_units, value) {
+			if (starting_units === 'm') {  // meters to feet
+				if (this.units === 'english') {
+					return Math.round(value * 3.28084);
+				} else {
+					return value;
+				}
+			} else if (starting_units === 'km') {  // kilometers to miles
+				if (this.units === 'english') {
+					return Math.round(value * 0.621371);
+				} else {
+					return value;
+				}
+			}
+		}
+	},
+	filters: {
+		to_datestring: function (epoch) {
+			if (!epoch) return '';
+			let converted = new Date(epoch);
+			return converted.toDateString();
+		},
+		to_hmm: function (seconds) {
+			let tot = Number(seconds);
+			let d = Math.floor(tot / 86400);
+			let h = Math.floor(tot % 86400 / 3600);
+			let m = Math.floor(tot % 86400 % 3600 / 60);
+			if (d < 1 && m < 10) {
+				m = '0' + m;
+			}
+			if (d > 0) {
+				return d + 'd ' + h + 'h ' + m + 'm';
+			} else {
+				return h + ':' + m;
+			}
+		},
+		to_tenths: function (number) {
+			return (Math.round(10*number)/10).toFixed(1);
+		}
+	}
+};
 
 </script>
 
