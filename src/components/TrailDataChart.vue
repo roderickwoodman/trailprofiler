@@ -654,6 +654,42 @@ export default {
         text-align: center;
     }
 
+	.ct-series-a .ct-line,
+	.ct-series-b .ct-line,
+	.ct-series-c .ct-line,
+	.ct-series-d .ct-line,
+	.ct-series-e .ct-line,
+	.ct-series-f .ct-line,
+	.ct-series-g .ct-line,
+	.ct-series-h .ct-line,
+	.ct-series-i .ct-line,
+	.ct-series-j .ct-line,
+	.ct-series-k .ct-line,
+	.ct-series-l .ct-line,
+	.ct-series-m .ct-line,
+	.ct-series-n .ct-line,
+	.ct-series-o .ct-line,
+	.ct-series-p .ct-line {
+		stroke-width: 2px;
+	}
+	.ct-series-a .ct-point,
+	.ct-series-b .ct-point,
+	.ct-series-c .ct-point,
+	.ct-series-d .ct-point,
+	.ct-series-e .ct-point,
+	.ct-series-f .ct-point,
+	.ct-series-g .ct-point,
+	.ct-series-h .ct-point,
+	.ct-series-i .ct-point,
+	.ct-series-j .ct-point,
+	.ct-series-k .ct-point,
+	.ct-series-l .ct-point,
+	.ct-series-m .ct-point,
+	.ct-series-n .ct-point,
+	.ct-series-o .ct-point,
+	.ct-series-p .ct-point {
+		stroke-width: 6px;
+	}
 	/* 16 distinct colors from: https://alumni.media.mit.edu/~wad/color/numbers.html */
 	/* purple */
 	.ct-series-a .ct-line,
