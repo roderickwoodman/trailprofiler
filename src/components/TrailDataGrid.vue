@@ -6,7 +6,7 @@
     <div class="container table-responsive-sm">
         <input type="checkbox" id="show_filenames" value="true" v-model="show_filenames">
         <label for="show_filenames">show filenames</label>
-        <table class="table table-sm table-hover table-striped">
+        <table class="table table-sm table-hover">
             <thead>
                 <tr>
                     <th scope="col" class="sortable" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
