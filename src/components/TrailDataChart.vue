@@ -644,7 +644,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
     #chart1 {
         max-height: 450px;
         padding-top:20px;
@@ -653,4 +653,86 @@ export default {
         background-color: lightyellow;
         text-align: center;
     }
+
+	/* 16 distinct colors from: https://alumni.media.mit.edu/~wad/color/numbers.html */
+	/* purple */
+	.ct-series-a .ct-line,
+	.ct-series-a .ct-point {
+		stroke: rgb(129,38,192);
+	}
+	/* cyan */
+	.ct-series-b .ct-line,
+	.ct-series-b .ct-point {
+		stroke: rgb(41,208,208);
+	}
+	/* orange */
+	.ct-series-c .ct-line,
+	.ct-series-c .ct-point {
+		stroke: rgb(255,146,51);
+	}
+	/* green */
+	.ct-series-d .ct-line,
+	.ct-series-d .ct-point {
+		stroke: rgb(29,105,20);
+	}
+	/* yellow */
+	.ct-series-e .ct-line,
+	.ct-series-e .ct-point {
+		stroke: rgb(255,238,51);
+	}
+	/* blue */
+	.ct-series-f .ct-line,
+	.ct-series-f .ct-point {
+		stroke: rgb(42,75,215);
+	}
+	/* brown */
+	.ct-series-g .ct-line,
+	.ct-series-g .ct-point {
+		stroke: rgb(129,74,25);
+	}
+	/* red */
+	.ct-series-h .ct-line,
+	.ct-series-h .ct-point {
+		stroke: rgb(173,35,35);
+	}
+	/* light gray */
+	.ct-series-i .ct-line,
+	.ct-series-i .ct-point {
+		stroke: rgb(160,160,160);
+	}
+	/* light green */
+	.ct-series-j .ct-line,
+	.ct-series-j .ct-point {
+		stroke: rgb(129,197,122);
+	}
+	/* light blue */
+	.ct-series-k .ct-line,
+	.ct-series-k .ct-point {
+		stroke: rgb(157,175,255);
+	}
+	/* tan */
+	.ct-series-l .ct-line,
+	.ct-series-l .ct-point {
+		stroke: rgb(233,222,187);
+	}
+	/* pink */
+	.ct-series-m .ct-line,
+	.ct-series-m .ct-point {
+		stroke: rgb(255,205,243);
+	}
+	/* white */
+	.ct-series-n .ct-line,
+	.ct-series-n .ct-point {
+		stroke: rgb(255,255,255);
+	}
+	/* black */
+	.ct-series-o .ct-line,
+	.ct-series-o .ct-point {
+		stroke: rgb(0,0,0);
+	}
+	/* dark gray */
+	.ct-series-p .ct-line,
+	.ct-series-p .ct-point {
+		stroke: rgb(87,87,87);
+	}
 </style>
