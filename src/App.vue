@@ -153,6 +153,7 @@ export default {
 			new_sequence['is_plotted'] = false;
 			new_sequence['has_outliers'] = false;
 			new_sequence['matches_file'] = true;
+			new_sequence['acknowledged'] = false;
 			new_sequence['total_distance'] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
 			new_sequence['total_time'] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
 			new_sequence['start_time'] = new_sequence.points[0].time;
@@ -184,6 +185,7 @@ export default {
 
 				new_sequence.name = 'ORIG ' + new_sequence.name;
 				new_sequence['has_outliers'] = true;
+				new_sequence['acknowledged'] = false;
 				this.sequences.push(new_sequence);
 
 				let outliers_d_zscores = [], outliers_t_zscores = [];
@@ -207,6 +209,7 @@ export default {
 				let part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
 				part1_new_sequence.has_outliers = false;
 				part1_new_sequence['matches_file'] = false;
+				part1_new_sequence['acknowledged'] = false;
 				part1_new_sequence.filename = 'N/A (this is only part of an imported file)';
 				uuid = this.generate_uuidv4();
 				part1_new_sequence['uuid'] = uuid;
@@ -238,6 +241,7 @@ export default {
 				let part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
 				part2_new_sequence.has_outliers = false;
 				part2_new_sequence['matches_file'] = false;
+				part2_new_sequence['acknowledged'] = false;
 				part2_new_sequence.filename = 'N/A (this is only part of an imported file)';
 				uuid = this.generate_uuidv4();
 				part2_new_sequence['uuid'] = uuid;
@@ -389,8 +393,7 @@ export default {
 		},
 		acknowledgeInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			this.sequences[sequence_num].has_outliers = false;
-			this.sequences[sequence_num].matches_file = true;
+			this.sequences[sequence_num].acknowledged = true;
 		}
 	},
 	computed: {
