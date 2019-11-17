@@ -22,10 +22,10 @@
                 <tr v-bind:key="sequence.uuid" v-for="sequence in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
-                        <p class="sequence_name">{{ sequence.name }}</p>
-                        <p v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</p>
-                        <p v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></p>
-                        <p v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></p>
+                        <span class="sequence_name">{{ sequence.name }}</span>
+                        <span v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</span>
+                        <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+                        <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>
                     <td>
                         <b-button v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-bind:class="{ isPlotted: sequence.is_plotted }" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
@@ -162,9 +162,18 @@ export default {
     tr.hasOutliers, tr.needsSaving {
         background-color: #ddd3ee;
     }
+	tr > td {
+		vertical-align: middle;
+	}
     .sequence_name {
         font-weight: 800;
         line-height: 0.75em;
+    }
+    .sequence_name,
+    .sequence_filename,
+    .info_message {
+        padding: 8px 0;
+        display: block;
     }
     .sequence_filename,
     .info_message {
