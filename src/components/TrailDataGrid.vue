@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="sequence.uuid" v-for="sequence in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
+                <tr v-bind:key="sequence.uuid" v-for="sequence in this.sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged, hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
                         <span class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
@@ -169,6 +169,17 @@ export default {
     }
     tr.hasOutliers, tr.needsSaving {
         background-color: #ddd3ee;
+    }
+    tr.hasOutliers:hover, tr.needsSaving:hover {
+        background-color: #b5a0da;
+    }
+    tr.acknowledged,
+    tr.hasOutliers.acknowledged, tr.needsSaving.acknowledged {
+        background-color: white;
+    }
+    tr.acknowledged:hover,
+    tr.hasOutliers.acknowledged:hover, tr.needsSaving.acknowledged:hover {
+        background-color: #dee2e6;
     }
 	tr > td {
 		vertical-align: middle;
