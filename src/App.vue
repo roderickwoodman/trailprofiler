@@ -5,7 +5,7 @@
     <TrailDataChart :sequences="sequences" />
 
     <form id="file-input-form" class="mx-auto pt-3" style="width: 300px">
-        <label for="my-file" class="btn btn-primary" style="width: 100%">Add GPX file(s)</label>
+        <label for="my-file" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
         <input @change="onFileChange" id="my-file" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
     </form>
 
@@ -21,7 +21,6 @@
 
   </div>
 </template>
-
 <script>
 import TrailDataChart from './components/TrailDataChart.vue';
 import TrailDataGrid from './components/TrailDataGrid.vue';
