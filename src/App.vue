@@ -72,6 +72,9 @@ export default {
 		if (localStorage.units) {
 			this.units = JSON.parse(localStorage.units);
 		}
+		if (localStorage.plot_order) {
+			this.plot_order = JSON.parse(localStorage.plot_order);
+		}
 	},
 	watch: {
 		sequences: {
@@ -83,6 +86,11 @@ export default {
 		units: {
 			handler: function (new_units) {
 				localStorage.units = JSON.stringify(new_units);
+			}
+		},
+		plot_order: {
+			handler: function (new_plot_order) {
+				localStorage.plot_order = JSON.stringify(new_plot_order);
 			}
 		}
 	},
