@@ -17,7 +17,7 @@
     </select>
     </span>
 
-    <TrailDataGrid :units="units" :sequences="sequences" :clickedDeleteSequence="clickedDeleteSequence" :clickedPlotSequence="clickedPlotSequence" :acknowledgeInfo="acknowledgeInfo" />
+    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :clickedDeleteSequence="clickedDeleteSequence" :clickedPlotSequence="clickedPlotSequence" :acknowledgeInfo="acknowledgeInfo" />
 
   </div>
 </template>
@@ -34,7 +34,26 @@ export default {
 	data() {
 		return {
 			sequences: [],
+			plot_order: [],
 			units: 'english',
+			plotted_labels: [
+				'plotted-label-a',
+				'plotted-label-b',
+				'plotted-label-c',
+				'plotted-label-d',
+				'plotted-label-e',
+				'plotted-label-f',
+				'plotted-label-g',
+				'plotted-label-h',
+				'plotted-label-i',
+				'plotted-label-j',
+				'plotted-label-k',
+				'plotted-label-l',
+				'plotted-label-m',
+				'plotted-label-n',
+				'plotted-label-o',
+				'plotted-label-p'
+			],
 			chart_data: {}, //default_data,
 			chart_options: {} //default_options
 		};
@@ -376,19 +395,22 @@ export default {
 			return null;
 		},
 		clickedDeleteSequence: function (sequence_uuid) {
-			// removeSequenceFromChart(sequence_num);
 			this.sequences = this.sequences.filter(function (obj) {
 				return obj.uuid !== sequence_uuid;
+			});
+			this.plot_order = this.plot_order.filter(function (uuid) {
+				return uuid !== sequence_uuid;
 			});
 		},
 		clickedPlotSequence: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			if (this.sequences[sequence_num].is_plotted) {
-				// removeSequenceFromChart(sequence_num);
-			} else {
-				// addSequenceToChart(this.sequences[sequence_num]);
-			}
 			this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
+			let plot_order_num = this.plot_order.indexOf(sequence_uuid);
+			if (plot_order_num === -1) {
+				this.plot_order.push(sequence_uuid);
+			} else {
+				this.plot_order.splice(plot_order_num, 1);
+			}
 		},
 		acknowledgeInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);

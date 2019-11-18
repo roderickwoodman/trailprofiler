@@ -22,7 +22,7 @@
                 <tr v-bind:key="sequence.uuid" v-for="sequence in this.sortedSequences" v-bind:class="{ hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
-                        <span class="sequence_name">{{ sequence.name }}</span>
+                        <span class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
                         <span v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</span>
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                         <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
@@ -45,7 +45,7 @@
 <script>
 
 export default {
-	props: ['units', 'sequences', 'acknowledgeInfo', 'clickedDeleteSequence', 'clickedPlotSequence'],
+	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'clickedDeleteSequence', 'clickedPlotSequence'],
 	data() {
 		return {
 			show_filenames: false,
@@ -119,6 +119,14 @@ export default {
 				} else {
 					return value;
 				}
+			}
+		},
+		plotted_class: function (sequence_uuid) {
+			let plot_order_index = this.plot_order.findIndex( uuid => uuid === sequence_uuid);
+			if (plot_order_index === -1) {
+				return 'not_plotted';
+			} else {
+				return this.plotted_labels[plot_order_index];
 			}
 		}
 	},

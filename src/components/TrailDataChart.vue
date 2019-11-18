@@ -692,53 +692,83 @@ export default {
 	}
 	/* 16 distinct colors from: https://alumni.media.mit.edu/~wad/color/numbers.html */
 	/* purple */
+	.plotted-label-a,
 	.ct-series-a .ct-line,
 	.ct-series-a .ct-point {
+		color: white;
+		background-color: rgb(129,38,192);
 		stroke: rgb(129,38,192);
 	}
 	/* cyan */
+	.plotted-label-b,
 	.ct-series-b .ct-line,
 	.ct-series-b .ct-point {
+		color: black;
+		background-color: rgb(41,208,208);
 		stroke: rgb(41,208,208);
 	}
 	/* orange */
+	.plotted-label-c,
 	.ct-series-c .ct-line,
 	.ct-series-c .ct-point {
+		color: black;
+		background-color: rgb(255,146,51);
 		stroke: rgb(255,146,51);
 	}
 	/* green */
+	.plotted-label-d,
 	.ct-series-d .ct-line,
 	.ct-series-d .ct-point {
+		color: white;
+		background-color: rgb(29,105,20);
 		stroke: rgb(29,105,20);
 	}
 	/* yellow */
+	.plotted-label-e,
 	.ct-series-e .ct-line,
 	.ct-series-e .ct-point {
+		color: black;
+		background-color: rgb(255,238,51);
 		stroke: rgb(255,238,51);
 	}
 	/* blue */
+	.plotted-label-f,
 	.ct-series-f .ct-line,
 	.ct-series-f .ct-point {
+		color: white;
+		background-color: rgb(42,75,215);
 		stroke: rgb(42,75,215);
 	}
 	/* brown */
+	.plotted-label-g,
 	.ct-series-g .ct-line,
 	.ct-series-g .ct-point {
+		color: white;
+		background-color: rgb(129,74,25);
 		stroke: rgb(129,74,25);
 	}
 	/* red */
+	.plotted-label-h,
 	.ct-series-h .ct-line,
 	.ct-series-h .ct-point {
+		color: white;
+		background-color: rgb(173,35,35);
 		stroke: rgb(173,35,35);
 	}
 	/* light gray */
+	.plotted-label-i,
 	.ct-series-i .ct-line,
 	.ct-series-i .ct-point {
+		color: black;
+		background-color: rgb(160,160,160);
 		stroke: rgb(160,160,160);
 	}
 	/* light green */
+	.plotted-label-j,
 	.ct-series-j .ct-line,
 	.ct-series-j .ct-point {
+		color: black;
+		background-color: rgb(129,197,122);
 		stroke: rgb(129,197,122);
 	}
 	/* light blue */
