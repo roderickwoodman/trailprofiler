@@ -2,7 +2,7 @@
   <div id="app">
 
     <h1>Trail Chart</h1>
-    <TrailDataChart :sequences="sequences" />
+    <TrailDataChart :units="units" :sequences="sequences" :plot_order="plot_order" />
 
     <form id="file-input-form" class="mx-auto pt-3" style="width: 300px">
         <label for="my-file" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>

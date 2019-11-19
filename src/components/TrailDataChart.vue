@@ -8,7 +8,7 @@
 import Chartist from 'chartist';
 
 export default {
-	props: ['sequences'],
+	props: ['units', 'sequences', 'plot_order'],
 	data() {
 		return {
 			add_these: [],
@@ -589,6 +589,17 @@ export default {
 		this.chart_instance = new Chartist.Line('#chart1', this.chart_data, this.default_options);
 	},
 	watch: {
+		units: {
+			handler: function () {
+
+				this.removeAllSequencesFromChart();
+
+				let self = this;
+				this.plot_order.forEach(function (uuid) {
+					self.addSequenceToChart(uuid);
+				});
+			}
+		},
 		isPlottedUuids: {
 			handler: function (new_plotted_uuids, old_plotted_uuids) {
 
@@ -611,11 +622,12 @@ export default {
 	},
 	methods: {
 		addSequenceToChart: function (sequence_uuid) {
+			let scale_factor = (this.units === 'english') ? 0.621371 : 1;
 			let sequence = this.sequences.find(s => s.uuid === sequence_uuid);
 			let new_chart_data = this.chart_data, new_series = {}, new_series_data = [];
 			new_series['uuid'] = sequence.uuid;
 			sequence.points.forEach(function(point, idx) {
-				let chart_point = { x: sequence.arr_distance_aggrs[idx], y: point.elevation };
+				let chart_point = { x: sequence.arr_distance_aggrs[idx] * scale_factor, y: point.elevation * scale_factor };
 				new_series_data.push(chart_point);
 			});
 			new_series['data'] = new_series_data;
@@ -635,6 +647,12 @@ export default {
 					break;
 				}
 			}
+			this.chart_data = new_chart_data;
+			this.chart_instance.update(this.chart_data, this.default_options);
+		},
+		removeAllSequencesFromChart: function () {
+			let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
+			new_chart_data.series = [];
 			this.chart_data = new_chart_data;
 			this.chart_instance.update(this.chart_data, this.default_options);
 		}
