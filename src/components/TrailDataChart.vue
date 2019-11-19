@@ -628,7 +628,6 @@ export default {
 			this.chart_instance.update(this.chart_data, this.default_options);
 		},
 		removeSequenceFromChart: function (sequence_uuid) {
-			// let sequence_index = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
 			for (let [index,series] of this.chart_data.series.entries()) {
 				if (series.uuid === sequence_uuid) {

@@ -53,21 +53,12 @@ export default {
 				'plotted-label-n',
 				'plotted-label-o',
 				'plotted-label-p'
-			],
-			chart_data: {}, //default_data,
-			chart_options: {} //default_options
+			]
 		};
 	},
 	mounted() {
 		if (localStorage.sequences) {
 			this.sequences = JSON.parse(localStorage.sequences);
-			// for ([index,sequence] of this.sequences.entries()) {
-			//     if (sequence.is_plotted) {
-			//         // eslint-disable-next-line no-console
-			//         console.log("plotting: ", index);
-			//         // this.clickedPlotSequence(index);
-			//     }
-			// }
 		}
 		if (localStorage.units) {
 			this.units = JSON.parse(localStorage.units);
@@ -424,15 +415,6 @@ export default {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].acknowledged = true;
 		}
-	},
-	computed: {
-		//   distances: function() {
-		//       let distances = [];
-		//       let factor = (this.units === 'english') ? 0.621371 : 1;
-		//       for (let s of this.sequences) {
-		//           distances.push(s.total_distance * factor);
-		//       }
-		//   }
 	}
 };
 </script>
