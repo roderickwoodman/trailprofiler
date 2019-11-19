@@ -114,23 +114,32 @@ export default {
 			parser = new DOMParser();
 			xml_doc = parser.parseFromString(gpx_xml, 'text/xml');
 
+			// assign sequence metadata
 			let uuid = this.generate_uuidv4();
 			new_sequence['uuid'] = uuid;
 			new_sequence['filename'] = filename;
 			new_sequence['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
+			new_sequence['is_plotted'] = false;
+			new_sequence['has_outliers'] = false;
+			new_sequence['matches_file'] = true;
+			new_sequence['acknowledged'] = false;
 			for (let sequence of this.sequences) {
 				if (sequence.name.replace('ORIG ', '').replace('PART1 ', '').replace('PART2 ', '') === new_sequence.name) {
 					return; // don't add duplicates
 				}
 			}
+
+			// save the latlong of each point, sum distances and times, and identify outliers of moving averages
 			new_sequence['points'] = [];
 			let points = xml_doc.getElementsByTagName('trkpt');
+			// let last5 = [];
 			let prev_lat, prev_lon, prev_time;
-			let min_ele, max_ele = 0;
-			let arr_distance_deltas = [];
-			let arr_distance_aggrs = [];
-			let arr_time_deltas = [];
-			let arr_time_aggrs = [];
+			let min_ele = parseInt(points[0].getElementsByTagName('ele')[0].innerHTML);
+			let max_ele = min_ele;
+			let arr_distance_deltas = [0];
+			let arr_distance_aggrs = [0];
+			let arr_time_deltas = [0];
+			let arr_time_aggrs = [0];
 			for (let p of points) {
 				let new_time = new Date(p.getElementsByTagName('time')[0].innerHTML).valueOf();
 				let new_point = {
@@ -149,28 +158,18 @@ export default {
 					arr_time_aggrs.push(arr_time_aggrs[arr_time_aggrs.length - 1] + new_time_delta);
 					max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
 					min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
-				} else {
-					max_ele = new_point.elevation;
-					min_ele = new_point.elevation;
-					arr_distance_deltas.push(0);
-					arr_distance_aggrs.push(0);
-					arr_time_deltas.push(0);
-					arr_time_aggrs.push(0);
 				}
 				prev_lat = new_point.latitude;
 				prev_lon = new_point.longitude;
 				prev_time = new_point.time;
 				new_sequence.points.push(new_point);
 			}
-			// stats
 			new_sequence['arr_distance_deltas'] = arr_distance_deltas;
 			new_sequence['arr_distance_aggrs'] = arr_distance_aggrs;
 			new_sequence['arr_time_deltas'] = arr_time_deltas;
 			new_sequence['arr_time_aggrs'] = arr_time_aggrs;
-			new_sequence['is_plotted'] = false;
-			new_sequence['has_outliers'] = false;
-			new_sequence['matches_file'] = true;
-			new_sequence['acknowledged'] = false;
+
+			// record simple statistics from the datapoints
 			new_sequence['total_distance'] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
 			new_sequence['total_time'] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
 			new_sequence['start_time'] = new_sequence.points[0].time;
