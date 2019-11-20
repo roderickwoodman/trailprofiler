@@ -252,9 +252,13 @@ export default {
 					new_segment['maximum_elevation'] = max_ele;
 					new_segment['minimum_elevation'] = min_ele;
 
-					// eslint-disable-next-line no-console
-					console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
-					this.sequences.push(new_segment);
+					if (new_segment.points.length >= 50) {
+						// eslint-disable-next-line no-console
+						console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
+						this.sequences.push(new_segment);
+					} else {
+						segment_num -= 1;
+					}
 				}
 			}
 		},
