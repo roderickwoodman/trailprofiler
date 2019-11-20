@@ -5,12 +5,14 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChartLine} from '@fortawesome/free-solid-svg-icons';
+import {faBan} from '@fortawesome/free-solid-svg-icons';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {faUpload} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 library.add(faChartLine);
+library.add(faBan);
 library.add(faTrash);
 library.add(faInfoCircle);
 library.add(faUpload);
