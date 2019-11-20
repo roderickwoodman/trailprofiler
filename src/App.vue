@@ -86,14 +86,12 @@ export default {
 		}
 	},
 	methods: {
-
 		generate_uuidv4: function() {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 				var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
 				return v.toString(16);
 			});
 		},
-
 		onFileChange: function(evt) {
 			const files = evt.target.files;
 			Object.keys(files).forEach(i => {
@@ -105,12 +103,10 @@ export default {
 				reader.readAsText(file);
 			});
 		},
-
 		arrayAverage: function(arr) {
 			let sum = arr.reduce( (sum, curr) => sum + curr );
 			return sum / arr.length;
 		},
-
 		addSequence: function(filename, gpx_xml) {
 
 			let parser, xml_doc;
@@ -242,7 +238,6 @@ export default {
 				}
 			}
 		},
-
 		getDeltaDistanceInKilometers: function(lat1, lon1, lat2, lon2) {
 			var R = 6371; // Radius of the earth in kilometers
 			var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
@@ -255,85 +250,8 @@ export default {
 			var d = R * c; // Distance in kilometers
 			return d;
 		},
-
 		deg2rad: function(deg) {
 			return deg * (Math.PI/180);
-		},
-
-
-		// https://gist.github.com/Daniel-Hug/7273430
-
-		sum: function(array) {
-			var num = 0;
-			for (var i = 0, l = array.length; i < l; i++) num += array[i];
-			return num;
-		},
-    
-		mean: function(array) {
-			return this.sum(array) / array.length;
-		},
-
-		median: function(array) {
-			let cloned_array = [...array]; // to preserve the original order
-			cloned_array.sort(function(a, b) {
-				return a - b;
-			});
-			var mid = cloned_array.length / 2;
-			return mid % 1 ? cloned_array[mid - 0.5] : (cloned_array[mid - 1] + array[mid]) / 2;
-		},
-    
-		variance: function(array) {
-			var median = this.median(array);
-			return this.median(array.map(function(num) {
-				return Math.pow(num - median, 2);
-			}));
-		},
-    
-		standardDeviation: function(array) {
-			return Math.sqrt(this.variance(array));
-		},
-
-		medianAbsoluteDeviation: function(array) {
-			var median = this.median(array);
-			return this.median(array.map(function(num) {
-				return Math.abs(num - median);
-			}));
-		},
-    
-		zScores: function(array) {
-			var median = this.median(array);
-			var standardDeviation = this.standardDeviation(array);
-			return array.map(function(num) {
-				return parseFloat(((num - median) / standardDeviation).toFixed(2));
-			});
-		},
-
-		get_index_of_common_maximum: function(arr1, arr2) {
-			if (arr1.length !== arr2.length) {
-				return null;
-			}
-			let sorted_arr1 = [...arr1].sort();
-			let sorted_arr2 = [...arr2].sort();
-			let results = [];
-			for (let ele=sorted_arr1.length-1; ele>=0; ele--){
-				let arr1_idx = arr1.indexOf(sorted_arr1[ele]);
-				if (results.includes(arr1_idx)) {
-					// eslint-disable-next-line no-console
-					// console.log('RETURNING: ' + arr1_idx);
-					return arr1_idx;
-				} else {
-					results.push(arr1_idx);
-				}
-				let arr2_idx = arr2.indexOf(sorted_arr2[ele]);
-				if (results.includes(arr2_idx)) {
-					// eslint-disable-next-line no-console
-					// console.log('RETURNING: ' + arr2_idx);
-					return arr2_idx;
-				} else {
-					results.push(arr2_idx);
-				}
-			}
-			return null;
 		},
 		clickedDeleteSequence: function (sequence_uuid) {
 			this.sequences = this.sequences.filter(function (obj) {
