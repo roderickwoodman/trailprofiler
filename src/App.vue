@@ -106,197 +106,140 @@ export default {
 			});
 		},
 
+		arrayAverage: function(arr) {
+			let sum = arr.reduce( (sum, curr) => sum + curr );
+			return sum / arr.length;
+		},
+
 		addSequence: function(filename, gpx_xml) {
 
 			let parser, xml_doc;
-			let new_sequence = {};
+			let start_new_segment = true, last_datapoint = false;
 
 			parser = new DOMParser();
 			xml_doc = parser.parseFromString(gpx_xml, 'text/xml');
 
-			// assign sequence metadata
-			let uuid = this.generate_uuidv4();
-			new_sequence['uuid'] = uuid;
-			new_sequence['filename'] = filename;
-			new_sequence['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
-			new_sequence['is_plotted'] = false;
-			new_sequence['has_outliers'] = false;
-			new_sequence['matches_file'] = true;
-			new_sequence['acknowledged'] = false;
+			let points = xml_doc.getElementsByTagName('trkpt');
+			let prev_lat, prev_lon, prev_time, min_ele, max_ele;
+			let new_distance_delta, arr_distance_deltas, arr_distance_aggrs, new_time_delta, arr_time_deltas, arr_time_aggrs;
+
+			let start_index = 0, segment_num = 0;
+			let sequence_name_from_file = xml_doc.getElementsByTagName('name')[0].innerHTML;
+			// eslint-disable-next-line no-console
+			console.log('adding ' + points.length + ' points for file: ' + sequence_name_from_file);
 			for (let sequence of this.sequences) {
-				if (sequence.name.replace('ORIG ', '').replace('PART1 ', '').replace('PART2 ', '') === new_sequence.name) {
+				if (sequence.name.includes(sequence_name_from_file)) {
+					// eslint-disable-next-line no-console
+					console.log('dont add duplicates: ', sequence_name_from_file);
 					return; // don't add duplicates
 				}
 			}
+			var new_sequence = {};
+			for (let p=0; p < points.length; p++) {
 
-			// save the latlong of each point, sum distances and times, and identify outliers of moving averages
-			new_sequence['points'] = [];
-			let points = xml_doc.getElementsByTagName('trkpt');
-			// let last5 = [];
-			let prev_lat, prev_lon, prev_time;
-			let min_ele = parseInt(points[0].getElementsByTagName('ele')[0].innerHTML);
-			let max_ele = min_ele;
-			let arr_distance_deltas = [0];
-			let arr_distance_aggrs = [0];
-			let arr_time_deltas = [0];
-			let arr_time_aggrs = [0];
-			for (let p of points) {
-				let new_time = new Date(p.getElementsByTagName('time')[0].innerHTML).valueOf();
-				let new_point = {
+				let new_point = {};
+				let new_time = new Date(points[p].getElementsByTagName('time')[0].innerHTML).valueOf();
+				new_point = {
 					'time': new_time,
-					'latitude': p.getAttribute('lat'),
-					'longitude': p.getAttribute('lon'),
-					'elevation': parseInt(p.getElementsByTagName('ele')[0].innerHTML)
+					'latitude': points[p].getAttribute('lat'),
+					'longitude': points[p].getAttribute('lon'),
+					'elevation': parseInt(points[p].getElementsByTagName('ele')[0].innerHTML)
 				};
-				let new_distance_delta = 0, new_time_delta = 0;
-				if (new_sequence.points.length > 0) {
-					new_distance_delta = this.getDeltaDistanceInKilometers(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+
+				// initialize
+				if (start_new_segment) {
+
+					new_sequence = Object.assign({}, {});
+					new_sequence['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
+					if (start_index === 0) {
+						new_sequence['filename'] = filename;
+					} else {
+						new_sequence.filename = 'N/A (this is only part of an imported file)';
+					}
+					new_sequence['uuid'] = this.generate_uuidv4();
+					new_sequence['points'] = [];
+					new_sequence['is_plotted'] = false;
+					new_sequence['acknowledged'] = false;
+
+					new_distance_delta = 0;
+					new_time_delta = 0;
+					arr_distance_deltas = [0];
+					arr_distance_aggrs = [0];
+					arr_time_deltas = [0];
+					arr_time_aggrs = [0];
+
+					prev_lat = new_point.latitude;
+					prev_lon = new_point.longitude;
+					prev_time = new_point.time;
+					min_ele = parseInt(points[start_index].getElementsByTagName('ele')[0].innerHTML);
+					max_ele = min_ele;
+				}
+				start_new_segment = false;
+				if (p === points.length-1) {
+					last_datapoint = true;
+				}
+
+				new_distance_delta = this.getDeltaDistanceInKilometers(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
+				new_time_delta = (new_point.time - prev_time) / 1000;
+
+				// detect outliers
+				if (new_time_delta > 4 * 60* 60) {
+					// eslint-disable-next-line no-console
+					console.log('time outlier at ' + arr_distance_aggrs[arr_distance_aggrs.length - 1] + ' ( ' + arr_distance_aggrs.length + ' of ' + points.length + '): ', new_time_delta);
+					start_new_segment = true;
+				}
+
+				// the current datapoint is not an outlier, so include it
+				if (!start_new_segment) {
+
 					arr_distance_deltas.push(new_distance_delta);
 					arr_distance_aggrs.push(arr_distance_aggrs[arr_distance_aggrs.length - 1] + new_distance_delta);
-					new_time_delta = (new_point.time - prev_time) / 1000;
+
 					arr_time_deltas.push(new_time_delta);
 					arr_time_aggrs.push(arr_time_aggrs[arr_time_aggrs.length - 1] + new_time_delta);
+
 					max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
 					min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
+
+					prev_lat = new_point.latitude;
+					prev_lon = new_point.longitude;
+					prev_time = new_point.time;
+
+					new_sequence.points.push(new_point);
 				}
-				prev_lat = new_point.latitude;
-				prev_lon = new_point.longitude;
-				prev_time = new_point.time;
-				new_sequence.points.push(new_point);
-			}
-			new_sequence['arr_distance_deltas'] = arr_distance_deltas;
-			new_sequence['arr_distance_aggrs'] = arr_distance_aggrs;
-			new_sequence['arr_time_deltas'] = arr_time_deltas;
-			new_sequence['arr_time_aggrs'] = arr_time_aggrs;
 
-			// record simple statistics from the datapoints
-			new_sequence['total_distance'] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
-			new_sequence['total_time'] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
-			new_sequence['start_time'] = new_sequence.points[0].time;
-			new_sequence['maximum_elevation'] = max_ele;
-			new_sequence['minimum_elevation'] = min_ele;
+				// the current datapoint is the last in the segment, so finalize the data in this segment
+				if (start_new_segment || last_datapoint) {
 
-			// identify outliers
-			let distance_zscores = this.zScores(arr_distance_deltas);
-			let time_zscores = this.zScores(arr_time_deltas);
-			let outliers_distances_indicies = [], outliers_distances_zscores = {};
-			distance_zscores.forEach(function (score, index) {
-				if (score > 25) {
-					outliers_distances_indicies.push(index);
-					outliers_distances_zscores[index] = score;
+					segment_num += 1;
+					if (!last_datapoint) {
+						p -= 1;
+						start_index = p;
+					}
+					if (last_datapoint && start_index === 0) {
+						new_sequence['has_outliers'] = false;
+						new_sequence['matches_file'] = true;
+						new_sequence['filename'] = filename;
+					} else {
+						new_sequence['matches_file'] = false;
+						new_sequence['filename'] = 'N/A (this is only part of an imported file)';
+						new_sequence['name'] = 'PART' + segment_num + ' ' + new_sequence.name;
+					}
+
+					new_sequence['arr_distance_deltas'] = arr_distance_deltas;
+					new_sequence['arr_distance_aggrs'] = arr_distance_aggrs;
+					new_sequence['arr_time_deltas'] = arr_time_deltas;
+					new_sequence['arr_time_aggrs'] = arr_time_aggrs;
+					new_sequence['total_distance'] = new_sequence.arr_distance_aggrs[arr_distance_aggrs.length - 1];
+					new_sequence['total_time'] = new_sequence.arr_time_aggrs[arr_time_aggrs.length - 1];
+					new_sequence['start_time'] = new_sequence.points[0].time;
+					new_sequence['maximum_elevation'] = max_ele;
+					new_sequence['minimum_elevation'] = min_ele;
+
+					// eslint-disable-next-line no-console
+					console.log('saved ' + new_sequence.points.length + ' points for sequence: ' + new_sequence.name);
+					this.sequences.push(new_sequence);
 				}
-			});
-			let outliers_times_indicies = [], outliers_times_zscores = {};
-			time_zscores.forEach(function (score, index) {
-				if (score > 25) {
-					outliers_times_indicies.push(index);
-					outliers_times_zscores[index] = score;
-				}
-			});
-
-			// find the intersection of the distance outliers and the time outliers (by index)
-			outliers_times_indicies.filter(index => outliers_distances_indicies.includes(index));
-
-			if (outliers_times_indicies.length > 0) {
-
-				new_sequence.name = 'ORIG ' + new_sequence.name;
-				new_sequence['has_outliers'] = true;
-				new_sequence['acknowledged'] = false;
-				this.sequences.push(new_sequence);
-
-				let outliers_d_zscores = [], outliers_t_zscores = [];
-				for (let o of outliers_times_indicies) {
-					outliers_d_zscores.push(distance_zscores[o]);
-					outliers_t_zscores.push(time_zscores[o]);
-				}
-				// this pass, split on the biggest outlier
-				// eslint-disable-next-line no-console
-				console.log('common indicies: ', outliers_times_indicies);
-				// eslint-disable-next-line no-console
-				console.log('d scores: ', outliers_d_zscores);
-				// eslint-disable-next-line no-console
-				console.log('t scores: ', outliers_t_zscores);
-				let splice_idx = outliers_times_indicies[this.get_index_of_common_maximum (outliers_d_zscores, outliers_t_zscores)];
-				// eslint-disable-next-line no-console
-				console.log('splice_idx: ', splice_idx);
-				let new_length, new_max_elevation, new_min_elevation;
-
-				// create a new sequence from before the split index
-				let part1_new_sequence = JSON.parse(JSON.stringify(new_sequence));
-				part1_new_sequence.has_outliers = false;
-				part1_new_sequence['matches_file'] = false;
-				part1_new_sequence['acknowledged'] = false;
-				part1_new_sequence.filename = 'N/A (this is only part of an imported file)';
-				uuid = this.generate_uuidv4();
-				part1_new_sequence['uuid'] = uuid;
-				part1_new_sequence.name = 'PART1 ' + part1_new_sequence.name.replace('ORIG ', '');
-				part1_new_sequence.points.splice(splice_idx);
-				new_length = part1_new_sequence.points.length;
-				part1_new_sequence.arr_distance_deltas.splice(splice_idx);
-				part1_new_sequence.arr_distance_aggrs.splice(splice_idx);
-				part1_new_sequence.total_distance = part1_new_sequence.arr_distance_aggrs[new_length - 1];
-				part1_new_sequence.arr_time_deltas.splice(splice_idx);
-				part1_new_sequence.arr_time_aggrs.splice(splice_idx);
-				part1_new_sequence.total_time = part1_new_sequence.arr_time_aggrs[new_length - 1];
-				// new subset of points, so redo the calculations
-				new_max_elevation = part1_new_sequence.points[0].elevation;
-				new_min_elevation = part1_new_sequence.points[0].elevation;
-				part1_new_sequence.points.forEach(function(point) {
-					if (point.elevation > new_max_elevation) {
-						new_max_elevation = point.elevation;
-					}
-					if (point.elevation < new_min_elevation) {
-						new_min_elevation = point.elevation;
-					}
-				});
-				part1_new_sequence.maximum_elevation = new_max_elevation;
-				part1_new_sequence.minimum_elevation = new_min_elevation;
-				this.sequences.push(part1_new_sequence);
-
-				// create a new sequence starting with the split index
-				let part2_new_sequence = JSON.parse(JSON.stringify(new_sequence));
-				part2_new_sequence.has_outliers = false;
-				part2_new_sequence['matches_file'] = false;
-				part2_new_sequence['acknowledged'] = false;
-				part2_new_sequence.filename = 'N/A (this is only part of an imported file)';
-				uuid = this.generate_uuidv4();
-				part2_new_sequence['uuid'] = uuid;
-				part2_new_sequence.name = 'PART2 ' + part2_new_sequence.name.replace('ORIG ', '');
-				part2_new_sequence.points.splice(0, splice_idx);
-				new_length = part2_new_sequence.points.length;
-				part2_new_sequence.arr_distance_deltas.splice(0, splice_idx);
-				part2_new_sequence.arr_distance_aggrs.splice(0, splice_idx);
-				let offset_distance = part2_new_sequence.arr_distance_aggrs[0];
-				part2_new_sequence.arr_distance_aggrs.forEach(function(ele, idx) {
-					this[idx] -= offset_distance;
-				}, part2_new_sequence.arr_distance_aggrs);
-				part2_new_sequence.total_distance = part2_new_sequence.arr_distance_aggrs[new_length - 1];
-				part2_new_sequence.arr_time_deltas.splice(0, splice_idx);
-				part2_new_sequence.arr_time_aggrs.splice(0, splice_idx);
-				let offset_time = part2_new_sequence.arr_time_aggrs[0];
-				part2_new_sequence.arr_time_aggrs.forEach(function(ele, idx) {
-					this[idx] -= offset_time;
-				}, part2_new_sequence.arr_time_aggrs);
-				part2_new_sequence.total_time = part2_new_sequence.arr_time_aggrs[new_length - 1];
-				part2_new_sequence['start_time'] = part2_new_sequence.points[0].time;
-				// new subset of points, so redo the calculations
-				new_max_elevation = part2_new_sequence.points[0].elevation;
-				new_min_elevation = part2_new_sequence.points[0].elevation;
-				part2_new_sequence.points.forEach(function(point) {
-					if (point.elevation > new_max_elevation) {
-						new_max_elevation = point.elevation;
-					}
-					if (point.elevation < new_min_elevation) {
-						new_min_elevation = point.elevation;
-					}
-				});
-				part2_new_sequence.maximum_elevation = new_max_elevation;
-				part2_new_sequence.minimum_elevation = new_min_elevation;
-
-				this.sequences.push(part2_new_sequence);
-
-			} else {
-				this.sequences.push(new_sequence);
 			}
 		},
 
@@ -376,7 +319,7 @@ export default {
 				let arr1_idx = arr1.indexOf(sorted_arr1[ele]);
 				if (results.includes(arr1_idx)) {
 					// eslint-disable-next-line no-console
-					console.log('RETURNING: ' + arr1_idx);
+					// console.log('RETURNING: ' + arr1_idx);
 					return arr1_idx;
 				} else {
 					results.push(arr1_idx);
@@ -384,7 +327,7 @@ export default {
 				let arr2_idx = arr2.indexOf(sorted_arr2[ele]);
 				if (results.includes(arr2_idx)) {
 					// eslint-disable-next-line no-console
-					console.log('RETURNING: ' + arr2_idx);
+					// console.log('RETURNING: ' + arr2_idx);
 					return arr2_idx;
 				} else {
 					results.push(arr2_idx);
