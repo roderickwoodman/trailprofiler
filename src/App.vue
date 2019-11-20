@@ -179,6 +179,8 @@ export default {
 				new_time_delta = (new_point.time - prev_time) / 1000;
 
 				// detect outliers
+
+				// A: GAP BETWEEN ADJACENT POINTS IS > 4 HOURS
 				if (new_time_delta > 4 * 60* 60) {
 					// eslint-disable-next-line no-console
 					console.log('  time outlier at ' + arr_time_aggrs[arr_time_aggrs.length - 1] + ' ( ' + arr_time_aggrs.length + ' of ' + points.length + '): ', new_time_delta);
@@ -191,6 +193,7 @@ export default {
 						+ arr_time_deltas[arr_time_deltas.length-1] + ' ' + new_time_delta);
 					}
 					start_new_segment = true;
+				// B: GAP BETWEEN ADJACENT POINTS IS > 1 KILOMETER
 				} else if (new_distance_delta > 1) {
 					// eslint-disable-next-line no-console
 					console.log('  distance outlier at ' + arr_distance_aggrs[arr_distance_aggrs.length - 1].toFixed(3) + ' ( ' + arr_distance_aggrs.length + ' of ' + points.length + '): ', new_distance_delta.toFixed(3));
@@ -201,6 +204,13 @@ export default {
 						+ arr_distance_deltas[arr_distance_deltas.length-3].toFixed(3) + ' '
 						+ arr_distance_deltas[arr_distance_deltas.length-2].toFixed(3) + ' '
 						+ arr_distance_deltas[arr_distance_deltas.length-1].toFixed(3) + ' ' + new_distance_delta);
+					}
+					start_new_segment = true;
+				// C: SPEED IS > 5 KM/S (11 MPH)
+				} else if (new_distance_delta / new_time_delta > 0.005) {
+					if (p % 100 === 0) {
+						// eslint-disable-next-line no-console
+						console.log('  speed outlier at ' + arr_distance_aggrs[arr_distance_aggrs.length - 1].toFixed(3) + ' ( ' + arr_distance_aggrs.length + ' of ' + points.length + '): ', (new_distance_delta/new_time_delta).toFixed(5));
 					}
 					start_new_segment = true;
 				}
