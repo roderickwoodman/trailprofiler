@@ -122,7 +122,7 @@ export default {
 			let start_index = 0, segment_num = 0;
 			let sequence_name_from_file = xml_doc.getElementsByTagName('name')[0].innerHTML;
 			// eslint-disable-next-line no-console
-			console.log('adding ' + points.length + ' points for file: ' + sequence_name_from_file);
+			console.log('=== ' + sequence_name_from_file + ' has ' + points.length + ' points ===');
 			for (let sequence of this.sequences) {
 				if (sequence.name.includes(sequence_name_from_file)) {
 					// eslint-disable-next-line no-console
@@ -181,7 +181,27 @@ export default {
 				// detect outliers
 				if (new_time_delta > 4 * 60* 60) {
 					// eslint-disable-next-line no-console
-					console.log('time outlier at ' + arr_distance_aggrs[arr_distance_aggrs.length - 1] + ' ( ' + arr_distance_aggrs.length + ' of ' + points.length + '): ', new_time_delta);
+					console.log('  time outlier at ' + arr_time_aggrs[arr_time_aggrs.length - 1] + ' ( ' + arr_time_aggrs.length + ' of ' + points.length + '): ', new_time_delta);
+					if (arr_time_deltas.length > 4) {
+						// eslint-disable-next-line no-console
+						console.log('  ==> ' 
+						+ arr_time_deltas[arr_time_deltas.length-4] + ' '
+						+ arr_time_deltas[arr_time_deltas.length-3] + ' '
+						+ arr_time_deltas[arr_time_deltas.length-2] + ' '
+						+ arr_time_deltas[arr_time_deltas.length-1] + ' ' + new_time_delta);
+					}
+					start_new_segment = true;
+				} else if (new_distance_delta > 1) {
+					// eslint-disable-next-line no-console
+					console.log('  distance outlier at ' + arr_distance_aggrs[arr_distance_aggrs.length - 1].toFixed(3) + ' ( ' + arr_distance_aggrs.length + ' of ' + points.length + '): ', new_distance_delta.toFixed(3));
+					if (arr_distance_deltas.length > 4) {
+						// eslint-disable-next-line no-console
+						console.log('  ==> ' 
+						+ arr_distance_deltas[arr_distance_deltas.length-4].toFixed(3) + ' '
+						+ arr_distance_deltas[arr_distance_deltas.length-3].toFixed(3) + ' '
+						+ arr_distance_deltas[arr_distance_deltas.length-2].toFixed(3) + ' '
+						+ arr_distance_deltas[arr_distance_deltas.length-1].toFixed(3) + ' ' + new_distance_delta);
+					}
 					start_new_segment = true;
 				}
 
@@ -205,7 +225,7 @@ export default {
 				}
 
 				// the current datapoint is the last in the segment, so finalize the data in this segment
-				if (start_new_segment || last_datapoint) {
+				if ((start_new_segment || last_datapoint) && new_sequence.points.length) {
 
 					segment_num += 1;
 					if (!last_datapoint) {
@@ -233,7 +253,7 @@ export default {
 					new_sequence['minimum_elevation'] = min_ele;
 
 					// eslint-disable-next-line no-console
-					console.log('saved ' + new_sequence.points.length + ' points for sequence: ' + new_sequence.name);
+					console.log('  saved ' + new_sequence.points.length + ' points for sequence: ' + new_sequence.name);
 					this.sequences.push(new_sequence);
 				}
 			}
