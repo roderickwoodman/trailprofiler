@@ -30,6 +30,7 @@
                     <td>
                         <b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
                         <b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" /></b-button>
+                        <b-button v-b-tooltip.hover title="Export sequence" class="btn btn-sm btn-primary" v-on:click="clickedExportSequence(sequence.uuid)"><font-awesome-icon icon="download" /></b-button>
                         <b-button v-b-tooltip.hover title="Delete sequence" class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
@@ -46,7 +47,7 @@
 <script>
 
 export default {
-	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'clickedDeleteSequence', 'clickedPlotSequence'],
+	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'clickedPlotSequence', 'clickedExportSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
 			show_filenames: false,
@@ -162,7 +163,7 @@ export default {
 
 <style scoped>
     button {
-        margin: 2px 6px;
+        margin: 2px 2px;
     }
     .isPlotted {
         border: 3px solid black;

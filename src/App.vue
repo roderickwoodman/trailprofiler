@@ -17,7 +17,7 @@
     </select>
     </span>
 
-    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :clickedDeleteSequence="clickedDeleteSequence" :clickedPlotSequence="clickedPlotSequence" :acknowledgeInfo="acknowledgeInfo" />
+    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :clickedPlotSequence="clickedPlotSequence" :clickedExportSequence="clickedExportSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
   </div>
 </template>
@@ -287,14 +287,6 @@ export default {
 		deg2rad: function(deg) {
 			return deg * (Math.PI/180);
 		},
-		clickedDeleteSequence: function (sequence_uuid) {
-			this.sequences = this.sequences.filter(function (obj) {
-				return obj.uuid !== sequence_uuid;
-			});
-			this.plot_order = this.plot_order.filter(function (uuid) {
-				return uuid !== sequence_uuid;
-			});
-		},
 		clickedPlotSequence: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
@@ -304,6 +296,18 @@ export default {
 			} else {
 				this.plot_order.splice(plot_order_num, 1);
 			}
+		},
+		clickedExportSequence: function (sequence_uuid) {
+			// eslint-disable-next-line no-console
+			console.log('TBI: export sequence ' + sequence_uuid);
+		},
+		clickedDeleteSequence: function (sequence_uuid) {
+			this.sequences = this.sequences.filter(function (obj) {
+				return obj.uuid !== sequence_uuid;
+			});
+			this.plot_order = this.plot_order.filter(function (uuid) {
+				return uuid !== sequence_uuid;
+			});
 		},
 		acknowledgeInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
