@@ -183,7 +183,7 @@ export default {
 				// A: GAP BETWEEN ADJACENT POINTS IS > 4 HOURS
 				if (new_time_delta > 4 * 60* 60) {
 					// eslint-disable-next-line no-console
-					console.log('  time outlier at ' + arr_time_aggrs[arr_time_aggrs.length - 1] + ' ( ' + arr_time_aggrs.length + ' of ' + points.length + '): ', new_time_delta);
+					console.log('  time outlier at ' + arr_distance_aggrs[arr_distance_aggrs.length - 1] + ' ( ' + arr_time_aggrs.length + ' of ' + points.length + '): ', new_time_delta);
 					if (arr_time_deltas.length > 4) {
 						// eslint-disable-next-line no-console
 						console.log('  ==> ' 

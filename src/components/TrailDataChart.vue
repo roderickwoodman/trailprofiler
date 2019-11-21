@@ -622,12 +622,13 @@ export default {
 	},
 	methods: {
 		addSequenceToChart: function (sequence_uuid) {
-			let scale_factor = (this.units === 'english') ? 0.621371 : 1;
+			let x_scale_factor = (this.units === 'english') ? 0.621371 : 1; // mi or km
+			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
 			let sequence = this.sequences.find(s => s.uuid === sequence_uuid);
 			let new_chart_data = this.chart_data, new_series = {}, new_series_data = [];
 			new_series['uuid'] = sequence.uuid;
 			sequence.points.forEach(function(point, idx) {
-				let chart_point = { x: sequence.arr_distance_aggrs[idx] * scale_factor, y: point.elevation * scale_factor };
+				let chart_point = { x: sequence.arr_distance_aggrs[idx] * x_scale_factor, y: point.elevation * y_scale_factor };
 				new_series_data.push(chart_point);
 			});
 			new_series['data'] = new_series_data;
