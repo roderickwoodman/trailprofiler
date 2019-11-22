@@ -25,13 +25,13 @@
                         <span class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
                         <span v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</span>
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
-                        <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+                        <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this segment is not yet saved to file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>
                     <td class="actions">
                         <b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
                         <b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" /></b-button>
-                        <b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Export sequence" class="btn btn-sm btn-primary" v-on:click="clickedExportSequence(sequence.uuid)"><font-awesome-icon icon="download" /></b-button>
-                        <b-button v-b-tooltip.hover title="Delete sequence" class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
+                        <b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm btn-primary" v-on:click="clickedSaveSequence(sequence.uuid)"><font-awesome-icon icon="save" /></b-button>
+                        <b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
@@ -47,7 +47,7 @@
 <script>
 
 export default {
-	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'clickedPlotSequence', 'clickedExportSequence', 'clickedDeleteSequence'],
+	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
 			show_filenames: false,

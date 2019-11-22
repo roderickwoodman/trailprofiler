@@ -17,7 +17,7 @@
     </select>
     </span>
 
-    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :clickedPlotSequence="clickedPlotSequence" :clickedExportSequence="clickedExportSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
   </div>
 </template>
@@ -297,9 +297,9 @@ export default {
 				this.plot_order.splice(plot_order_num, 1);
 			}
 		},
-		clickedExportSequence: function (sequence_uuid) {
+		clickedSaveSequence: function (sequence_uuid) {
 			// eslint-disable-next-line no-console
-			console.log('TBI: export sequence ' + sequence_uuid);
+			console.log('TBI: save sequence ' + sequence_uuid);
 		},
 		clickedDeleteSequence: function (sequence_uuid) {
 			this.sequences = this.sequences.filter(function (obj) {
