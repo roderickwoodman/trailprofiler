@@ -27,10 +27,10 @@
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                         <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence needs saving - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>
-                    <td>
+                    <td class="actions">
                         <b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
                         <b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" /></b-button>
-                        <b-button v-b-tooltip.hover title="Export sequence" class="btn btn-sm btn-primary" v-on:click="clickedExportSequence(sequence.uuid)"><font-awesome-icon icon="download" /></b-button>
+                        <b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Export sequence" class="btn btn-sm btn-primary" v-on:click="clickedExportSequence(sequence.uuid)"><font-awesome-icon icon="download" /></b-button>
                         <b-button v-b-tooltip.hover title="Delete sequence" class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
@@ -185,6 +185,10 @@ export default {
     }
 	tr > td {
 		vertical-align: middle;
+	}
+	td.actions {
+		display: flex;
+		justify-content: center;
 	}
     .sequence_name {
         font-weight: 800;
