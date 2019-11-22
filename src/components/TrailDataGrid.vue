@@ -3,9 +3,13 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Hola"/> -->
 
-    <div class="container table-responsive-sm">
-        <input type="checkbox" id="show_filenames" value="true" v-model="show_filenames">
-        <label for="show_filenames">show filenames</label>
+    <div class="container table-responsive-sm p-0">
+        <label for="show_filenames">
+			<input type="checkbox" id="show_filenames" value="false" v-model="show_filenames">
+			show filenames of each row</label>
+        <label for="show_only_plotted">
+        <input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
+			show row only if plotted</label>
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
@@ -19,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="sequence.uuid" v-for="sequence in this.sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged, hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
+                <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged, hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
                         <span class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
@@ -51,6 +55,7 @@ export default {
 	data() {
 		return {
 			show_filenames: false,
+			show_only_plotted: false,
 			sort_key: 'total_distance',
 			sort_dir_asc: true
 		};
@@ -58,9 +63,15 @@ export default {
 	computed: {
 		sortedSequences: function() {
 			let cloned = [...this.sequences];
+			let showing = [];
+			if (this.show_only_plotted) {
+				showing = cloned.filter(seq => seq.is_plotted === true);
+			} else {
+				showing = cloned;
+			}
 			let key = this.sort_key;
 			let direction_asc = this.sort_dir_asc;
-			return cloned.sort(function(a, b) {
+			return showing.sort(function(a, b) {
 				if (direction_asc === true) {
 					return (a[key] < b[key]) ? 1 : -1;
 				} else {
@@ -79,6 +90,9 @@ export default {
 		if (localStorage.show_filenames) {
 			this.show_filenames = JSON.parse(localStorage.show_filenames);
 		}
+		if (localStorage.show_only_plotted) {
+			this.show_only_plotted = JSON.parse(localStorage.show_only_plotted);
+		}
 	},
 	watch: {
 		sort_key: {
@@ -94,6 +108,11 @@ export default {
 		show_filenames: {
 			handler: function (new_show_filenames) {
 				localStorage.show_filenames = JSON.stringify(new_show_filenames);
+			}
+		},
+		show_only_plotted: {
+			handler: function (new_show_only_plotted) {
+				localStorage.show_only_plotted = JSON.stringify(new_show_only_plotted);
 			}
 		}
 	},
@@ -165,6 +184,10 @@ export default {
     button {
         margin: 2px 2px;
     }
+	label {
+		margin: 5px 0;
+		display: block;
+	}
     .isPlotted {
         border: 3px solid black;
         background-color: yellow;
