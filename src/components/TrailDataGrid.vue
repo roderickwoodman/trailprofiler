@@ -4,12 +4,12 @@
     <!-- <HelloWorld msg="Hola"/> -->
 
     <div class="container table-responsive-sm p-0">
-        <label for="show_filenames">
-			<input type="checkbox" id="show_filenames" value="false" v-model="show_filenames">
-			show filenames of each row</label>
         <label for="show_only_plotted">
         <input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
 			show row only if plotted</label>
+        <label for="show_filenames">
+			<input type="checkbox" id="show_filenames" value="false" v-model="show_filenames">
+			show filenames of each row</label>
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
@@ -187,6 +187,9 @@ export default {
 	label {
 		margin: 5px 0;
 		display: block;
+	}
+	label, input {
+		cursor: pointer;
 	}
     .isPlotted {
         border: 3px solid black;
