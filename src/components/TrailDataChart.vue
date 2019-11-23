@@ -572,6 +572,7 @@ export default {
 				},
 				axisY: {
 					type: Chartist.FixedScaleAxis,
+					low: 0,
 					divisor: 10,
 					labelInterpolationFnc: function (value) {
 						return Math.round(value/100)*100;
