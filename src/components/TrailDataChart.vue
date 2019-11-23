@@ -661,15 +661,35 @@ export default {
 			this.chart_instance.update(this.chart_data, this.chart_options);
 		},
 		removeSequenceFromChart: function (sequence_uuid) {
-			let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
+
+			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
+
+			// determine chart data
+			let new_chart_data = Object.assign({}, this.chart_data);
 			for (let [index,series] of this.chart_data.series.entries()) {
 				if (series.uuid === sequence_uuid) {
 					new_chart_data.series.splice(index, 1);
-					break;
 				}
 			}
 			this.chart_data = new_chart_data;
-			this.chart_instance.update(this.chart_data, this.default_options);
+
+			// determine chart options
+			let lowest_minimum = 0;
+			let self = this;
+			this.sequences.forEach( function(sequence) {
+				if (self.isPlottedUuids.includes(sequence.uuid)) {
+					let sequence_minimum = sequence.minimum_elevation * y_scale_factor;
+					if (sequence_minimum < lowest_minimum) {
+						lowest_minimum = sequence_minimum;
+					}
+				}
+			});
+			let new_chart_options = Object.assign({}, this.chart_options);
+			new_chart_options.axisY.low = lowest_minimum;
+			this.chart_options = new_chart_options;
+
+			// update the chart
+			this.chart_instance.update(this.chart_data, this.chart_options);
 		},
 		removeAllSequencesFromChart: function () {
 			let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
