@@ -15,6 +15,7 @@ export default {
 			remove_these: [],
 			chart_instance: null,
 			chart_data: {},
+			chart_options: {},
 			default_data: {
 				series: [
 					{
@@ -623,9 +624,12 @@ export default {
 	},
 	methods: {
 		addSequenceToChart: function (sequence_uuid) {
+
 			let x_scale_factor = (this.units === 'english') ? 0.621371 : 1; // mi or km
 			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
 			let sequence = this.sequences.find(s => s.uuid === sequence_uuid);
+
+			// determine chart data
 			let new_chart_data = this.chart_data, new_series = {}, new_series_data = [];
 			new_series['uuid'] = sequence.uuid;
 			sequence.points.forEach(function(point, idx) {
@@ -639,7 +643,22 @@ export default {
 				new_chart_data['series'] = [new_series];
 			}
 			this.chart_data = new_chart_data;
-			this.chart_instance.update(this.chart_data, this.default_options);
+
+			// determine chart options
+			let series_low = sequence.minimum_elevation * y_scale_factor;
+			let new_chart_options = {};
+			if (Object.keys(this.chart_options).length === 0) {
+				new_chart_options = Object.assign({}, this.default_options);
+			} else {
+				new_chart_options = Object.assign({}, this.chart_options);
+			}
+			if (series_low < new_chart_options.axisY.low) {
+				new_chart_options.axisY.low = series_low;
+			}
+			this.chart_options = new_chart_options;
+
+			// update the chart
+			this.chart_instance.update(this.chart_data, this.chart_options);
 		},
 		removeSequenceFromChart: function (sequence_uuid) {
 			let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
