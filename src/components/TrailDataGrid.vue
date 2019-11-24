@@ -221,12 +221,12 @@ export default {
 	}
     .sequence_name {
         font-weight: 800;
-        line-height: 0.75em;
+        line-height: 1em;
     }
     .sequence_name,
     .sequence_filename,
     .info_message {
-        padding: 8px 0;
+        padding: 5px 5px;
         display: block;
     }
     .sequence_filename,
