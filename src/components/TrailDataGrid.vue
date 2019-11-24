@@ -131,14 +131,14 @@ export default {
 		},
 		to_desired_units: function (starting_units, value) {
 			if (starting_units === 'm') {  // meters to feet
-				if (this.units === 'english') {
-					return Math.round(value * 3.28084);
+				if (this.units === 'englsh') {
+					return value * 3.28084;
 				} else {
 					return value;
 				}
 			} else if (starting_units === 'km' || starting_units === 'kph') {  // kilometers to miles OR kph to mph
 				if (this.units === 'english') {
-					return Math.round(value * 0.621371);
+					return value * 0.621371;
 				} else {
 					return value;
 				}
@@ -174,7 +174,7 @@ export default {
 			}
 		},
 		to_tenths: function (number) {
-			return (Math.round(10*number)/10).toFixed(1);
+			return (Math.round(10*parseFloat(number))/10).toFixed(1);
 		}
 	}
 };
