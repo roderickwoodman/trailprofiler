@@ -18,6 +18,7 @@
                     <th scope="col">Actions</th>
                     <th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
                     <th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
+                    <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace ({{ units === 'english' ? 'mph' : 'kph' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                 </tr>
@@ -39,6 +40,7 @@
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ to_desired_units("kph", sequence.average_pace) | to_tenths }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
                 </tr>
@@ -134,7 +136,7 @@ export default {
 				} else {
 					return value;
 				}
-			} else if (starting_units === 'km') {  // kilometers to miles
+			} else if (starting_units === 'km' || starting_units === 'kph') {  // kilometers to miles OR kph to mph
 				if (this.units === 'english') {
 					return Math.round(value * 0.621371);
 				} else {

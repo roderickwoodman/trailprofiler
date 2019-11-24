@@ -258,6 +258,7 @@ export default {
 					new_segment['arr_time_aggrs'] = arr_time_aggrs;
 					new_segment['total_distance'] = new_segment.arr_distance_aggrs[arr_distance_aggrs.length - 1];
 					new_segment['total_time'] = new_segment.arr_time_aggrs[arr_time_aggrs.length - 1];
+					new_segment['average_pace'] = 60 * 60 * new_segment.total_distance / new_segment.total_time;
 					new_segment['start_time'] = new_segment.points[0].time;
 					new_segment['maximum_elevation'] = max_ele;
 					new_segment['minimum_elevation'] = min_ele;
