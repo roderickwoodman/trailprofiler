@@ -191,6 +191,7 @@ export default {
 		display: block;
 	}
 	label, input {
+		max-width: 250px;
 		cursor: pointer;
 	}
     .isPlotted {
