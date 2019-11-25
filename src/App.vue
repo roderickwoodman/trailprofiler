@@ -150,7 +150,7 @@ export default {
 					if (segment_start_index === 0) {
 						new_segment['filename'] = filename;
 					} else {
-						new_segment.filename = 'N/A (this is only part of an imported file)';
+						new_segment['filename'] = 'N/A (this is only part of an imported file)';
 					}
 					new_segment['uuid'] = this.generate_uuidv4();
 					new_segment['points'] = [];
@@ -249,6 +249,7 @@ export default {
 					} else {
 						new_segment['matches_file'] = false;
 						new_segment['filename'] = 'N/A (this is only part of an imported file)';
+						new_segment['new_filename'] = filename.slice(0,-4) + '_part' + segment_num + '.gpx';
 						new_segment['name'] = 'PART' + segment_num + ' ' + new_segment.name;
 					}
 
@@ -299,8 +300,27 @@ export default {
 			}
 		},
 		clickedSaveSequence: function (sequence_uuid) {
+
+			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+			let filename = this.sequences[sequence_num].new_filename;
+
 			// eslint-disable-next-line no-console
-			console.log('TBI: save sequence ' + sequence_uuid);
+			console.log('TBI: save sequence ' + sequence_uuid + ' as filename "' + filename + '"');
+
+			let text='file content';
+
+			var pom = document.createElement('a');
+			pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			pom.setAttribute('download', filename);
+
+			if (document.createEvent) {
+				var event = document.createEvent('MouseEvents');
+				event.initEvent('click', true, true);
+				pom.dispatchEvent(event);
+			}
+			else {
+				pom.click();
+			}
 		},
 		clickedDeleteSequence: function (sequence_uuid) {
 			this.sequences = this.sequences.filter(function (obj) {

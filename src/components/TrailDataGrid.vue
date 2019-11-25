@@ -30,7 +30,7 @@
                         <span class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
                         <span v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename }}</span>
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
-                        <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this segment is not yet saved to file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+                        <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>
                     <td class="actions">
                         <b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
