@@ -118,18 +118,18 @@ export default {
 			let points = xml_doc.getElementsByTagName('trkpt');
 			let prev_lat, prev_lon, prev_time, min_ele, max_ele;
 			let new_distance_delta, arr_distance_deltas, arr_distance_aggrs, new_time_delta, arr_time_deltas, arr_time_aggrs;
-
 			let segment_start_index = 0, segment_num = 0;
-			let sequence_name_from_file = xml_doc.getElementsByTagName('name')[0].innerHTML;
+
 			// eslint-disable-next-line no-console
-			console.log('=== ' + sequence_name_from_file + ' has ' + points.length + ' points ===');
+			console.log('=== ' + filename + ' has ' + points.length + ' points ===');
 			for (let sequence of this.sequences) {
-				if (sequence.name.includes(sequence_name_from_file)) {
+				if (sequence.filename === filename) {
 					// eslint-disable-next-line no-console
-					console.log('dont add duplicates: ', sequence_name_from_file);
+					console.log('dont add duplicates: ', filename);
 					return; // don't add duplicates
 				}
 			}
+
 			var new_segment = {};
 			for (let p=0; p < points.length; p++) {
 
@@ -147,10 +147,11 @@ export default {
 
 					new_segment = Object.assign({}, {});
 					new_segment['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
+					new_segment['filename'] = filename;
 					if (segment_start_index === 0) {
-						new_segment['filename'] = filename;
+						new_segment['filename_printed'] = filename;
 					} else {
-						new_segment['filename'] = 'N/A (this is only part of an imported file)';
+						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 					}
 					new_segment['uuid'] = this.generate_uuidv4();
 					new_segment['points'] = [];
@@ -245,12 +246,14 @@ export default {
 					if (last_datapoint && segment_start_index === 0) {
 						new_segment['has_outliers'] = false;
 						new_segment['matches_file'] = true;
-						new_segment['filename'] = filename;
+						new_segment['filename_printed'] = filename;
+						new_segment['file_content'] = gpx_xml;
 					} else {
 						new_segment['matches_file'] = false;
-						new_segment['filename'] = 'N/A (this is only part of an imported file)';
+						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 						new_segment['new_filename'] = filename.slice(0,-4) + '_part' + segment_num + '.gpx';
 						new_segment['name'] = 'PART' + segment_num + ' ' + new_segment.name;
+						new_segment['file_content'] = gpx_xml;
 					}
 
 					new_segment['arr_distance_deltas'] = arr_distance_deltas;
@@ -307,10 +310,11 @@ export default {
 			// eslint-disable-next-line no-console
 			console.log('TBI: save sequence ' + sequence_uuid + ' as filename "' + filename + '"');
 
-			let text='file content';
+			let content_to_write=this.sequences[sequence_num].file_content;
+			content_to_write = content_to_write.replace(/<name>[\s\S]*?<\/name>/, '<name>' + this.sequences[sequence_num].name + '</name>');
 
 			var pom = document.createElement('a');
-			pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content_to_write));
 			pom.setAttribute('download', filename);
 
 			if (document.createEvent) {
