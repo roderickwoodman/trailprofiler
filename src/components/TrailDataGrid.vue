@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged, hasOutliers: sequence.has_outliers && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
+                <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
                         <span class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>

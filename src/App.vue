@@ -124,8 +124,6 @@ export default {
 			console.log('=== ' + filename + ' has ' + points.length + ' points ===');
 			for (let sequence of this.sequences) {
 				if (sequence.filename === filename) {
-					// eslint-disable-next-line no-console
-					console.log('dont add duplicates: ', filename);
 					return; // don't add duplicates
 				}
 			}
@@ -238,22 +236,31 @@ export default {
 				// the current datapoint is the last in the segment, so finalize the data in this segment
 				if ((start_new_segment || last_datapoint) && new_segment.points.length) {
 
-					segment_num += 1;
-					if (!last_datapoint) {
-						p -= 1;
-						segment_start_index = p;
+					if (new_segment.points.length < 50) {
+						continue;
 					}
+
+					let segment_end_index = (last_datapoint) ? p : p - 1;
+					segment_num += 1;
 					if (last_datapoint && segment_start_index === 0) {
+						// the current segment is the whole file being imported
 						new_segment['has_outliers'] = false;
 						new_segment['matches_file'] = true;
 						new_segment['filename_printed'] = filename;
 						new_segment['file_content'] = gpx_xml;
 					} else {
+						// the current segment is only part of the file being imported
 						new_segment['matches_file'] = false;
 						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 						new_segment['new_filename'] = filename.slice(0,-4) + '_part' + segment_num + '.gpx';
 						new_segment['name'] = 'PART' + segment_num + ' ' + new_segment.name;
 						new_segment['file_content'] = gpx_xml;
+						let segment_xml_doc = parser.parseFromString(gpx_xml, 'text/xml');
+						let trkpts = [...segment_xml_doc.getElementsByTagName('trkpt')];
+						trkpts.forEach(function(trkpt,idx) {if (idx < segment_start_index || idx > segment_end_index) {trkpt.remove();}});
+						let serializer = new XMLSerializer();
+						let serialized_xml = serializer.serializeToString(segment_xml_doc);
+						new_segment['file_content'] = serialized_xml;
 					}
 
 					new_segment['arr_distance_deltas'] = arr_distance_deltas;
@@ -267,12 +274,13 @@ export default {
 					new_segment['maximum_elevation'] = max_ele;
 					new_segment['minimum_elevation'] = min_ele;
 
-					if (new_segment.points.length >= 50) {
-						// eslint-disable-next-line no-console
-						console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
-						this.sequences.push(new_segment);
-					} else {
-						segment_num -= 1;
+					// eslint-disable-next-line no-console
+					console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
+					this.sequences.push(new_segment);
+
+					if (!last_datapoint) {
+						p -= 1; // re-loop on this point, since it may not be an outlier in the next segment
+						segment_start_index = p;
 					}
 				}
 			}
@@ -306,10 +314,6 @@ export default {
 
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			let filename = this.sequences[sequence_num].new_filename;
-
-			// eslint-disable-next-line no-console
-			console.log('TBI: save sequence ' + sequence_uuid + ' as filename "' + filename + '"');
-
 			let content_to_write=this.sequences[sequence_num].file_content;
 			content_to_write = content_to_write.replace(/<name>[\s\S]*?<\/name>/, '<name>' + this.sequences[sequence_num].name + '</name>');
 
