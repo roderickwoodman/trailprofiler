@@ -331,6 +331,8 @@ export default {
 			let sequence_uuid = e.target['sequence_uuid'].value;
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].name = e.target['new_name_edits'].value;
+			this.sequences[sequence_num].matches_file = false;
+			this.sequences[sequence_num].acknowledged = false;
 			e.preventDefault();
 		},
 		clickedPlotSequence: function (sequence_uuid) {
