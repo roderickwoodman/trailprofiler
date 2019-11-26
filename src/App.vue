@@ -116,8 +116,16 @@ export default {
 			xml_doc = parser.parseFromString(gpx_xml, 'text/xml');
 
 			let points = xml_doc.getElementsByTagName('trkpt');
-			let prev_lat, prev_lon, prev_time, min_ele, max_ele;
-			let new_distance_delta, arr_distance_deltas, arr_distance_aggrs, new_time_delta, arr_time_deltas, arr_time_aggrs;
+			let wholefile_min_ele = parseInt(points[0].getElementsByTagName('ele')[0].innerHTML);
+			let wholefile_max_ele = wholefile_min_ele;
+			let wholefile_prev_lat = points[0].getAttribute('lat');
+			let wholefile_prev_lon = points[0].getAttribute('lon');
+			let wholefile_prev_time = new Date(points[0].getElementsByTagName('time')[0].innerHTML).valueOf();
+			let segment_prev_lat, segment_prev_lon, segment_prev_time;
+			let segment_min_ele, segment_max_ele;
+			let segment_distance_deltas, segment_distance_aggrs, segment_time_deltas, segment_time_aggrs;
+			let new_segment_ddelta, new_segment_tdelta, new_wholefile_ddelta, new_wholefile_tdelta;
+			let wholefile_distance_deltas = [0], wholefile_distance_aggrs = [0], wholefile_time_deltas = [0], wholefile_time_aggrs = [0];
 			let segment_start_index = 0, segment_num = 0;
 
 			// eslint-disable-next-line no-console
@@ -128,7 +136,16 @@ export default {
 				}
 			}
 
-			var new_segment = {};
+			let wholefile = Object.assign({}, {});
+			wholefile['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
+			wholefile['filename'] = filename;
+			wholefile['filename_printed'] = filename;
+			wholefile['uuid'] = this.generate_uuidv4();
+			wholefile['points'] = [];
+			wholefile['is_plotted'] = false;
+			wholefile['acknowledged'] = false;
+			let new_segment = {};
+			let doing_point_again = false;
 			for (let p=0; p < points.length; p++) {
 
 				let new_point = {};
@@ -156,58 +173,77 @@ export default {
 					new_segment['is_plotted'] = false;
 					new_segment['acknowledged'] = false;
 
-					new_distance_delta = 0;
-					new_time_delta = 0;
-					arr_distance_deltas = [0];
-					arr_distance_aggrs = [0];
-					arr_time_deltas = [0];
-					arr_time_aggrs = [0];
+					new_segment_ddelta = 0;
+					new_segment_tdelta = 0;
+					segment_distance_deltas = [0];
+					segment_distance_aggrs = [0];
+					segment_time_deltas = [0];
+					segment_time_aggrs = [0];
 
-					prev_lat = new_point.latitude;
-					prev_lon = new_point.longitude;
-					prev_time = new_point.time;
-					min_ele = parseInt(points[segment_start_index].getElementsByTagName('ele')[0].innerHTML);
-					max_ele = min_ele;
+					segment_prev_lat = new_point.latitude;
+					segment_prev_lon = new_point.longitude;
+					segment_prev_time = new_point.time;
+					segment_min_ele = parseInt(points[segment_start_index].getElementsByTagName('ele')[0].innerHTML);
+					segment_max_ele = segment_min_ele;
 				}
 				start_new_segment = false;
 				if (p === points.length-1) {
 					last_datapoint = true;
 				}
 
-				new_distance_delta = this.getDeltaDistanceInKilometers(prev_lat, prev_lon, new_point.latitude, new_point.longitude);
-				new_time_delta = (new_point.time - prev_time) / 1000;
+				new_segment_ddelta = this.getDeltaDistanceInKilometers(segment_prev_lat, segment_prev_lon, new_point.latitude, new_point.longitude);
+				new_segment_tdelta = (new_point.time - segment_prev_time) / 1000;
+
+				new_wholefile_ddelta = this.getDeltaDistanceInKilometers(wholefile_prev_lat, wholefile_prev_lon, new_point.latitude, new_point.longitude);
+				new_wholefile_tdelta = (new_point.time - wholefile_prev_time) / 1000;
 
 				// detect outliers
 
 				// A: GAP BETWEEN ADJACENT POINTS IS > 4 HOURS
-				if (new_time_delta > 4 * 60* 60) {
+				if (new_segment_tdelta > 4 * 60* 60) {
 					start_new_segment = true;
 				// B: GAP BETWEEN ADJACENT POINTS IS > 1 KILOMETER
-				} else if (new_distance_delta > 1) {
+				} else if (new_segment_ddelta > 1) {
 					start_new_segment = true;
 				// C: SPEED IS > 5 KM/S (11 MPH)
-				} else if (new_distance_delta / new_time_delta > 0.005) {
+				} else if (new_segment_ddelta / new_segment_tdelta > 0.005) {
 					start_new_segment = true;
 				}
 
-				// the current datapoint is not an outlier, so include it
+				// the current datapoint is not an outlier, so include it in the segment sequence
 				if (!start_new_segment) {
 
-					arr_distance_deltas.push(new_distance_delta);
-					arr_distance_aggrs.push(arr_distance_aggrs[arr_distance_aggrs.length - 1] + new_distance_delta);
+					segment_distance_deltas.push(new_segment_ddelta);
+					segment_distance_aggrs.push(segment_distance_aggrs[segment_distance_aggrs.length - 1] + new_segment_ddelta);
+					segment_time_deltas.push(new_segment_tdelta);
+					segment_time_aggrs.push(segment_time_aggrs[segment_time_aggrs.length - 1] + new_segment_tdelta);
+					segment_max_ele = (new_point.elevation > segment_max_ele) ? new_point.elevation : segment_max_ele;
+					segment_min_ele = (new_point.elevation < segment_min_ele) ? new_point.elevation : segment_min_ele;
 
-					arr_time_deltas.push(new_time_delta);
-					arr_time_aggrs.push(arr_time_aggrs[arr_time_aggrs.length - 1] + new_time_delta);
-
-					max_ele = (new_point.elevation > max_ele) ? new_point.elevation : max_ele;
-					min_ele = (new_point.elevation < min_ele) ? new_point.elevation : min_ele;
-
-					prev_lat = new_point.latitude;
-					prev_lon = new_point.longitude;
-					prev_time = new_point.time;
+					segment_prev_lat = new_point.latitude;
+					segment_prev_lon = new_point.longitude;
+					segment_prev_time = new_point.time;
 
 					new_segment.points.push(new_point);
 				}
+
+				// record all datapoints in the whole file sequence unless the datapoint has already been recorded
+				if (!doing_point_again) {
+
+					wholefile_distance_deltas.push(new_wholefile_ddelta);
+					wholefile_distance_aggrs.push(wholefile_distance_aggrs[wholefile_distance_aggrs.length - 1] + new_wholefile_ddelta);
+					wholefile_time_deltas.push(new_wholefile_tdelta);
+					wholefile_time_aggrs.push(wholefile_time_aggrs[wholefile_time_aggrs.length - 1] + new_wholefile_tdelta);
+					wholefile_max_ele = (new_point.elevation > wholefile_max_ele) ? new_point.elevation : wholefile_max_ele;
+					wholefile_min_ele = (new_point.elevation < wholefile_min_ele) ? new_point.elevation : wholefile_min_ele;
+
+					wholefile_prev_lat = new_point.latitude;
+					wholefile_prev_lon = new_point.longitude;
+					wholefile_prev_time = new_point.time;
+
+					wholefile.points.push(Object.assign({}, new_point));
+				}
+				doing_point_again = false;
 
 				// the current datapoint is the last in the segment, so finalize the data in this segment
 				if ((start_new_segment || last_datapoint) && new_segment.points.length) {
@@ -218,14 +254,9 @@ export default {
 
 					let segment_end_index = (last_datapoint) ? p : p - 1;
 					segment_num += 1;
-					if (last_datapoint && segment_start_index === 0) {
-						// the current segment is the whole file being imported
-						new_segment['has_outliers'] = false;
-						new_segment['matches_file'] = true;
-						new_segment['filename_printed'] = filename;
-						new_segment['file_content'] = gpx_xml;
-					} else {
-						// the current segment is only part of the file being imported
+
+					// the current segment is only part of the file being imported
+					if (!last_datapoint || segment_start_index !== 0) {
 						new_segment['matches_file'] = false;
 						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 						new_segment['new_filename'] = filename.slice(0,-4) + '_part' + segment_num + '.gpx';
@@ -237,25 +268,45 @@ export default {
 						let serializer = new XMLSerializer();
 						let serialized_xml = serializer.serializeToString(segment_xml_doc);
 						new_segment['file_content'] = serialized_xml;
+						new_segment['arr_distance_deltas'] = segment_distance_deltas;
+						new_segment['arr_distance_aggrs'] = segment_distance_aggrs;
+						new_segment['arr_time_deltas'] = segment_time_deltas;
+						new_segment['arr_time_aggrs'] = segment_time_aggrs;
+						new_segment['total_distance'] = segment_distance_aggrs[segment_distance_aggrs.length - 1];
+						new_segment['total_time'] = segment_time_aggrs[segment_time_aggrs.length - 1];
+						new_segment['average_pace'] = 60 * 60 * new_segment.total_distance / new_segment.total_time;
+						new_segment['start_time'] = new_segment.points[0].time;
+						new_segment['maximum_elevation'] = segment_max_ele;
+						new_segment['minimum_elevation'] = segment_min_ele;
+						// eslint-disable-next-line no-console
+						console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
+						this.sequences.push(new_segment);
 					}
 
-					new_segment['arr_distance_deltas'] = arr_distance_deltas;
-					new_segment['arr_distance_aggrs'] = arr_distance_aggrs;
-					new_segment['arr_time_deltas'] = arr_time_deltas;
-					new_segment['arr_time_aggrs'] = arr_time_aggrs;
-					new_segment['total_distance'] = new_segment.arr_distance_aggrs[arr_distance_aggrs.length - 1];
-					new_segment['total_time'] = new_segment.arr_time_aggrs[arr_time_aggrs.length - 1];
-					new_segment['average_pace'] = 60 * 60 * new_segment.total_distance / new_segment.total_time;
-					new_segment['start_time'] = new_segment.points[0].time;
-					new_segment['maximum_elevation'] = max_ele;
-					new_segment['minimum_elevation'] = min_ele;
-
-					// eslint-disable-next-line no-console
-					console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
-					this.sequences.push(new_segment);
+					// the current segment is the last segment
+					if (last_datapoint) {
+						wholefile['has_outliers'] = false;
+						wholefile['matches_file'] = true;
+						wholefile['filename_printed'] = filename;
+						wholefile['file_content'] = gpx_xml;
+						wholefile['arr_distance_deltas'] = wholefile_distance_deltas;
+						wholefile['arr_distance_aggrs'] = wholefile_distance_aggrs;
+						wholefile['arr_time_deltas'] = wholefile_time_deltas;
+						wholefile['arr_time_aggrs'] = wholefile_time_aggrs;
+						wholefile['total_distance'] = wholefile_distance_aggrs[wholefile_distance_aggrs.length - 1];
+						wholefile['total_time'] = wholefile_time_aggrs[wholefile_time_aggrs.length - 1];
+						wholefile['average_pace'] = 60 * 60 * wholefile.total_distance / wholefile.total_time;
+						wholefile['start_time'] = wholefile.points[0].time;
+						wholefile['maximum_elevation'] = wholefile_max_ele;
+						wholefile['minimum_elevation'] = wholefile_min_ele;
+						// eslint-disable-next-line no-console
+						console.log('  saved ' + wholefile.points.length + ' points for sequence: ' + wholefile.name);
+						this.sequences.push(wholefile);
+					}
 
 					if (!last_datapoint) {
-						p -= 1; // re-loop on this point, since it may not be an outlier in the next segment
+						doing_point_again = true; // re-loop on this point, since it may not be an outlier in the next segment
+						p -= 1;
 						segment_start_index = p;
 					}
 				}
