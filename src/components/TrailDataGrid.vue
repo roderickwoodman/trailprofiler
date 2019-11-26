@@ -29,7 +29,7 @@
                     <td v-bind:class="{ sort_key: sort_key==='name' }">
                         <span v-if="editing_uuid!==sequence.uuid" class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
                         <form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
-							<input name="new_name_edits" class="sequence_name" :class="plotted_class(sequence.uuid)" v-model="new_name_edits" />
+							<input name="new_name_edits" class="sequence_name editing" :class="plotted_class(sequence.uuid)" v-model="new_name_edits" />
 							<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
 						</form>
                         <span v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename_printed }}</span>
@@ -211,8 +211,6 @@ export default {
 	label {
 		margin: 5px 0;
 		display: block;
-	}
-	label, input {
 		max-width: 250px;
 		cursor: pointer;
 	}
@@ -245,10 +243,15 @@ export default {
         font-weight: 800;
         line-height: 1em;
     }
+	.sequence_name.editing {
+		border: 5px solid red;
+        padding: 2px 2px;
+		width: 100%;
+	}
     .sequence_name,
     .sequence_filename,
     .info_message {
-        padding: 5px 5px;
+        padding: 7px 7px;
         display: block;
     }
     .sequence_filename,
