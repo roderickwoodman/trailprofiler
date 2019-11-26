@@ -17,7 +17,7 @@
     </select>
     </span>
 
-    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
   </div>
 </template>
@@ -326,6 +326,12 @@ export default {
 		},
 		deg2rad: function(deg) {
 			return deg * (Math.PI/180);
+		},
+		submitSequenceEdits: function (e) {
+			let sequence_uuid = e.target['sequence_uuid'].value;
+			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+			this.sequences[sequence_num].name = e.target['new_name_edits'].value;
+			e.preventDefault();
 		},
 		clickedPlotSequence: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
