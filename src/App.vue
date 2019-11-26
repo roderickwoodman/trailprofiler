@@ -288,6 +288,7 @@ export default {
 						wholefile['has_outliers'] = false;
 						wholefile['matches_file'] = true;
 						wholefile['filename_printed'] = filename;
+						wholefile['new_filename'] = filename;
 						wholefile['file_content'] = gpx_xml;
 						wholefile['arr_distance_deltas'] = wholefile_distance_deltas;
 						wholefile['arr_distance_aggrs'] = wholefile_distance_aggrs;
