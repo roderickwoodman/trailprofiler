@@ -7,9 +7,9 @@
         <label for="show_only_plotted">
         <input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
 			show row only if plotted</label>
-        <label for="show_filenames">
-			<input type="checkbox" id="show_filenames" value="false" v-model="show_filenames">
-			show filenames of each row</label>
+        <label for="show_details">
+			<input type="checkbox" id="show_details" value="false" v-model="show_details">
+			show details of each row</label>
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
@@ -32,7 +32,8 @@
 							<input name="new_name_edits" class="sequence_name editing" :class="plotted_class(sequence.uuid)" v-model="new_name_edits" />
 							<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
 						</form>
-                        <span v-if="show_filenames" class="sequence_filename">file: {{ sequence.filename_printed }}</span>
+                        <span v-if="show_details" class="sequence_filename">file: {{ sequence.filename_printed }}</span>
+                        <span v-if="show_details" class="sequence_creator">creator: {{ sequence.creator }}</span>
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                         <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>
@@ -61,7 +62,7 @@ export default {
 	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
-			show_filenames: false,
+			show_details: false,
 			show_only_plotted: false,
 			sort_key: 'total_distance',
 			sort_dir_asc: true,
@@ -96,8 +97,8 @@ export default {
 		if (localStorage.sort_dir_asc) {
 			this.sort_dir_asc = JSON.parse(localStorage.sort_dir_asc);
 		}
-		if (localStorage.show_filenames) {
-			this.show_filenames = JSON.parse(localStorage.show_filenames);
+		if (localStorage.show_details) {
+			this.show_details = JSON.parse(localStorage.show_details);
 		}
 		if (localStorage.show_only_plotted) {
 			this.show_only_plotted = JSON.parse(localStorage.show_only_plotted);
@@ -114,9 +115,9 @@ export default {
 				localStorage.sort_dir_asc = JSON.stringify(new_sort_dir_asc);
 			}
 		},
-		show_filenames: {
-			handler: function (new_show_filenames) {
-				localStorage.show_filenames = JSON.stringify(new_show_filenames);
+		show_details: {
+			handler: function (new_show_details) {
+				localStorage.show_details = JSON.stringify(new_show_details);
 			}
 		},
 		show_only_plotted: {

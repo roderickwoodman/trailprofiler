@@ -115,6 +115,8 @@ export default {
 			parser = new DOMParser();
 			xml_doc = parser.parseFromString(gpx_xml, 'text/xml');
 
+			let metadata = xml_doc.getElementsByTagName('gpx');
+			let creator = metadata[0].getAttribute('creator');
 			let points = xml_doc.getElementsByTagName('trkpt');
 			let wholefile_min_ele = parseInt(points[0].getElementsByTagName('ele')[0].innerHTML);
 			let wholefile_max_ele = wholefile_min_ele;
@@ -140,6 +142,7 @@ export default {
 			wholefile['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
 			wholefile['filename'] = filename;
 			wholefile['filename_printed'] = filename;
+			wholefile['creator'] = (creator === '' ) ? '(none listed)' : creator;
 			wholefile['uuid'] = this.generate_uuidv4();
 			wholefile['points'] = [];
 			wholefile['is_plotted'] = false;
@@ -168,6 +171,7 @@ export default {
 					} else {
 						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 					}
+					new_segment['creator'] = (creator === '' ) ? '(none listed)' : creator;
 					new_segment['uuid'] = this.generate_uuidv4();
 					new_segment['points'] = [];
 					new_segment['is_plotted'] = false;
