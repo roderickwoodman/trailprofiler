@@ -32,8 +32,8 @@
 							<input name="new_name_edits" class="sequence_name editing" :class="plotted_class(sequence.uuid)" v-model="new_name_edits" />
 							<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
 						</form>
-                        <span v-if="show_details" class="sequence_filename">file: {{ sequence.filename_printed }}</span>
-                        <span v-if="show_details" class="sequence_creator">creator: {{ sequence.creator }}</span>
+                        <span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
+                        <span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                         <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>
@@ -249,13 +249,16 @@ export default {
         padding: 2px 2px;
 		width: 100%;
 	}
+    .sequence_details {
+        padding: 4px 4px;
+        display: block;
+    }
     .sequence_name,
-    .sequence_filename,
     .info_message {
         padding: 7px 7px;
         display: block;
     }
-    .sequence_filename,
+    .sequence_details,
     .info_message {
         font-size: 0.75em;
         line-height: 0.75em;
