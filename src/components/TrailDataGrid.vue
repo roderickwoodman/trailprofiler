@@ -18,7 +18,7 @@
                     <th scope="col">Actions</th>
                     <th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
                     <th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
-                    <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace ({{ units === 'english' ? 'mph' : 'kph' }})</th>
+                    <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace ({{ units === 'english' ? 'min/mi' : 'min/km' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                 </tr>
@@ -46,7 +46,7 @@
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ to_desired_units("kph", sequence.average_pace) | to_tenths }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ to_desired_units("secsperkm", sequence.average_pace) | to_timeformat }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
                 </tr>
@@ -144,9 +144,15 @@ export default {
 				} else {
 					return value;
 				}
-			} else if (starting_units === 'km' || starting_units === 'kph') {  // kilometers to miles OR kph to mph
+			} else if (starting_units === 'km') {  // kilometers to miles
 				if (this.units === 'english') {
 					return value * 0.621371;
+				} else {
+					return value;
+				}
+			} else if (starting_units === 'secsperkm') {  // seconds per km to seconds per mi
+				if (this.units === 'english') {
+					return value * 1.60934;
 				} else {
 					return value;
 				}
@@ -198,6 +204,25 @@ export default {
 		},
 		to_tenths: function (number) {
 			return (Math.round(10*parseFloat(number))/10).toFixed(1);
+		},
+		to_timeformat: function (total_seconds) {
+			let retval = '';
+			let seconds_digits = Math.round(total_seconds % 60);
+			let total_minutes = Math.floor(total_seconds / 60);
+			let minutes_digits = Math.round(total_minutes % 60);
+			let hours = Math.floor(total_minutes / 60);
+			if (hours > 0) {
+				retval += hours + ':';
+			}
+			if (minutes_digits < 10 && hours > 0) {
+				minutes_digits = '0' + minutes_digits;
+			}
+			retval += minutes_digits + ':';
+			if (seconds_digits < 10) {
+				seconds_digits = '0' + seconds_digits;
+			}
+			retval += seconds_digits;
+			return retval;
 		}
 	}
 };

@@ -278,7 +278,7 @@ export default {
 						new_segment['arr_time_aggrs'] = segment_time_aggrs;
 						new_segment['total_distance'] = segment_distance_aggrs[segment_distance_aggrs.length - 1];
 						new_segment['total_time'] = segment_time_aggrs[segment_time_aggrs.length - 1];
-						new_segment['average_pace'] = 60 * 60 * new_segment.total_distance / new_segment.total_time;
+						new_segment['average_pace'] = new_segment.total_time / new_segment.total_distance; // seconds per km
 						new_segment['start_time'] = new_segment.points[0].time;
 						new_segment['maximum_elevation'] = segment_max_ele;
 						new_segment['minimum_elevation'] = segment_min_ele;
@@ -300,7 +300,7 @@ export default {
 						wholefile['arr_time_aggrs'] = wholefile_time_aggrs;
 						wholefile['total_distance'] = wholefile_distance_aggrs[wholefile_distance_aggrs.length - 1];
 						wholefile['total_time'] = wholefile_time_aggrs[wholefile_time_aggrs.length - 1];
-						wholefile['average_pace'] = 60 * 60 * wholefile.total_distance / wholefile.total_time;
+						wholefile['average_pace'] = wholefile.total_time / wholefile.total_distance; // seconds per km
 						wholefile['start_time'] = wholefile.points[0].time;
 						wholefile['maximum_elevation'] = wholefile_max_ele;
 						wholefile['minimum_elevation'] = wholefile_min_ele;
