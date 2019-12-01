@@ -115,8 +115,12 @@ export default {
 			parser = new DOMParser();
 			xml_doc = parser.parseFromString(gpx_xml, 'text/xml');
 
-			let metadata = xml_doc.getElementsByTagName('gpx');
-			let creator = metadata[0].getAttribute('creator');
+			let gpx = xml_doc.getElementsByTagName('gpx');
+			let creator = gpx[0].getAttribute('creator');
+			let metadata = xml_doc.getElementsByTagName('metadata');
+			let link = metadata[0].getElementsByTagName('link');
+			let metadata_link = link[0].getAttribute('href');
+			let metadata_linktext = link[0].getElementsByTagName('text')[0].innerHTML;
 			let points = xml_doc.getElementsByTagName('trkpt');
 			let wholefile_min_ele = parseInt(points[0].getElementsByTagName('ele')[0].innerHTML);
 			let wholefile_max_ele = wholefile_min_ele;
@@ -143,6 +147,8 @@ export default {
 			wholefile['filename'] = filename;
 			wholefile['filename_printed'] = filename;
 			wholefile['creator'] = (creator === '' ) ? '(none listed)' : creator;
+			wholefile['metadata_link'] = metadata_link;
+			wholefile['metadata_linktext'] = metadata_linktext;
 			wholefile['uuid'] = this.generate_uuidv4();
 			wholefile['points'] = [];
 			wholefile['is_plotted'] = false;
@@ -172,6 +178,8 @@ export default {
 						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 					}
 					new_segment['creator'] = (creator === '' ) ? '(none listed)' : creator;
+					new_segment['metadata_link'] = metadata_link;
+					new_segment['metadata_linktext'] = metadata_linktext;
 					new_segment['uuid'] = this.generate_uuidv4();
 					new_segment['points'] = [];
 					new_segment['is_plotted'] = false;
