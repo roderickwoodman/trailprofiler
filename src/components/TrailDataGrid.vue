@@ -34,7 +34,7 @@
 						</form>
                         <span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
                         <span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
-                        <span v-if="show_details" class="sequence_details">link: <a :href="'https://'+sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
+                        <span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
                         <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                         <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
                     </td>

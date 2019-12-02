@@ -178,7 +178,7 @@ export default {
 						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 					}
 					new_segment['creator'] = (creator === '' ) ? 'TrailProfiler' : 'TrailProfiler (via '+creator+')';
-					new_segment['metadata_link'] = 'trailprofiler.com';
+					new_segment['metadata_link'] = 'https://trailprofiler.com';
 					new_segment['metadata_linktext'] = 'TrailProfiler.com';
 					new_segment['uuid'] = this.generate_uuidv4();
 					new_segment['points'] = [];
