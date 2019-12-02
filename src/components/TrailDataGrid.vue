@@ -25,7 +25,7 @@
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
-                    <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container">
+                    <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div class="name_title">
 							<span v-if="editing_uuid!==sequence.uuid" class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
 							<form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
@@ -38,7 +38,7 @@
 							<span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
-						<div class="name_actions">
+						<div class="name_actions" v-show="hoveringon_uuid === sequence.uuid">
 							<b-button v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
 							<b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
 							<b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" /></b-button>
@@ -69,7 +69,8 @@ export default {
 			sort_key: 'total_distance',
 			sort_dir_asc: true,
 			editing_uuid: null,
-			new_name_edits: ''
+			new_name_edits: '',
+			hoveringon_uuid: null
 		};
 	},
 	computed: {
