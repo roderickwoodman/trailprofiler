@@ -15,7 +15,6 @@
                 <tr>
                     <th scope="col" class="sortable" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
                     <th scope="col" class="sortable" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
-                    <th scope="col">Actions</th>
                     <th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
                     <th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace ({{ units === 'english' ? 'min/mi' : 'min/km' }})</th>
@@ -26,24 +25,26 @@
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
-                    <td v-bind:class="{ sort_key: sort_key==='name' }">
-                        <span v-if="editing_uuid!==sequence.uuid" class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
-                        <form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
-							<input name="new_name_edits" class="sequence_name editing" :class="plotted_class(sequence.uuid)" v-model="new_name_edits" />
-							<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
-						</form>
-                        <span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
-                        <span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
-                        <span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
-                        <span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
-                        <span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
-                    </td>
-                    <td class="actions">
-                        <b-button v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
-                        <b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
-                        <b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm btn-primary" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" /></b-button>
-                        <b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm btn-primary" v-on:click="clickedSaveSequence(sequence.uuid)"><font-awesome-icon icon="save" /></b-button>
-                        <b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm btn-primary" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
+                    <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container">
+						<div class="name_title">
+							<span v-if="editing_uuid!==sequence.uuid" class="sequence_name" :class="plotted_class(sequence.uuid)">{{ sequence.name }}</span>
+							<form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
+								<input name="new_name_edits" class="sequence_name editing" :class="plotted_class(sequence.uuid)" v-model="new_name_edits" />
+								<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
+							</form>
+							<span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
+							<span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
+							<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
+							<span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+						</div>
+						<div class="name_actions">
+							<b-button v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
+							<b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" /></b-button>
+							<b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" /></b-button>
+							<b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveSequence(sequence.uuid)"><font-awesome-icon icon="save" /></b-button>
+							<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" /></b-button>
+						</div>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
@@ -262,9 +263,31 @@ export default {
 	tr > td {
 		vertical-align: middle;
 	}
-	td.actions {
+	.b-button {
+		background: yellow;
+	}
+	.btn.btn-sm {
+		color: black;
+		border: 0;
+		margin: 0;
+		padding: 3px;
+	}
+	.name_container {
+		position: relative;
+	}
+	.name_actions {
 		display: flex;
-		justify-content: center;
+		justify-content: flex-end;
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		width: 25%;
+		border: 1px solid black;
+		background: white;
+		opacity: 0.8;
+	}
+	.name_title {
+		width: 75%;
 	}
     .sequence_name {
         font-weight: 800;
