@@ -177,9 +177,9 @@ export default {
 					} else {
 						new_segment['filename_printed'] = 'N/A (this is only part of an imported file)';
 					}
-					new_segment['creator'] = (creator === '' ) ? '(none listed)' : creator;
-					new_segment['metadata_link'] = metadata_link;
-					new_segment['metadata_linktext'] = metadata_linktext;
+					new_segment['creator'] = (creator === '' ) ? 'TrailProfiler' : 'TrailProfiler (via '+creator+')';
+					new_segment['metadata_link'] = 'trailprofiler.com';
+					new_segment['metadata_linktext'] = 'TrailProfiler.com';
 					new_segment['uuid'] = this.generate_uuidv4();
 					new_segment['points'] = [];
 					new_segment['is_plotted'] = false;
