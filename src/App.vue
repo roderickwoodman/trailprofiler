@@ -364,6 +364,9 @@ export default {
 			let filename = this.sequences[sequence_num].new_filename;
 			let content_to_write=this.sequences[sequence_num].file_content;
 			content_to_write = content_to_write.replace(/<name>[\s\S]*?<\/name>/, '<name>' + this.sequences[sequence_num].name + '</name>');
+			content_to_write = content_to_write.replace(/creator="[\s\S]*?"/, 'creator="' + this.sequences[sequence_num].creator + '"');
+			content_to_write = content_to_write.replace(/<link href="[\s\S]*?">/, '<link href="' + this.sequences[sequence_num].metadata_link + '">');
+			content_to_write = content_to_write.replace(/<text>[\s\S]*?<\/text>/, '<text>' + this.sequences[sequence_num].metadata_linktext + '</text>');
 
 			var pom = document.createElement('a');
 			pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content_to_write));
