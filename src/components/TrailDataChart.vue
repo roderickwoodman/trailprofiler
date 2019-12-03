@@ -751,6 +751,7 @@ export default {
 	/* 16 distinct colors from: https://alumni.media.mit.edu/~wad/color/numbers.html */
 	/* purple */
 	.plotted-label-a,
+	.fa.plotted-label-a,
 	.ct-series-a .ct-line,
 	.ct-series-a .ct-point {
 		color: white;
@@ -759,6 +760,7 @@ export default {
 	}
 	/* cyan */
 	.plotted-label-b,
+	.fa.plotted-label-b,
 	.ct-series-b .ct-line,
 	.ct-series-b .ct-point {
 		color: black;
@@ -767,6 +769,7 @@ export default {
 	}
 	/* orange */
 	.plotted-label-c,
+	.fa.plotted-label-c,
 	.ct-series-c .ct-line,
 	.ct-series-c .ct-point {
 		color: black;
@@ -775,6 +778,7 @@ export default {
 	}
 	/* green */
 	.plotted-label-d,
+	.fa.plotted-label-d,
 	.ct-series-d .ct-line,
 	.ct-series-d .ct-point {
 		color: white;
@@ -783,6 +787,7 @@ export default {
 	}
 	/* yellow */
 	.plotted-label-e,
+	.fa.plotted-label-e,
 	.ct-series-e .ct-line,
 	.ct-series-e .ct-point {
 		color: black;
@@ -791,6 +796,7 @@ export default {
 	}
 	/* blue */
 	.plotted-label-f,
+	.fa.plotted-label-f,
 	.ct-series-f .ct-line,
 	.ct-series-f .ct-point {
 		color: white;
@@ -799,6 +805,7 @@ export default {
 	}
 	/* brown */
 	.plotted-label-g,
+	.fa.plotted-label-g,
 	.ct-series-g .ct-line,
 	.ct-series-g .ct-point {
 		color: white;
@@ -807,6 +814,7 @@ export default {
 	}
 	/* red */
 	.plotted-label-h,
+	.fa.plotted-label-h,
 	.ct-series-h .ct-line,
 	.ct-series-h .ct-point {
 		color: white;
@@ -815,6 +823,7 @@ export default {
 	}
 	/* light gray */
 	.plotted-label-i,
+	.fa.plotted-label-i,
 	.ct-series-i .ct-line,
 	.ct-series-i .ct-point {
 		color: black;
@@ -823,6 +832,7 @@ export default {
 	}
 	/* light green */
 	.plotted-label-j,
+	.fa.plotted-label-j,
 	.ct-series-j .ct-line,
 	.ct-series-j .ct-point {
 		color: black;
@@ -830,33 +840,51 @@ export default {
 		stroke: rgb(129,197,122);
 	}
 	/* light blue */
+	.plotted-label-k,
+	.fa.plotted-label-k,
 	.ct-series-k .ct-line,
 	.ct-series-k .ct-point {
 		stroke: rgb(157,175,255);
 	}
 	/* tan */
+	.plotted-label-l,
+	.fa.plotted-label-l,
 	.ct-series-l .ct-line,
 	.ct-series-l .ct-point {
 		stroke: rgb(233,222,187);
 	}
+	.plotted-label-m,
+	.fa.plotted-label-m,
 	/* pink */
 	.ct-series-m .ct-line,
 	.ct-series-m .ct-point {
 		stroke: rgb(255,205,243);
 	}
 	/* white */
+	.plotted-label-n,
+	.fa.plotted-label-n,
 	.ct-series-n .ct-line,
 	.ct-series-n .ct-point {
 		stroke: rgb(255,255,255);
 	}
 	/* black */
+	.plotted-label-o,
+	.fa.plotted-label-o,
 	.ct-series-o .ct-line,
 	.ct-series-o .ct-point {
 		stroke: rgb(0,0,0);
 	}
 	/* dark gray */
+	.plotted-label-p,
+	.fa.plotted-label-p,
 	.ct-series-p .ct-line,
 	.ct-series-p .ct-point {
 		stroke: rgb(87,87,87);
+	}
+	/* default */
+	.not_plotted {
+		color: black;
+		background-color: transparent;
+		stroke: rgb(129,38,192);
 	}
 </style>
