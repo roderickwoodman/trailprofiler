@@ -4,9 +4,13 @@
     <h1>Trail Chart</h1>
     <TrailDataChart :units="units" :sequences="sequences" :plot_order="plot_order" />
 
-    <form id="file-input-form" class="mx-auto pt-3" style="width: 300px">
-        <label for="my-file" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
-        <input @change="onFileChange" id="my-file" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
+    <form id="gpx-file-input-form" class="mx-auto pt-3" style="width: 300px">
+        <label for="my-gpx-files" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
+        <input @change="onGpxFileChange" id="my-gpx-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
+    </form>
+    <form id="image-file-input-form" class="mx-auto pt-3" style="width: 300px">
+        <label for="my-image-files" class="btn btn-primary" style="width: 100%">Import Images <font-awesome-icon icon="upload" /></label>
+        <input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" type="file" />
     </form>
 
     <h1>Trail Data</h1>
@@ -24,6 +28,7 @@
 <script>
 import TrailDataChart from './components/TrailDataChart.vue';
 import TrailDataGrid from './components/TrailDataGrid.vue';
+import EXIF from 'exif-js';
 
 export default {
 	name: 'app',
@@ -92,7 +97,7 @@ export default {
 				return v.toString(16);
 			});
 		},
-		onFileChange: function(evt) {
+		onGpxFileChange: function(evt) {
 			const files = evt.target.files;
 			Object.keys(files).forEach(i => {
 				const file = files[i];
@@ -101,6 +106,17 @@ export default {
 					this.addSequence(file.name, evt.target.result);
 				};
 				reader.readAsText(file);
+			});
+		},
+		onImageFileChange: function(evt) {
+			const files = evt.target.files;
+			Object.keys(files).forEach(i => {
+				const file = files[i];
+				EXIF.getData(file, function() {
+					let all_tags = EXIF.getAllTags(this);
+					// eslint-disable-next-line no-console
+					console.log('exif data: ', all_tags);
+				});
 			});
 		},
 		arrayAverage: function(arr) {

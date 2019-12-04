@@ -12,7 +12,6 @@ import {faUpload} from '@fortawesome/free-solid-svg-icons';
 import {faSave} from '@fortawesome/free-solid-svg-icons';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-
 library.add(faChartLine);
 library.add(faBan);
 library.add(faTrash);
