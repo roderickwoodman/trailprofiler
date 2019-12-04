@@ -10,7 +10,7 @@
     </form>
     <form id="image-file-input-form" class="mx-auto pt-3" style="width: 300px">
         <label for="my-image-files" class="btn btn-primary" style="width: 100%">Import Images <font-awesome-icon icon="upload" /></label>
-        <input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" type="file" />
+        <input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" multiple type="file" />
     </form>
 
     <h1>Trail Data</h1>
@@ -20,24 +20,31 @@
         <option value="metric">Metric</option>
     </select>
     </span>
-
     <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+
+    <h1>Trail Photos</h1>
+    <TrailPhotosGrid :photos="photos" />
 
   </div>
 </template>
+
+
 <script>
 import TrailDataChart from './components/TrailDataChart.vue';
 import TrailDataGrid from './components/TrailDataGrid.vue';
+import TrailPhotosGrid from './components/TrailPhotosGrid.vue';
 import EXIF from 'exif-js';
 
 export default {
 	name: 'app',
 	components: {
 		TrailDataChart,
-		TrailDataGrid
+		TrailDataGrid,
+		TrailPhotosGrid
 	},
 	data() {
 		return {
+			photos: [],
 			sequences: [],
 			plot_order: [],
 			units: 'english',
@@ -110,12 +117,18 @@ export default {
 		},
 		onImageFileChange: function(evt) {
 			const files = evt.target.files;
+			let self = this;
 			Object.keys(files).forEach(i => {
+				let new_photo = {};
+				new_photo['uuid'] = this.generate_uuidv4();
 				const file = files[i];
+				new_photo['filename'] = file.name;
 				EXIF.getData(file, function() {
-					let all_tags = EXIF.getAllTags(this);
+					let exif = EXIF.getAllTags(this);
 					// eslint-disable-next-line no-console
-					console.log('exif data: ', all_tags);
+					console.log('exif data: ', exif);
+					new_photo['exif'] = exif;
+					self.photos.push(new_photo);
 				});
 			});
 		},
