@@ -24,7 +24,7 @@
             </thead>
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
-                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring }}</td>
+                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring_from_epoch }}</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div class="namecontent_colored" :class="plotted_classes(sequence.uuid)">
 							<div class="namecontent_title">
@@ -191,7 +191,7 @@ export default {
 		}
 	},
 	filters: {
-		to_datestring: function (epoch) {
+		to_datestring_from_epoch: function (epoch) {
 			if (!epoch) return '';
 			let converted = new Date(epoch);
 			return converted.toDateString();
