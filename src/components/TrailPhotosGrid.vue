@@ -4,13 +4,13 @@
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
-                    <th>Date - Time</th>
-                    <th>Filename</th>
-                    <th>Camera</th>
+                    <th @click="do_sort('datetime')">Date - Time</th>
+                    <th @click="do_sort('filename')">Filename</th>
+                    <th @click="do_sort('camera')">Camera</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="photo.uuid" v-for="photo in photos">
+                <tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos">
                     <td>{{ photo.exif.DateTime | to_datetimestring_from_ymdhms }}</td>
                     <td>{{ photo.filename }}</td>
                     <td>{{ photo.exif.Make }} {{ photo.exif.Model }}</td>
@@ -25,6 +25,38 @@
 
 export default {
 	props: ['photos'],
+	data() {
+		return {
+			sort_key: 'datetime',
+			sort_dir_asc: true
+		};
+	},
+	computed: {
+		sortedPhotos: function() {
+			let cloned = [...this.photos];
+			let key = this.sort_key;
+			let direction_asc = this.sort_dir_asc;
+			return cloned.sort(function(a,b) {
+				if (direction_asc === true) {
+					return (a[key] < b[key]) ? 1 : -1;
+				} else {
+					return (a[key] > b[key]) ? 1 : -1;
+				}
+			});
+		}
+	},
+	methods: {
+		do_sort: function (new_sort_key) {
+			if (new_sort_key !== this.sort_key) {
+				this.sort_key = new_sort_key;
+			} else {
+				this.change_sort_dir();
+			}
+		},
+		change_sort_dir: function() {
+			this.sort_dir_asc = !this.sort_dir_asc;
+		}
+	},
 	filters: {
 		to_datetimestring_from_ymdhms: function (ymdhms) { // expect "yyyy:mm:dd hh:mm:ss"
 			if (!ymdhms) return '';
