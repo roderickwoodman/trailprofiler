@@ -30,10 +30,10 @@
     </select>
     </span>
 	</div>
-    <TrailDataGrid :units="units" :time_format="time_format" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :units="units" :epoch_to_timestring="epoch_to_timestring" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
     <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" :time_format="time_format" />
+    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" />
 
   </div>
 </template>
@@ -446,6 +446,15 @@ export default {
 		acknowledgeInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].acknowledged = true;
+		},
+		epoch_to_timestring: function (epoch) {
+			if (!epoch) return '';
+			const leadingZero = (num) => (0 + num.toString()).slice(-2);
+			let date = new Date(epoch);
+			let hours = (this.time_format === 'ampm') ? (date.getHours() + 11) % 12 + 1 : date.getHours();
+			let minutes = date.getMinutes();
+			let suffix = (this.time_format !== 'ampm') ? '' : (date.getHours() < 12) ? 'AM' : 'PM';
+			return leadingZero(hours) + ':' + leadingZero(minutes) + ' ' + suffix;
 		}
 	}
 };

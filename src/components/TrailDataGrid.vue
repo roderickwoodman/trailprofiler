@@ -14,16 +14,16 @@
                     <th scope="col" class="sortable" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
                     <th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
                     <th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
-                    <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace ({{ units === 'english' ? 'min/mi' : 'min/km' }})</th>
+                    <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace (per {{ units === 'english' ? 'mi' : 'km' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                     <th scope="col" class="sortable" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
-                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring_from_epoch }}
-						<span v-if="show_details" class="sequence_details">start: {{ to_timestring_from_epoch(sequence.start_time) }}</span>
-						<span v-if="show_details" class="sequence_details">end: {{ to_timestring_from_epoch(sequence.end_time) }}</span>
+                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | epoch_to_datestring }}
+						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
+						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
 					</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div class="namecontent_colored" :class="plotted_classes(sequence.uuid)">
@@ -51,9 +51,9 @@
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
                     </td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ sequence.total_time | to_hmm }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hms(sequence.total_time) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ to_desired_units("secsperkm", sequence.average_pace) | to_timeformat }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
                 </tr>
@@ -66,7 +66,7 @@
 <script>
 
 export default {
-	props: ['units', 'time_format', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
+	props: ['units', 'epoch_to_timestring', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
 			show_details: false,
@@ -166,15 +166,6 @@ export default {
 				}
 			}
 		},
-		to_timestring_from_epoch: function (epoch) {
-			if (!epoch) return '';
-			const leadingZero = (num) => (0 + num.toString()).slice(-2);
-			let date = new Date(epoch);
-			let hours = (this.time_format === 'ampm') ? (date.getHours() + 11) % 12 + 1 : date.getHours();
-			let minutes = date.getMinutes();
-			let suffix = (this.time_format !== 'ampm') ? '' : (date.getHours() < 12) ? 'AM' : 'PM';
-			return leadingZero(hours) + ':' + leadingZero(minutes) + ' ' + suffix;
-		},
 		plotted_classes: function (sequence_uuid) {
 			let plot_order_index = this.plot_order.findIndex( uuid => uuid === sequence_uuid);
 			if (plot_order_index === -1) {
@@ -197,49 +188,47 @@ export default {
 			this.editing_uuid = null;
 			this.new_name_edits = '';
 			this.submitSequenceEdits(e);
-		}
-	},
-	filters: {
-		to_datestring_from_epoch: function (epoch) {
-			if (!epoch) return '';
-			let converted = new Date(epoch);
-			return converted.toDateString();
 		},
-		to_hmm: function (seconds) {
+		seconds_to_hms: function (seconds) {
+			const leadingZero = (num) => (0 + num.toString()).slice(-2);
 			let tot = Number(seconds);
 			let d = Math.floor(tot / 86400);
 			let h = Math.floor(tot % 86400 / 3600);
 			let m = Math.floor(tot % 86400 % 3600 / 60);
-			if (d < 1 && m < 10) {
-				m = '0' + m;
+			let s = Math.floor(tot % 86400 % 3600 % 60);
+			if (m > 0) {
+				s = leadingZero(s);
+			}
+			if (h > 0) {
+				m = leadingZero(m);
 			}
 			if (d > 0) {
-				return d + 'd ' + h + 'h ' + m + 'm';
-			} else {
-				return h + ':' + m;
+				h = leadingZero(h);
 			}
+			let retval = '';
+			if (d !== 0) {
+				retval += d + 'd ';
+			}
+			if (h !== 0) {
+				retval += h + 'h ';
+			}
+			if (m !== 0) {
+				retval += m + 'm ';
+			}
+			if (s !== 0) {
+				retval += s + 's ';
+			}
+			return retval;
+		}
+	},
+	filters: {
+		epoch_to_datestring: function (epoch) {
+			if (!epoch) return '';
+			let converted = new Date(epoch);
+			return converted.toDateString();
 		},
 		to_tenths: function (number) {
 			return (Math.round(10*parseFloat(number))/10).toFixed(1);
-		},
-		to_timeformat: function (total_seconds) {
-			let retval = '';
-			let seconds_digits = Math.round(total_seconds % 60);
-			let total_minutes = Math.floor(total_seconds / 60);
-			let minutes_digits = Math.round(total_minutes % 60);
-			let hours = Math.floor(total_minutes / 60);
-			if (hours > 0) {
-				retval += hours + ':';
-			}
-			if (minutes_digits < 10 && hours > 0) {
-				minutes_digits = '0' + minutes_digits;
-			}
-			retval += minutes_digits + ':';
-			if (seconds_digits < 10) {
-				seconds_digits = '0' + seconds_digits;
-			}
-			retval += seconds_digits;
-			return retval;
 		}
 	}
 };
