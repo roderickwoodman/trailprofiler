@@ -24,7 +24,10 @@
             </thead>
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
-                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring_from_epoch }}</td>
+                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring_from_epoch }}
+						<span v-if="show_details" class="sequence_details">start: {{ sequence.start_time | to_timestring_from_epoch }}</span>
+						<span v-if="show_details" class="sequence_details">end: {{ sequence.end_time | to_timestring_from_epoch }}</span>
+					</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div class="namecontent_colored" :class="plotted_classes(sequence.uuid)">
 							<div class="namecontent_title">
@@ -195,6 +198,15 @@ export default {
 			if (!epoch) return '';
 			let converted = new Date(epoch);
 			return converted.toDateString();
+		},
+		to_timestring_from_epoch: function (epoch) {
+			if (!epoch) return '';
+			let date = new Date(epoch);
+			const leadingZero = (num) => (0 + num.toString()).slice(-2);
+			const formatTime = function(date) {
+				return [date.getHours(), date.getMinutes(), date.getSeconds()].map(leadingZero).join(':');
+			};
+			return formatTime(date);
 		},
 		to_hmm: function (seconds) {
 			let tot = Number(seconds);
