@@ -128,6 +128,10 @@ export default {
 					// eslint-disable-next-line no-console
 					console.log('exif data: ', exif);
 					new_photo['exif'] = exif;
+					let params = exif.DateTime.replace(' ',':').split(':');
+					params[1] = parseInt(params[1]) - 1;
+					let date = new Date(...params);
+					new_photo['epoch_time'] = date.getTime();
 					self.photos.push(new_photo);
 				});
 			});

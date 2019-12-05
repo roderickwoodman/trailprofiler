@@ -4,7 +4,7 @@
         <table class="table table-sm table-hover">
             <thead>
                 <tr>
-                    <th @click="do_sort('datetime')">Date - Time</th>
+                    <th @click="do_sort('epoch_time')">Date - Time</th>
                     <th @click="do_sort('filename')">Filename</th>
                     <th @click="do_sort('camera')">Camera</th>
                 </tr>
@@ -27,7 +27,7 @@ export default {
 	props: ['photos'],
 	data() {
 		return {
-			sort_key: 'datetime',
+			sort_key: 'epoch_time',
 			sort_dir_asc: true
 		};
 	},
