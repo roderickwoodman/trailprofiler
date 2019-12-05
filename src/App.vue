@@ -14,16 +14,26 @@
     </form>
 
     <h1>Trail Data</h1>
+	<div>
     <span>Units: 
     <select v-model="units">
         <option value="english" selected>English</option>
         <option value="metric">Metric</option>
     </select>
     </span>
-    <TrailDataGrid :units="units" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+	</div>
+	<div>
+    <span>Time Format: 
+    <select v-model="time_format">
+        <option value="ampm" selected>AM/PM</option>
+        <option value="24hr">24-hr</option>
+    </select>
+    </span>
+	</div>
+    <TrailDataGrid :units="units" :time_format="time_format" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
     <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" />
+    <TrailPhotosGrid :photos="photos" :time_format="time_format" />
 
   </div>
 </template>
@@ -48,6 +58,7 @@ export default {
 			sequences: [],
 			plot_order: [],
 			units: 'english',
+			time_format: 'ampm',
 			plotted_labels: [
 				'plotted-label-a',
 				'plotted-label-b',
@@ -75,6 +86,9 @@ export default {
 		if (localStorage.units) {
 			this.units = JSON.parse(localStorage.units);
 		}
+		if (localStorage.time_format) {
+			this.time_format = JSON.parse(localStorage.time_format);
+		}
 		if (localStorage.plot_order) {
 			this.plot_order = JSON.parse(localStorage.plot_order);
 		}
@@ -89,6 +103,11 @@ export default {
 		units: {
 			handler: function (new_units) {
 				localStorage.units = JSON.stringify(new_units);
+			}
+		},
+		time_format: {
+			handler: function (new_time_format) {
+				localStorage.time_format = JSON.stringify(new_time_format);
 			}
 		},
 		plot_order: {

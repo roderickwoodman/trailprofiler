@@ -1,7 +1,4 @@
 <template>
-  <!-- <div id="app"> -->
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    <!-- <HelloWorld msg="Hola"/> -->
 
     <div class="container table-responsive-sm p-0">
         <label for="show_only_plotted">
@@ -25,8 +22,8 @@
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | to_datestring_from_epoch }}
-						<span v-if="show_details" class="sequence_details">start: {{ sequence.start_time | to_timestring_from_epoch }}</span>
-						<span v-if="show_details" class="sequence_details">end: {{ sequence.end_time | to_timestring_from_epoch }}</span>
+						<span v-if="show_details" class="sequence_details">start: {{ to_timestring_from_epoch(sequence.start_time) }}</span>
+						<span v-if="show_details" class="sequence_details">end: {{ to_timestring_from_epoch(sequence.end_time) }}</span>
 					</td>
                     <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div class="namecontent_colored" :class="plotted_classes(sequence.uuid)">
@@ -69,7 +66,7 @@
 <script>
 
 export default {
-	props: ['units', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
+	props: ['units', 'time_format', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
 			show_details: false,
@@ -169,6 +166,15 @@ export default {
 				}
 			}
 		},
+		to_timestring_from_epoch: function (epoch) {
+			if (!epoch) return '';
+			const leadingZero = (num) => (0 + num.toString()).slice(-2);
+			let date = new Date(epoch);
+			let hours = (this.time_format === 'ampm') ? (date.getHours() + 11) % 12 + 1 : date.getHours();
+			let minutes = date.getMinutes();
+			let suffix = (this.time_format !== 'ampm') ? '' : (date.getHours() < 12) ? 'AM' : 'PM';
+			return leadingZero(hours) + ':' + leadingZero(minutes) + ' ' + suffix;
+		},
 		plotted_classes: function (sequence_uuid) {
 			let plot_order_index = this.plot_order.findIndex( uuid => uuid === sequence_uuid);
 			if (plot_order_index === -1) {
@@ -198,15 +204,6 @@ export default {
 			if (!epoch) return '';
 			let converted = new Date(epoch);
 			return converted.toDateString();
-		},
-		to_timestring_from_epoch: function (epoch) {
-			if (!epoch) return '';
-			let date = new Date(epoch);
-			const leadingZero = (num) => (0 + num.toString()).slice(-2);
-			const formatTime = function(date) {
-				return [date.getHours(), date.getMinutes(), date.getSeconds()].map(leadingZero).join(':');
-			};
-			return formatTime(date);
 		},
 		to_hmm: function (seconds) {
 			let tot = Number(seconds);
