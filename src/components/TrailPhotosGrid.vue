@@ -11,7 +11,8 @@
             </thead>
             <tbody>
                 <tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos">
-                    <td>{{ photo.exif.DateTime | to_datetimestring_from_ymdhms }}</td>
+                    <td>{{ epoch_to_datestring(exifdatetime_to_epoch(photo.exif.DateTime)) }}
+                    - {{ epoch_to_timestring(exifdatetime_to_epoch(photo.exif.DateTime)) }}</td>
                     <td>{{ photo.filename }}</td>
                     <td>{{ photo.exif.Make }} {{ photo.exif.Model }}</td>
                 </tr>
@@ -24,9 +25,10 @@
 <script>
 
 export default {
-	props: ['photos'],
+	props: ['photos', 'epoch_to_timestring', 'epoch_to_datestring'],
 	data() {
 		return {
+			epoch: 0,
 			sort_key: 'epoch_time',
 			sort_dir_asc: true
 		};
@@ -55,6 +57,13 @@ export default {
 		},
 		change_sort_dir: function() {
 			this.sort_dir_asc = !this.sort_dir_asc;
+		},
+		exifdatetime_to_epoch: function (exif_datetime) { // expect "yyyy:mm:dd hh:mm:ss"
+			if (!exif_datetime) return '';
+			let params = exif_datetime.replace(' ',':').split(':');
+			params[1] = parseInt(params[1]) - 1;
+			let date = new Date(...params);
+			return date.getTime();
 		}
 	},
 	filters: {

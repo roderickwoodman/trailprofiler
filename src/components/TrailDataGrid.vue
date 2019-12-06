@@ -21,7 +21,7 @@
             </thead>
             <tbody>
                 <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
-                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ sequence.start_time | epoch_to_datestring }}
+                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ epoch_to_datestring(sequence.start_time) }}
 						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
 						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
 					</td>
@@ -66,7 +66,7 @@
 <script>
 
 export default {
-	props: ['units', 'epoch_to_timestring', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
+	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
 			show_details: false,
@@ -226,11 +226,6 @@ export default {
 		}
 	},
 	filters: {
-		epoch_to_datestring: function (epoch) {
-			if (!epoch) return '';
-			let converted = new Date(epoch);
-			return converted.toDateString();
-		},
 		to_tenths: function (number) {
 			return (Math.round(10*parseFloat(number))/10).toFixed(1);
 		}

@@ -30,10 +30,10 @@
     </select>
     </span>
 	</div>
-    <TrailDataGrid :units="units" :epoch_to_timestring="epoch_to_timestring" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
     <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" />
+    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
 
   </div>
 </template>
@@ -455,7 +455,12 @@ export default {
 			let minutes = date.getMinutes();
 			let suffix = (this.time_format !== 'ampm') ? '' : (date.getHours() < 12) ? 'AM' : 'PM';
 			return leadingZero(hours) + ':' + leadingZero(minutes) + ' ' + suffix;
-		}
+		},
+		epoch_to_datestring: function (epoch) {
+			if (!epoch) return '';
+			let converted = new Date(epoch);
+			return converted.toDateString();
+		},
 	}
 };
 </script>
