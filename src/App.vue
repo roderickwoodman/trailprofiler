@@ -151,6 +151,9 @@ export default {
 					params[1] = parseInt(params[1]) - 1;
 					let date = new Date(...params);
 					new_photo['epoch_time'] = date.getTime();
+					new_photo['iso'] = Math.round(exif.ISOSpeedRatings);
+					new_photo['aperture'] = (exif.hasOwnProperty('FocalLengthIn35mmFilm')) ? 'F'+Math.round(exif.FocalLengthIn35mmFilm) : '?';
+					new_photo['shutter'] = Math.round(exif.ShutterSpeedValue);
 					self.photos.push(new_photo);
 				});
 			});

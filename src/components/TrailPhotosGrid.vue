@@ -7,6 +7,9 @@
                     <th @click="do_sort('epoch_time')">Date - Time</th>
                     <th @click="do_sort('filename')">Filename</th>
                     <th @click="do_sort('camera')">Camera</th>
+                    <th @click="do_sort('iso')">ISO</th>
+                    <th @click="do_sort('aperture')">Aperture</th>
+                    <th @click="do_sort('shutter')">Shutter</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,6 +18,9 @@
                     - {{ epoch_to_timestring(exifdatetime_to_epoch(photo.exif.DateTime)) }}</td>
                     <td>{{ photo.filename }}</td>
                     <td>{{ photo.exif.Make }} {{ photo.exif.Model }}</td>
+                    <td>{{ photo.iso }}</td>
+                    <td>{{ photo.aperture }}</td>
+                    <td>{{ photo.shutter }}</td>
                 </tr>
             </tbody>
         </table>
