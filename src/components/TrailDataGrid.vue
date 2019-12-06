@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ acknowledged: sequence.acknowledged && !sequence.acknowledged, needsSaving: !sequence.matches_file && !sequence.acknowledged }">
+                <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
                     <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ epoch_to_datestring(sequence.start_time) }}
 						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
 						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
@@ -47,7 +47,6 @@
 							<span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
 							<span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
 							<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
-							<span v-if="sequence.has_outliers && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has outliers - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
                     </td>
@@ -245,24 +244,6 @@ export default {
 		max-width: 250px;
 		cursor: pointer;
 	}
-    .isPlotted {
-        border: 3px solid black;
-        background-color: yellow;
-    }
-    tr.hasOutliers, tr.needsSaving {
-        background-color: #ddd3ee;
-    }
-    tr.hasOutliers:hover, tr.needsSaving:hover {
-        background-color: #b5a0da;
-    }
-    tr.acknowledged,
-    tr.hasOutliers.acknowledged, tr.needsSaving.acknowledged {
-        background-color: white;
-    }
-    tr.acknowledged:hover,
-    tr.hasOutliers.acknowledged:hover, tr.needsSaving.acknowledged:hover {
-        background-color: #dee2e6;
-    }
 	tr > td {
 		vertical-align: middle;
 	}
@@ -297,19 +278,6 @@ export default {
     .sequence_details {
         padding: 4px 4px;
         display: block;
-    }
-    .sequence_name,
-    .info_message {
-        padding: 7px 7px;
-        display: block;
-    }
-    .sequence_details,
-    .info_message {
-        font-size: 0.75em;
-        line-height: 0.75em;
-    }
-    .info_message {
-        font-style: italic;
     }
     th.sortable {
         cursor: pointer;

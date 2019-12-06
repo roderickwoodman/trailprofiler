@@ -375,7 +375,6 @@ export default {
 
 					// the current segment is the last segment
 					if (last_datapoint) {
-						wholefile['has_outliers'] = false;
 						wholefile['matches_file'] = true;
 						wholefile['filename_printed'] = filename;
 						wholefile['new_filename'] = filename;
@@ -497,5 +496,32 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+    tr.hasInfo {
+        background-color: #ddd3ee;
+    }
+    tr.hasInfo:hover {
+        background-color: #b5a0da;
+    }
+    tr.acknowledged,
+    tr.hasInfo.acknowledged {
+        background-color: white;
+    }
+    tr.acknowledged:hover,
+    tr.hasInfo.acknowledged:hover {
+        background-color: #dee2e6;
+    }
+	.sequence_name,
+    .info_message {
+        padding: 7px 7px;
+        display: block;
+    }
+    .sequence_details,
+    .info_message {
+        font-size: 0.75em;
+        line-height: 0.75em;
+    }
+    .info_message {
+        font-style: italic;
+    }
 </style>
