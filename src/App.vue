@@ -83,6 +83,9 @@ export default {
 		if (localStorage.sequences) {
 			this.sequences = JSON.parse(localStorage.sequences);
 		}
+		if (localStorage.photos) {
+			this.photos = JSON.parse(localStorage.photos);
+		}
 		if (localStorage.units) {
 			this.units = JSON.parse(localStorage.units);
 		}
@@ -97,6 +100,12 @@ export default {
 		sequences: {
 			handler: function (new_sequences) {
 				localStorage.sequences = JSON.stringify(new_sequences);
+			},
+			deep: true
+		},
+		photos: {
+			handler: function (new_photos) {
+				localStorage.photos = JSON.stringify(new_photos);
 			},
 			deep: true
 		},
