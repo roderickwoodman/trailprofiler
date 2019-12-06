@@ -162,7 +162,8 @@ export default {
 					new_photo['epoch_time'] = date.getTime();
 					new_photo['iso'] = Math.round(exif.ISOSpeedRatings);
 					new_photo['aperture'] = (exif.hasOwnProperty('FocalLengthIn35mmFilm')) ? 'F'+Math.round(exif.FocalLengthIn35mmFilm) : '?';
-					new_photo['shutter'] = Math.round(exif.ShutterSpeedValue);
+					new_photo['shutter_printable'] = exif.ExposureTime.numerator + '/' + exif.ExposureTime.denominator;
+					new_photo['shutter'] = exif.ExposureTime.numerator / exif.ExposureTime.denominator;
 					self.photos.push(new_photo);
 				});
 			});

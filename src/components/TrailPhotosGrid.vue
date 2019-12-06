@@ -20,7 +20,7 @@
                     <td>{{ photo.exif.Make }} {{ photo.exif.Model }}</td>
                     <td>{{ photo.iso }}</td>
                     <td>{{ photo.aperture }}</td>
-                    <td>{{ photo.shutter }}</td>
+                    <td>{{ photo.shutter_printable }}</td>
                 </tr>
             </tbody>
         </table>
