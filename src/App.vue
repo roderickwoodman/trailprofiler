@@ -30,10 +30,10 @@
     </select>
     </span>
 	</div>
-    <TrailDataGrid :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeSequenceInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
     <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
+    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" />
 
   </div>
 </template>
@@ -151,12 +151,14 @@ export default {
 				new_photo['uuid'] = this.generate_uuidv4();
 				const file = files[i];
 				new_photo['filename'] = file.name;
+				new_photo['acknowledged'] = false;
 				EXIF.getData(file, function() {
 					let exif = EXIF.getAllTags(this);
 					new_photo['exif'] = exif;
 					if (Object.keys(exif).length === 0) {
 						// eslint-disable-next-line no-console
 						console.log('file ' + file.name + ' has no exif data');
+						new_photo['has_exif_data'] = false;
 						new_photo['epoch_time'] = '?';
 						new_photo['camera'] = '?';
 						new_photo['iso'] = '?';
@@ -166,6 +168,7 @@ export default {
 					} else {
 						// eslint-disable-next-line no-console
 						console.log('exif data: ', exif);
+						new_photo['has_exif_data'] = true;
 						let params = exif.DateTime.replace(' ',':').split(':');
 						params[1] = parseInt(params[1]) - 1;
 						let date = new Date(...params);
@@ -467,9 +470,13 @@ export default {
 				return uuid !== sequence_uuid;
 			});
 		},
-		acknowledgeInfo: function (sequence_uuid) {
+		acknowledgeSequenceInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].acknowledged = true;
+		},
+		acknowledgePhotoInfo: function (photo_uuid) {
+			let photo_num = this.photos.findIndex(p => p.uuid === photo_uuid);
+			this.photos[photo_num].acknowledged = true;
 		},
 		epoch_to_timestring: function (epoch) {
 			if (!Number.isInteger(epoch)) return '?';
@@ -498,18 +505,17 @@ export default {
 
 <style>
     tr.hasInfo {
-        background-color: #ddd3ee;
+        background-color: #ddd3ee; /* light grayish violet */
     }
     tr.hasInfo:hover {
-        background-color: #b5a0da;
+        background-color: #b5a0da; /* darker, soft violet */
     }
-    tr.acknowledged,
     tr.hasInfo.acknowledged {
         background-color: white;
     }
-    tr.acknowledged:hover,
-    tr.hasInfo.acknowledged:hover {
-        background-color: #dee2e6;
+    tr:hover,
+	tr.acknowledged:hover {
+        background-color: #dee2e6; /* light gray */
     }
 	.sequence_name,
     .info_message {

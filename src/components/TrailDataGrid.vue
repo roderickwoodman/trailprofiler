@@ -7,7 +7,7 @@
         <label for="show_details">
 			<input type="checkbox" id="show_details" value="false" v-model="show_details">
 			show details of each row</label>
-        <table class="table table-sm table-hover">
+        <table class="table table-sm">
             <thead>
                 <tr>
                     <th scope="col" class="sortable" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
@@ -47,7 +47,7 @@
 							<span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
 							<span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
 							<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
-							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
                     </td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hm(sequence.total_time) }}</td>
