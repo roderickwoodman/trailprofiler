@@ -153,17 +153,29 @@ export default {
 				new_photo['filename'] = file.name;
 				EXIF.getData(file, function() {
 					let exif = EXIF.getAllTags(this);
-					// eslint-disable-next-line no-console
-					console.log('exif data: ', exif);
 					new_photo['exif'] = exif;
-					let params = exif.DateTime.replace(' ',':').split(':');
-					params[1] = parseInt(params[1]) - 1;
-					let date = new Date(...params);
-					new_photo['epoch_time'] = date.getTime();
-					new_photo['iso'] = Math.round(exif.ISOSpeedRatings);
-					new_photo['aperture'] = (exif.hasOwnProperty('FocalLengthIn35mmFilm')) ? 'F'+Math.round(exif.FocalLengthIn35mmFilm) : '?';
-					new_photo['shutter_printable'] = exif.ExposureTime.numerator + '/' + exif.ExposureTime.denominator;
-					new_photo['shutter'] = exif.ExposureTime.numerator / exif.ExposureTime.denominator;
+					if (Object.keys(exif).length === 0) {
+						// eslint-disable-next-line no-console
+						console.log('file ' + file.name + ' has no exif data');
+						new_photo['epoch_time'] = '?';
+						new_photo['camera'] = '?';
+						new_photo['iso'] = '?';
+						new_photo['aperture'] = '?';
+						new_photo['shutter_printable'] = '?';
+						new_photo['shutter'] = '?';
+					} else {
+						// eslint-disable-next-line no-console
+						console.log('exif data: ', exif);
+						let params = exif.DateTime.replace(' ',':').split(':');
+						params[1] = parseInt(params[1]) - 1;
+						let date = new Date(...params);
+						new_photo['epoch_time'] = date.getTime();
+						new_photo['camera'] = exif.Make + ' ' + exif.Model;
+						new_photo['iso'] = Math.round(exif.ISOSpeedRatings);
+						new_photo['aperture'] = (exif.hasOwnProperty('FocalLengthIn35mmFilm')) ? 'F'+Math.round(exif.FocalLengthIn35mmFilm) : '?';
+						new_photo['shutter_printable'] = exif.ExposureTime.numerator + '/' + exif.ExposureTime.denominator;
+						new_photo['shutter'] = exif.ExposureTime.numerator / exif.ExposureTime.denominator;
+					}
 					self.photos.push(new_photo);
 				});
 			});
@@ -461,7 +473,7 @@ export default {
 			this.sequences[sequence_num].acknowledged = true;
 		},
 		epoch_to_timestring: function (epoch) {
-			if (!epoch) return '';
+			if (!Number.isInteger(epoch)) return '?';
 			const leadingZero = (num) => (0 + num.toString()).slice(-2);
 			let date = new Date(epoch);
 			let hours = (this.time_format === 'ampm') ? (date.getHours() + 11) % 12 + 1 : date.getHours();
@@ -470,10 +482,17 @@ export default {
 			return leadingZero(hours) + ':' + leadingZero(minutes) + ' ' + suffix;
 		},
 		epoch_to_datestring: function (epoch) {
-			if (!epoch) return '';
+			if (!Number.isInteger(epoch)) return '?';
 			let converted = new Date(epoch);
 			return converted.toDateString();
 		},
+		exifdatetime_to_epoch: function (exif_datetime) { // expect "yyyy:mm:dd hh:mm:ss"
+			if (typeof exif_datetime !== 'string') return '?';
+			let params = exif_datetime.replace(' ',':').split(':');
+			params[1] = parseInt(params[1]) - 1;
+			let date = new Date(...params);
+			return date.getTime();
+		}
 	}
 };
 </script>

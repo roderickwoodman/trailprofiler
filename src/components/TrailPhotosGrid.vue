@@ -14,10 +14,10 @@
             </thead>
             <tbody>
                 <tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos">
-                    <td>{{ epoch_to_datestring(exifdatetime_to_epoch(photo.exif.DateTime)) }}
-                    - {{ epoch_to_timestring(exifdatetime_to_epoch(photo.exif.DateTime)) }}</td>
+                    <td>{{ epoch_to_datestring(photo.epoch_time) }}
+                    - {{ epoch_to_timestring(photo.epoch_time) }}</td>
                     <td>{{ photo.filename }}</td>
-                    <td>{{ photo.exif.Make }} {{ photo.exif.Model }}</td>
+                    <td>{{ photo.camera }}</td>
                     <td>{{ photo.iso }}</td>
                     <td>{{ photo.aperture }}</td>
                     <td>{{ photo.shutter_printable }}</td>
@@ -63,13 +63,6 @@ export default {
 		},
 		change_sort_dir: function() {
 			this.sort_dir_asc = !this.sort_dir_asc;
-		},
-		exifdatetime_to_epoch: function (exif_datetime) { // expect "yyyy:mm:dd hh:mm:ss"
-			if (!exif_datetime) return '';
-			let params = exif_datetime.replace(' ',':').split(':');
-			params[1] = parseInt(params[1]) - 1;
-			let date = new Date(...params);
-			return date.getTime();
 		}
 	},
 	filters: {
