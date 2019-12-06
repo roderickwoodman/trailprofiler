@@ -51,7 +51,7 @@
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment to its own file - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
                     </td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hms(sequence.total_time) }}</td>
+                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hm(sequence.total_time) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</td>
                     <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
@@ -219,6 +219,10 @@ export default {
 				retval += s + 's ';
 			}
 			return retval;
+		},
+		seconds_to_hm: function (seconds) {
+			let hms = this.seconds_to_hms(seconds);
+			return hms.substring(0,hms.length-5);
 		}
 	},
 	filters: {
