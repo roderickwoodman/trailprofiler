@@ -21,7 +21,7 @@
                             </td>
                     <td>{{ photo.camera }}</td>
                     <td>{{ photo.iso }}</td>
-                    <td>{{ photo.aperture }}</td>
+                    <td>{{ photo.aperture_printable }}</td>
                     <td>{{ photo.shutter_printable }}</td>
                 </tr>
             </tbody>
