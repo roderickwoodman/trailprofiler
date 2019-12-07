@@ -150,6 +150,11 @@ export default {
 				let new_photo = {};
 				new_photo['uuid'] = this.generate_uuidv4();
 				const file = files[i];
+				for (let photo of this.photos) {
+					if (photo.filename === file.name) {
+						return; // don't add duplicates
+					}
+				}
 				new_photo['filename'] = file.name;
 				new_photo['acknowledged'] = false;
 				EXIF.getData(file, function() {
@@ -215,13 +220,13 @@ export default {
 			let wholefile_distance_deltas = [0], wholefile_distance_aggrs = [0], wholefile_time_deltas = [0], wholefile_time_aggrs = [0];
 			let segment_start_index = 0, segment_num = 0;
 
-			// eslint-disable-next-line no-console
-			console.log('=== ' + filename + ' has ' + points.length + ' points ===');
 			for (let sequence of this.sequences) {
 				if (sequence.filename === filename) {
 					return; // don't add duplicates
 				}
 			}
+			// eslint-disable-next-line no-console
+			console.log('=== ' + filename + ' has ' + points.length + ' points ===');
 
 			let wholefile = Object.assign({}, {});
 			wholefile['name'] = xml_doc.getElementsByTagName('name')[0].innerHTML;
