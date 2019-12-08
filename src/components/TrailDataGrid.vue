@@ -25,8 +25,8 @@
 						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
 						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
 					</td>
-                    <td v-bind:class="{ sort_key: sort_key==='name' }" class="name_container" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
-						<div class="namecontent_colored" :class="plotted_classes(sequence.uuid)">
+                    <td v-bind:class="{ sort_key: sort_key==='name' }" class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
+						<div :class="plotted_classes(sequence.uuid)">
 							<div class="namecontent_title">
 								<span v-if="editing_uuid!==sequence.uuid" class="sequence_name">{{ sequence.name }}</span>
 								<form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
@@ -238,14 +238,6 @@ export default {
 	}
 	tr > td {
 		vertical-align: middle;
-	}
-	.btn.btn-sm {
-		border: 0;
-		margin: 0;
-		padding: 3px;
-	}
-	.name_container {
-		position: relative;
 	}
 	.namecontent_actions {
 		position: absolute;

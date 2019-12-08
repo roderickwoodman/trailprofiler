@@ -33,7 +33,7 @@
     <TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
     <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" />
+    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
 
   </div>
 </template>
@@ -476,6 +476,11 @@ export default {
 				return uuid !== sequence_uuid;
 			});
 		},
+		clickedDeletePhoto: function (photo_uuid) {
+			this.photos = this.photos.filter(function (obj) {
+				return obj.uuid !== photo_uuid;
+			});
+		},
 		acknowledgeSequenceInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].acknowledged = true;
@@ -555,4 +560,26 @@ export default {
     .info_message {
         font-style: italic;
     }
+	.hoverable_cell {
+		position: relative;
+	}
+	.hoverablecell_actions {
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		width: 25%;
+		display: flex;
+		justify-content: flex-end;
+	}
+	.hoverablecell_title {
+		width: 75%;
+	}
+	.hoverable_cell {
+		position: relative;
+	}
+	.hoverable_cell .btn.btn-sm {
+		border: 0;
+		margin: 0;
+		padding: 3px;
+	}
 </style>
