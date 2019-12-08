@@ -65,7 +65,7 @@
 <script>
 
 export default {
-	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plot_order', 'plotted_labels', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
+	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
 	data() {
 		return {
 			show_details: false,
@@ -163,14 +163,6 @@ export default {
 				} else {
 					return value;
 				}
-			}
-		},
-		plotted_classes: function (sequence_uuid) {
-			let plot_order_index = this.plot_order.findIndex( uuid => uuid === sequence_uuid);
-			if (plot_order_index === -1) {
-				return 'not_plotted';
-			} else {
-				return this.plotted_labels[plot_order_index];
 			}
 		},
 		clickedEditSequence: function(sequence_uuid) {

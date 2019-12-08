@@ -4,7 +4,7 @@
         <table class="table table-sm">
             <thead>
                 <tr>
-                    <th @click="do_sort('epoch_time')">Date - Time</th>
+                    <th @click="do_sort('datetime')">Date - Time</th>
                     <th @click="do_sort('filename')">Filename</th>
                     <th @click="do_sort('camera')">Camera</th>
                     <th @click="do_sort('iso')">ISO</th>
@@ -14,8 +14,8 @@
             </thead>
             <tbody>
                 <tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos" v-bind:class="{ hasInfo: !photo.has_exif_data, acknowledged: photo.acknowledged }">
-                    <td>{{ epoch_to_datestring(photo.epoch_time) }}
-                    - {{ epoch_to_timestring(photo.epoch_time) }}</td>
+                    <td class="namecontent_colored" :class="plotted_classes(photo.uuid)">{{ epoch_to_datestring(photo.datetime) }}
+                    - {{ epoch_to_timestring(photo.datetime) }}</td>
                     <td>{{ photo.filename }}
                             <span v-if="!photo.has_exif_data && !photo.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this file has no EXIF data - <a href="" v-on:click="acknowledgeInfo(photo.uuid)">Dismiss</a></span>
                             </td>
@@ -33,11 +33,11 @@
 <script>
 
 export default {
-	props: ['photos', 'epoch_to_timestring', 'epoch_to_datestring', 'acknowledgeInfo'],
+	props: ['photos', 'epoch_to_timestring', 'epoch_to_datestring', 'acknowledgeInfo', 'plotted_classes'],
 	data() {
 		return {
 			epoch: 0,
-			sort_key: 'epoch_time',
+			sort_key: 'datetime',
 			sort_dir_asc: true
 		};
 	},

@@ -30,10 +30,10 @@
     </select>
     </span>
 	</div>
-    <TrailDataGrid :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :sequences="sequences" :plot_order="plot_order" :plotted_labels="plotted_labels" :acknowledgeInfo="acknowledgeSequenceInfo" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+    <TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
 
     <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" />
+    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" />
 
   </div>
 </template>
@@ -164,7 +164,7 @@ export default {
 						// eslint-disable-next-line no-console
 						console.log('file ' + file.name + ' has no exif data');
 						new_photo['has_exif_data'] = false;
-						new_photo['epoch_time'] = '?';
+						new_photo['datetime'] = '?';
 						new_photo['camera'] = '?';
 						new_photo['iso'] = '?';
 						new_photo['aperture'] = '?';
@@ -177,7 +177,7 @@ export default {
 						let params = exif.DateTime.replace(' ',':').split(':');
 						params[1] = parseInt(params[1]) - 1;
 						let date = new Date(...params);
-						new_photo['epoch_time'] = date.getTime();
+						new_photo['datetime'] = date.getTime();
 						new_photo['camera'] = exif.Make + ' ' + exif.Model;
 						new_photo['iso'] = Math.round(exif.ISOSpeedRatings);
 						new_photo['aperture'] = exif.ApertureValue.numerator / exif.ApertureValue.denominator;
@@ -504,6 +504,25 @@ export default {
 			params[1] = parseInt(params[1]) - 1;
 			let date = new Date(...params);
 			return date.getTime();
+		},
+		plotted_classes: function (my_uuid) {
+			let plot_order_index = this.plot_order.findIndex(uuid => uuid === my_uuid);
+			if (plot_order_index !== -1) { // uuid is an imported sequence
+				return this.plotted_labels[plot_order_index];
+			} else {
+				let my_photo_index = this.photos.findIndex(photo => photo.uuid === my_uuid);
+				if (my_photo_index !== -1) { // uuid is an imported photo
+					for (let check_sequence_uuid of this.plot_order) {
+						let check_sequence_index = this.sequences.findIndex(sequence => sequence.uuid === check_sequence_uuid);
+						if (this.sequences[check_sequence_index].start_time <= this.photos[my_photo_index].datetime
+						&& this.photos[my_photo_index].datetime <= this.sequences[check_sequence_index].end_time) {
+							plot_order_index = this.plot_order.findIndex(uuid => uuid === check_sequence_uuid);
+							return this.plotted_labels[plot_order_index];
+						}
+					}
+				}
+				return 'not_plotted';
+			}
 		}
 	}
 };
