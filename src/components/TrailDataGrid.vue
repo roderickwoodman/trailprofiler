@@ -1,31 +1,31 @@
 <template>
 
-    <div class="container table-responsive-sm p-0">
-        <label for="show_only_plotted">
-        <input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
+	<div class="container table-responsive-sm p-0">
+		<label for="show_only_plotted">
+		<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
 			show row only if plotted</label>
-        <label for="show_details">
+		<label for="show_details">
 			<input type="checkbox" id="show_details" value="false" v-model="show_details">
 			show details of each row</label>
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th scope="col" class="sortable" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
-                    <th scope="col" class="sortable" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
-                    <th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
-                    <th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
-                    <th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace (per {{ units === 'english' ? 'mi' : 'km' }})</th>
-                    <th scope="col" class="sortable" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
-                    <th scope="col" class="sortable" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
-                    <td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ epoch_to_datestring(sequence.start_time) }}
+		<table class="table table-sm">
+			<thead>
+				<tr>
+					<th scope="col" class="sortable" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
+					<th scope="col" class="sortable" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
+					<th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
+					<th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
+					<th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace (per {{ units === 'english' ? 'mi' : 'km' }})</th>
+					<th scope="col" class="sortable" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+					<th scope="col" class="sortable" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
+					<td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ epoch_to_datestring(sequence.start_time) }}
 						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
 						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
 					</td>
-                    <td v-bind:class="{ sort_key: sort_key==='name' }" class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
+					<td v-bind:class="{ sort_key: sort_key==='name' }" class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div :class="plotted_classes(sequence.uuid)">
 							<div class="namecontent_title">
 								<span v-if="editing_uuid!==sequence.uuid" class="sequence_name">{{ sequence.name }}</span>
@@ -49,16 +49,16 @@
 							<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
-                    </td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hm(sequence.total_time) }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
-                    <td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+					</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hm(sequence.total_time) }}</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </template>
 
 
@@ -227,9 +227,9 @@ export default {
 
 
 <style scoped>
-    button {
-        margin: 2px 2px;
-    }
+	button {
+		margin: 2px 2px;
+	}
 	label {
 		margin: 5px 0;
 		display: block;
@@ -250,27 +250,27 @@ export default {
 	.namecontent_title {
 		width: 75%;
 	}
-    .sequence_name {
-        font-weight: 800;
-        line-height: 1em;
-    }
+	.sequence_name {
+		font-weight: 800;
+		line-height: 1em;
+	}
 	.sequence_name.editing {
 		border: 5px solid red;
-        padding: 2px 2px;
+		padding: 2px 2px;
 		width: 100%;
 	}
-    .sequence_details {
-        padding: 4px 4px;
-        display: block;
-    }
-    th.sortable {
-        cursor: pointer;
-    }
-    th.sortable:hover {
-        color: red;
-        background-color: lightpink;
-    }
-    .sort_key {
-        color: red;
-    }
+	.sequence_details {
+		padding: 4px 4px;
+		display: block;
+	}
+	th.sortable {
+		cursor: pointer;
+	}
+	th.sortable:hover {
+		color: red;
+		background-color: lightpink;
+	}
+	.sort_key {
+		color: red;
+	}
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <chartist type="Line" id="chart1" class="ct-chart"><strong>Elevation Profile</strong></chartist>
+	<chartist type="Line" id="chart1" class="ct-chart"><strong>Elevation Profile</strong></chartist>
 </template>
 
 
@@ -703,14 +703,14 @@ export default {
 </script>
 
 <style>
-    #chart1 {
-        max-height: 450px;
-        padding-top:20px;
-        border: 1px solid silver;
-        border-radius: 10px;
-        background-color: lightyellow;
-        text-align: center;
-    }
+	#chart1 {
+		max-height: 450px;
+		padding-top:20px;
+		border: 1px solid silver;
+		border-radius: 10px;
+		background-color: lightyellow;
+		text-align: center;
+	}
 
 	.ct-series-a .ct-line,
 	.ct-series-b .ct-line,

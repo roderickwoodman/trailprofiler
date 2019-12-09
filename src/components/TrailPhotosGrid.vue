@@ -1,40 +1,39 @@
 <template>
-
-    <div class="container table-responsive-sm p-0">
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th @click="do_sort('datetime')">Date - Time</th>
-                    <th @click="do_sort('filename')">Filename</th>
-                    <th @click="do_sort('camera')">Camera</th>
-                    <th @click="do_sort('iso')">ISO</th>
-                    <th @click="do_sort('aperture')">Aperture</th>
-                    <th @click="do_sort('shutter')">Shutter</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos" v-bind:class="{ hasInfo: !photo.has_exif_data, acknowledged: photo.acknowledged }">
-                    <td :class="plotted_classes(photo.uuid)">{{ epoch_to_datestring(photo.datetime) }}
-                    - {{ epoch_to_timestring(photo.datetime) }}</td>
-                    <td @mouseover="hoveringon_uuid = photo.uuid" @mouseleave="hoveringon_uuid = null" class="hoverable_cell">
-                        <div class="hoverablecell_title">
-                            {{ photo.filename }}
-                        </div>
-                        <div class="hoverablecell_actions" v-show="hoveringon_uuid === photo.uuid">
-                            <b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeletePhoto(photo.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(photo.uuid)" /></b-button>
-                        </div>
-                        <div class="hoverablecell_details">
-                            <span v-if="!photo.has_exif_data && !photo.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this file has no EXIF data - <a href="" v-on:click="acknowledgeInfo(photo.uuid)">Dismiss</a></span>
-                        </div>
-                    </td>
-                    <td>{{ photo.camera }}</td>
-                    <td>{{ photo.iso }}</td>
-                    <td>{{ photo.aperture_printable }}</td>
-                    <td>{{ photo.shutter_printable }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+	<div class="container table-responsive-sm p-0">
+		<table class="table table-sm">
+			<thead>
+				<tr>
+					<th @click="do_sort('datetime')">Date - Time</th>
+					<th @click="do_sort('filename')">Filename</th>
+					<th @click="do_sort('camera')">Camera</th>
+					<th @click="do_sort('iso')">ISO</th>
+					<th @click="do_sort('aperture')">Aperture</th>
+					<th @click="do_sort('shutter')">Shutter</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos" v-bind:class="{ hasInfo: !photo.has_exif_data, acknowledged: photo.acknowledged }">
+					<td :class="plotted_classes(photo.uuid)">{{ epoch_to_datestring(photo.datetime) }}
+					- {{ epoch_to_timestring(photo.datetime) }}</td>
+					<td @mouseover="hoveringon_uuid = photo.uuid" @mouseleave="hoveringon_uuid = null" class="hoverable_cell">
+						<div class="hoverablecell_title">
+							{{ photo.filename }}
+						</div>
+						<div class="hoverablecell_actions" v-show="hoveringon_uuid === photo.uuid">
+							<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeletePhoto(photo.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(photo.uuid)" /></b-button>
+						</div>
+						<div class="hoverablecell_details">
+							<span v-if="!photo.has_exif_data && !photo.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this file has no EXIF data - <a href="" v-on:click="acknowledgeInfo(photo.uuid)">Dismiss</a></span>
+						</div>
+					</td>
+					<td>{{ photo.camera }}</td>
+					<td>{{ photo.iso }}</td>
+					<td>{{ photo.aperture_printable }}</td>
+					<td>{{ photo.shutter_printable }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </template>
 
 

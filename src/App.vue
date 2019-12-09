@@ -1,41 +1,41 @@
 <template>
-  <div id="app">
+	<div id="app">
 
-    <h1>Trail Chart</h1>
-    <TrailDataChart :units="units" :sequences="sequences" :plot_order="plot_order" />
+		<h1>Trail Chart</h1>
+		<TrailDataChart :units="units" :sequences="sequences" :plot_order="plot_order" />
 
-    <form id="gpx-file-input-form" class="mx-auto pt-3" style="width: 300px">
-        <label for="my-gpx-files" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
-        <input @change="onGpxFileChange" id="my-gpx-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
-    </form>
-    <form id="image-file-input-form" class="mx-auto pt-3" style="width: 300px">
-        <label for="my-image-files" class="btn btn-primary" style="width: 100%">Import Images <font-awesome-icon icon="upload" /></label>
-        <input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" multiple type="file" />
-    </form>
+		<form id="gpx-file-input-form" class="mx-auto pt-3" style="width: 300px">
+			<label for="my-gpx-files" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
+			<input @change="onGpxFileChange" id="my-gpx-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
+		</form>
+		<form id="image-file-input-form" class="mx-auto pt-3" style="width: 300px">
+			<label for="my-image-files" class="btn btn-primary" style="width: 100%">Import Images <font-awesome-icon icon="upload" /></label>
+			<input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" multiple type="file" />
+		</form>
 
-    <h1>Trail Data</h1>
-	<div>
-    <span>Units: 
-    <select v-model="units">
-        <option value="english" selected>English</option>
-        <option value="metric">Metric</option>
-    </select>
-    </span>
+		<h1>Trail Data</h1>
+		<div>
+		<span>Units: 
+		<select v-model="units">
+			<option value="english" selected>English</option>
+			<option value="metric">Metric</option>
+		</select>
+		</span>
+		</div>
+		<div>
+		<span>Time Format: 
+		<select v-model="time_format">
+			<option value="ampm" selected>AM/PM</option>
+			<option value="24hr">24-hr</option>
+		</select>
+		</span>
+		</div>
+		<TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+
+		<h1>Trail Photos</h1>
+		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
+
 	</div>
-	<div>
-    <span>Time Format: 
-    <select v-model="time_format">
-        <option value="ampm" selected>AM/PM</option>
-        <option value="24hr">24-hr</option>
-    </select>
-    </span>
-	</div>
-    <TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
-
-    <h1>Trail Photos</h1>
-    <TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
-
-  </div>
 </template>
 
 
@@ -417,9 +417,9 @@ export default {
 			var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
 			var dLon = this.deg2rad(lon2-lon1); 
 			var a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2); 
+			Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+			Math.sin(dLon/2) * Math.sin(dLon/2); 
 			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 			var d = R * c; // Distance in kilometers
 			return d;
@@ -534,32 +534,32 @@ export default {
 </script>
 
 <style>
-    tr.hasInfo {
-        background-color: #ddd3ee; /* light grayish violet */
-    }
-    tr.hasInfo:hover {
-        background-color: #b5a0da; /* darker, soft violet */
-    }
-    tr.hasInfo.acknowledged {
-        background-color: white;
-    }
-    tr:hover,
+	tr.hasInfo {
+		background-color: #ddd3ee; /* light grayish violet */
+	}
+	tr.hasInfo:hover {
+		background-color: #b5a0da; /* darker, soft violet */
+	}
+	tr.hasInfo.acknowledged {
+		background-color: white;
+	}
+	tr:hover,
 	tr.acknowledged:hover {
-        background-color: #dee2e6; /* light gray */
-    }
+		background-color: #dee2e6; /* light gray */
+	}
 	.sequence_name,
-    .info_message {
-        padding: 7px 7px;
-        display: block;
-    }
-    .sequence_details,
-    .info_message {
-        font-size: 0.75em;
-        line-height: 0.75em;
-    }
-    .info_message {
-        font-style: italic;
-    }
+	.info_message {
+		padding: 7px 7px;
+		display: block;
+	}
+	.sequence_details,
+	.info_message {
+		font-size: 0.75em;
+		line-height: 0.75em;
+	}
+	.info_message {
+		font-style: italic;
+	}
 	.hoverable_cell {
 		position: relative;
 	}
