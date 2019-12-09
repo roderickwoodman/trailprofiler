@@ -53,8 +53,8 @@
 					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hm(sequence.total_time) }}</td>
 					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
 					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) }}</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) }}</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) | round_it }}</td>
+					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) | round_it }}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -146,7 +146,7 @@ export default {
 		},
 		to_desired_units: function (starting_units, value) {
 			if (starting_units === 'm') {  // meters to feet
-				if (this.units === 'englsh') {
+				if (this.units === 'english') {
 					return value * 3.28084;
 				} else {
 					return value;
@@ -219,6 +219,9 @@ export default {
 	filters: {
 		to_tenths: function (number) {
 			return (Math.round(10*parseFloat(number))/10).toFixed(1);
+		},
+		round_it: function (number) {
+			return Math.round(parseFloat(number));
 		}
 	}
 };
