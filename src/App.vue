@@ -80,6 +80,44 @@ export default {
 			]
 		};
 	},
+	computed: {
+		exif_photos: function() {
+			return this.photos.filter( photo => photo.has_exif_data ).map(obj => obj.uuid);
+		},
+		noexif_photos: function() {
+			return this.photos.filter( photo => !photo.has_exif_data ).map(obj => obj.uuid);
+		},
+		indexed_photos: function() { // index photos by the sequence that they fall within, time-wise
+			let indexed = {};
+			for (let sequence of this.sequences) {
+				indexed[sequence.uuid] = this.photos
+					.filter(photo => (sequence.start_time <= photo.datetime && photo.datetime <= sequence.end_time))
+					.map(obj => obj.uuid);
+			}
+			return indexed;
+		},
+		unindexed_photos: function() {
+			let unindexed = [];
+			// let photo_is_indexed;
+			for (let photo_uuid of this.exif_photos) {
+				// eslint-disable-next-line no-console
+				// console.log(photo);
+				// unindexed.push(photo_uuid);
+
+				let photo_is_indexed = false;
+				for (let sequence_uuid of Object.keys(this.indexed_photos)) {
+					if (this.indexed_photos[sequence_uuid].includes(photo_uuid)) {
+						photo_is_indexed = true;
+						break;
+					}
+				}
+				if (!photo_is_indexed) {
+					unindexed.push(photo_uuid);
+				}
+			}
+			return unindexed;
+		}
+	},
 	mounted() {
 		if (localStorage.sequences) {
 			this.sequences = JSON.parse(localStorage.sequences);
