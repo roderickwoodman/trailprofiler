@@ -93,7 +93,7 @@ export default {
         display: flex;
         justify-content: space-evenly;
     }
-    .numbers {
+    .number {
         flex: 0 0 20%;
     }
 </style>
