@@ -10,22 +10,20 @@
 		<table class="table table-sm">
 			<thead>
 				<tr>
-					<th scope="col" class="sortable" @click="do_sort('start_time')" v-bind:class="{ sort_key: sort_key==='start_time' }">Date</th>
-					<th scope="col" class="sortable" @click="do_sort('name')" v-bind:class="{ sort_key: sort_key==='name' }">Name</th>
-					<th scope="col" class="sortable" @click="do_sort('total_time')" v-bind:class="{ sort_key: sort_key==='total_time' }">Time</th>
-					<th scope="col" class="sortable" @click="do_sort('total_distance')" v-bind:class="{ sort_key: sort_key==='total_distance' }">Distance ({{ units === 'english' ? 'mi' : 'km' }})</th>
-					<th scope="col" class="sortable" @click="do_sort('average_pace')" v-bind:class="{ sort_key: sort_key==='average_pace' }">Pace (per {{ units === 'english' ? 'mi' : 'km' }})</th>
-					<th scope="col" class="sortable" @click="do_sort('minimum_elevation')" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">Min Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
-					<th scope="col" class="sortable" @click="do_sort('maximum_elevation')" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">Max Elev. ({{ units === 'english' ? 'ft' : 'm' }})</th>
+					<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
+					<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
+					<th scope="col">
+						<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
+					</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
-					<td scope="row" v-bind:class="{ sort_key: sort_key==='start_time' }">{{ epoch_to_datestring(sequence.start_time) }}
+					<td scope="row">{{ epoch_to_datestring(sequence.start_time) }}
 						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
 						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
 					</td>
-					<td v-bind:class="{ sort_key: sort_key==='name' }" class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
+					<td class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 						<div :class="plotted_classes(sequence.uuid)">
 							<div class="namecontent_title">
 								<span v-if="editing_uuid!==sequence.uuid" class="sequence_name">{{ sequence.name }}</span>
@@ -50,11 +48,9 @@
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
 					</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_time' }">{{ seconds_to_hm(sequence.total_time) }}</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='total_distance' }">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='average_pace' }">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='minimum_elevation' }">{{ to_desired_units("m", sequence.minimum_elevation) | round_it }}</td>
-					<td class="pr-5 text-right" v-bind:class="{ sort_key: sort_key==='maximum_elevation' }">{{ to_desired_units("m", sequence.maximum_elevation) | round_it }}</td>
+					<td>
+						<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -64,8 +60,15 @@
 
 <script>
 
+import HeaderRowForNumbers from './HeaderRowForNumbers.vue';
+import RowOfNumbers from './RowOfNumbers.vue';
+
 export default {
 	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
+	components: {
+		HeaderRowForNumbers,
+		RowOfNumbers
+	},
 	data() {
 		return {
 			show_details: false,
@@ -266,14 +269,7 @@ export default {
 		padding: 4px 4px;
 		display: block;
 	}
-	th.sortable {
+	.sortable {
 		cursor: pointer;
-	}
-	th.sortable:hover {
-		color: red;
-		background-color: lightpink;
-	}
-	.sort_key {
-		color: red;
 	}
 </style>

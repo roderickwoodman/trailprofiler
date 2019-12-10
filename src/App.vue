@@ -43,6 +43,7 @@
 import TrailDataChart from './components/TrailDataChart.vue';
 import TrailDataGrid from './components/TrailDataGrid.vue';
 import TrailPhotosGrid from './components/TrailPhotosGrid.vue';
+
 import EXIF from 'exif-js';
 
 export default {
