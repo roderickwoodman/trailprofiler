@@ -30,7 +30,7 @@
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" />
+		<TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
 		<h1>Trail Photos</h1>
 		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
@@ -240,6 +240,7 @@ export default {
 			wholefile['points'] = [];
 			wholefile['is_plotted'] = false;
 			wholefile['acknowledged'] = false;
+			wholefile['show_photos'] = false;
 			let new_segment = {};
 			let doing_point_again = false;
 			for (let p=0; p < points.length; p++) {
@@ -271,6 +272,7 @@ export default {
 					new_segment['points'] = [];
 					new_segment['is_plotted'] = false;
 					new_segment['acknowledged'] = false;
+					new_segment['show_photos'] = false;
 
 					new_segment_ddelta = 0;
 					new_segment_tdelta = 0;
@@ -481,6 +483,10 @@ export default {
 			this.photos = this.photos.filter(function (obj) {
 				return obj.uuid !== photo_uuid;
 			});
+		},
+		toggleShowPhotos: function(sequence_uuid) {
+			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+			this.sequences[sequence_num].show_photos = !this.sequences[sequence_num].show_photos;
 		},
 		acknowledgeSequenceInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);

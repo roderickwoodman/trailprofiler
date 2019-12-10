@@ -12,6 +12,7 @@
 				<tr>
 					<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
 					<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
+					<th scope="col"></th>
 					<th scope="col">
 						<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
 					</th>
@@ -48,6 +49,9 @@
 							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 						</div>
 					</td>
+					<td class="photos_action" v-on:click="toggleShowPhotos(sequence.uuid)">
+						<b-button class="btn btn-sm btn-primary"><font-awesome-icon icon="camera"></font-awesome-icon></b-button>
+					</td>
 					<td>
 						<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
 					</td>
@@ -64,7 +68,7 @@ import HeaderRowForNumbers from './HeaderRowForNumbers.vue';
 import RowOfNumbers from './RowOfNumbers.vue';
 
 export default {
-	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence'],
+	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers
@@ -169,7 +173,7 @@ export default {
 			}
 		},
 		clickedEditSequence: function(sequence_uuid) {
-			let sequence_index = this.sequences.findIndex( sequence => sequence.uuid === sequence_uuid);
+			let sequence_index = this.sequences.findIndex(sequence => sequence.uuid === sequence_uuid);
 			if (this.editing_uuid !== sequence_uuid) {
 				this.editing_uuid = sequence_uuid;
 				this.new_name_edits = this.sequences[sequence_index].name;
@@ -233,8 +237,17 @@ export default {
 
 
 <style scoped>
-	button {
+	.namecontent_actions button {
 		margin: 2px 2px;
+	}
+	td.photos_action > button {
+		color: black;
+		border: 0;
+		background: transparent;
+		margin: -2px;
+	}
+	td.photos_action:hover {
+		cursor: pointer;
 	}
 	label {
 		margin: 5px 0;
