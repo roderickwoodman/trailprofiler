@@ -1,63 +1,78 @@
 <template>
+	<div>
 
-	<div class="container table-responsive-sm p-0">
-		<label for="show_only_plotted">
-		<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
-			show row only if plotted</label>
-		<label for="show_details">
-			<input type="checkbox" id="show_details" value="false" v-model="show_details">
-			show details of each row</label>
-		<table class="table table-sm">
-			<thead>
-				<tr>
-					<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
-					<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
-					<th scope="col"></th>
-					<th scope="col">
-						<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
-					<td scope="row">{{ epoch_to_datestring(sequence.start_time) }}
-						<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
-						<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
-					</td>
-					<td class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
-						<div :class="plotted_classes(sequence.uuid)">
-							<div class="namecontent_title">
-								<span v-if="editing_uuid!==sequence.uuid" class="sequence_name">{{ sequence.name }}</span>
-								<form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
-									<input name="new_name_edits" class="sequence_name editing" v-model="new_name_edits" />
-									<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
-								</form>
+		<div class="container table-responsive-sm p-0">
+			<label for="show_only_plotted">
+			<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
+				show row only if plotted</label>
+			<label for="show_details">
+				<input type="checkbox" id="show_details" value="false" v-model="show_details">
+				show details of each row</label>
+			<table class="table table-sm">
+				<thead>
+					<tr>
+						<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
+						<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
+						<th scope="col"></th>
+						<th scope="col">
+							<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
+						<td scope="row">{{ epoch_to_datestring(sequence.start_time) }}
+							<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
+							<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
+						</td>
+						<td class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
+							<div :class="plotted_classes(sequence.uuid)">
+								<div class="namecontent_title">
+									<span v-if="editing_uuid!==sequence.uuid" class="sequence_name">{{ sequence.name }}</span>
+									<form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
+										<input name="new_name_edits" class="sequence_name editing" v-model="new_name_edits" />
+										<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
+									</form>
+								</div>
+								<div class="namecontent_actions" v-show="hoveringon_uuid === sequence.uuid">
+									<b-button v-if="editing_uuid!==sequence.uuid" v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(sequence.uuid)" /></b-button>
+									<b-button v-if="editing_uuid===sequence.uuid" v-b-tooltip.hover title="Cancel edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(sequence.uuid)" /></b-button>
+									<b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" :class="plotted_classes(sequence.uuid)" /></b-button>
+									<b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" :class="plotted_classes(sequence.uuid)" /></b-button>
+									<b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveSequence(sequence.uuid)"><font-awesome-icon icon="save" :class="plotted_classes(sequence.uuid)" /></b-button>
+									<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(sequence.uuid)" /></b-button>
+								</div>
 							</div>
-							<div class="namecontent_actions" v-show="hoveringon_uuid === sequence.uuid">
-								<b-button v-if="editing_uuid!==sequence.uuid" v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(sequence.uuid)" /></b-button>
-								<b-button v-if="editing_uuid===sequence.uuid" v-b-tooltip.hover title="Cancel edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(sequence.uuid)" /></b-button>
-								<b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" :class="plotted_classes(sequence.uuid)" /></b-button>
-								<b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" :class="plotted_classes(sequence.uuid)" /></b-button>
-								<b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveSequence(sequence.uuid)"><font-awesome-icon icon="save" :class="plotted_classes(sequence.uuid)" /></b-button>
-								<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(sequence.uuid)" /></b-button>
+							<div class="namecontent_details">
+								<span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
+								<span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
+								<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
+								<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 							</div>
-						</div>
-						<div class="namecontent_details">
-							<span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
-							<span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
-							<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
-							<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
-						</div>
-					</td>
-					<td class="photos_action" v-on:click="toggleShowPhotos(sequence.uuid)">
-						<b-button class="btn btn-sm btn-primary"><font-awesome-icon icon="camera"></font-awesome-icon></b-button>
-					</td>
-					<td>
-						<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
+						</td>
+						<td class="photos_action" v-on:click="toggleShowPhotos(sequence.uuid)">
+							<b-button class="btn btn-sm btn-primary"><font-awesome-icon icon="camera"></font-awesome-icon></b-button>
+						</td>
+						<td>
+							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="container table-responsive-sm p-0">
+			<table class="table table-sm">
+				<tbody>
+					<tr>
+						<td>
+							<RowOfPhotos :row_photos="unindexed_photos" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
 	</div>
 </template>
 
@@ -66,12 +81,14 @@
 
 import HeaderRowForNumbers from './HeaderRowForNumbers.vue';
 import RowOfNumbers from './RowOfNumbers.vue';
+import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['units', 'epoch_to_timestring', 'epoch_to_datestring', 'sequences', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
+	props: ['sequences', 'unindexed_photos', 'units', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
 	components: {
 		HeaderRowForNumbers,
-		RowOfNumbers
+		RowOfNumbers,
+		RowOfPhotos
 	},
 	data() {
 		return {

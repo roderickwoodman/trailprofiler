@@ -30,7 +30,7 @@
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
+		<TrailDataGrid :sequences="sequences" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
 		<h1>Trail Photos</h1>
 		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
@@ -96,14 +96,9 @@ export default {
 			}
 			return indexed;
 		},
-		unindexed_photos: function() {
+		unindexed_photo_uuids: function() {
 			let unindexed = [];
-			// let photo_is_indexed;
 			for (let photo_uuid of this.exif_photos) {
-				// eslint-disable-next-line no-console
-				// console.log(photo);
-				// unindexed.push(photo_uuid);
-
 				let photo_is_indexed = false;
 				for (let sequence_uuid of Object.keys(this.indexed_photos)) {
 					if (this.indexed_photos[sequence_uuid].includes(photo_uuid)) {
@@ -116,6 +111,9 @@ export default {
 				}
 			}
 			return unindexed;
+		},
+		unindexed_photos: function() {
+			return this.unindexed_photo_uuids.map(uuid => this.photos[this.photos.findIndex(p => p.uuid === uuid)]);
 		}
 	},
 	mounted() {
