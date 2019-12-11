@@ -13,7 +13,6 @@
 			<input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" multiple type="file" />
 		</form>
 
-		<h1>Trail Data</h1>
 		<div>
 		<span>Units: 
 		<select v-model="units">
@@ -32,7 +31,6 @@
 		</div>
 		<TrailDataGrid :sequences="sequences" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
-		<h1>Trail Photos</h1>
 		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
 
 	</div>

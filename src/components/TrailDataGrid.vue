@@ -1,6 +1,8 @@
 <template>
 	<div>
 
+		<h1 v-if="show_only_plotted">Sequences ({{ sortedSequences.length }} of {{ sequences.length }} shown)</h1>
+		<h1 v-if="!show_only_plotted">Sequences ({{ sequences.length }})</h1>
 		<div class="container table-responsive-sm p-0">
 			<label for="show_only_plotted">
 			<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
@@ -63,6 +65,11 @@
 
 		<div class="container table-responsive-sm p-0">
 			<table class="table table-sm">
+				<thead>
+					<tr>
+						<th>Unassigned Photos ({{ unindexed_photos.length }})</th>
+					</tr>
+				</thead>
 				<tbody>
 					<tr>
 						<td>
