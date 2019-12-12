@@ -1,13 +1,11 @@
 <template>
     <div class="row_of_photos">
-        <div class="photo" v-for="photo in row_photos" v-bind:key="photo.uuid">
-            <div class="photo_container">
-                <img :src="photo.filename">
-                <figcaption>{{photo.datetime}}</figcaption>
-                <figcaption>{{epoch_to_datestring(photo.datetime)}}</figcaption>
-                <figcaption>{{epoch_to_timestring(photo.datetime)}}</figcaption>
-                <figcaption>{{photo.camera}}</figcaption>
-            </div>
+        <div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_container">
+            <img :src="photo.filename">
+            <figcaption>{{photo.datetime}}</figcaption>
+            <figcaption>{{epoch_to_datestring(photo.datetime)}}</figcaption>
+            <figcaption>{{epoch_to_timestring(photo.datetime)}}</figcaption>
+            <figcaption>{{photo.camera}}</figcaption>
         </div>
     </div>
 </template>
@@ -20,6 +18,14 @@ export default {
 	data() {
 		return {
 		};
+	},
+	computed: {
+		sorted_photos: function() {
+			let cloned = [...this.row_photos];
+			return cloned.sort(function(a,b) {
+				return (a.datetime > b.datetime) ? 1 : -1;
+			});
+		}
 	}
 };
 
