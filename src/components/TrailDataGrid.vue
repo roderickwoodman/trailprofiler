@@ -73,7 +73,7 @@
 				<tbody>
 					<tr>
 						<td>
-							<RowOfPhotos :row_photos="unindexed_photos" />
+							<RowOfPhotos :row_photos="unindexed_photos" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
 						</td>
 					</tr>
 				</tbody>
