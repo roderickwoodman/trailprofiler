@@ -68,8 +68,12 @@
 							</div>
 						</td>
 						<td class="photo_actions">
-							<b-button class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(sequence.uuid)">
+							<b-button v-if="!sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(sequence.uuid)">
 								<font-awesome-icon icon="camera"></font-awesome-icon>
+								<div>({{ indexed_photos[sequence.uuid].length }})</div>
+							</b-button>
+							<b-button v-if="sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(sequence.uuid)">
+								<font-awesome-icon icon="table"></font-awesome-icon>
 								<div>({{ indexed_photos[sequence.uuid].length }})</div>
 							</b-button>
 						</td>

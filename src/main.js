@@ -12,6 +12,7 @@ import {faUpload} from '@fortawesome/free-solid-svg-icons';
 import {faSave} from '@fortawesome/free-solid-svg-icons';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import {faCamera} from '@fortawesome/free-solid-svg-icons';
+import {faTable} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 library.add(faChartLine);
 library.add(faBan);
@@ -21,6 +22,7 @@ library.add(faUpload);
 library.add(faSave);
 library.add(faEdit);
 library.add(faCamera);
+library.add(faTable);
 
 // eslint-disable-next-line no-undef
 Vue.use(require('vue-chartist'));
