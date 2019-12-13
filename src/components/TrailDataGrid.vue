@@ -67,8 +67,11 @@
 								<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 							</div>
 						</td>
-						<td class="photos_action" v-on:click="toggleShowPhotos(sequence.uuid)">
-							<b-button class="btn btn-sm btn-primary"><font-awesome-icon icon="camera"></font-awesome-icon></b-button>
+						<td class="photo_actions">
+							<b-button class="show_photos btn btn-sm bg-transparent" v-on:click="toggleShowPhotos(sequence.uuid)">
+								<font-awesome-icon icon="camera"></font-awesome-icon>
+								<div>({{ indexed_photos[sequence.uuid].length }})</div>
+							</b-button>
 						</td>
 						<td v-if="sequence.show_photos">
 							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
@@ -301,18 +304,28 @@ export default {
 	.namecontent_actions button {
 		margin: 2px 2px;
 	}
-	td.photos_action > button {
+	.photo_actions {
+		margin: 0;
+		padding: 0;
+	}
+	.show_photos {
+		padding: 10px;
+		border: 0;
+		color: black;
+	}
+	.show_photos button {
 		color: black;
 		border: 0;
 		background: transparent;
-		margin: -2px;
 	}
-	td.photos_action:hover {
+	.show_photos:hover {
+		color: black;
+		border: 1px solid black;
+		border-radius: 5px;
 		cursor: pointer;
 	}
 	label {
 		margin: 5px 0;
-		display: block;
 		max-width: 250px;
 		cursor: pointer;
 	}
