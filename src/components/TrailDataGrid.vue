@@ -23,9 +23,24 @@
 				</thead>
 				<tbody>
 					<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
-						<td scope="row">{{ epoch_to_datestring(sequence.start_time) }}
-							<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
-							<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
+						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = sequence.uuid" @mouseleave="hoveringon_datetime_uuid = null" scope="row">
+							<div>
+								<div class="datetimecontent_title">
+									<span>{{ epoch_to_datestring(sequence.start_time) }}</span>
+								</div>
+								<div class="datetimecontent_actions" v-show="hoveringon_datetime_uuid === sequence.uuid">
+									<b-button v-if="editing_sequence_datetime!==sequence.uuid" v-b-tooltip.hover title="Edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequenceDatetime(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
+									<b-button v-if="editing_sequence_datetime===sequence.uuid" v-b-tooltip.hover title="Cancel edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequenceDatetime(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
+								</div>
+							</div>
+							<div class="datetimecontent_details">
+								<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
+								<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
+							</div>
+							<form v-if="editing_sequence_datetime===sequence.uuid" @submit="clickedSubmitDatetimeEdits">
+								<input name="new_datetime_edits" class="sequence_datetime editing" v-model="new_datetime_edits" />
+								<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
+							</form>
 						</td>
 						<td class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
 							<div :class="plotted_classes(sequence.uuid)">
@@ -91,7 +106,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'unindexed_photos', 'units', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
+	props: ['sequences', 'unindexed_photos', 'units', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,
@@ -103,8 +118,11 @@ export default {
 			show_only_plotted: false,
 			sort_key: 'total_distance',
 			sort_dir_asc: true,
+			editing_sequence_datetime: null,
 			editing_uuid: null,
+			new_datetime_edits: '',
 			new_name_edits: '',
+			hoveringon_datetime_uuid: null,
 			hoveringon_uuid: null
 		};
 	},
@@ -211,6 +229,21 @@ export default {
 			this.new_name_edits = '';
 			this.submitSequenceEdits(e);
 		},
+		clickedEditSequenceDatetime: function(sequence_uuid) {
+			let sequence_index = this.sequences.findIndex(sequence => sequence.uuid === sequence_uuid);
+			if (this.editing_sequence_datetime !== sequence_uuid) {
+				this.editing_sequence_datetime = sequence_uuid;
+				this.new_datetime_edits = this.sequences[sequence_index].start_time;
+			} else {
+				this.editing_sequence_datetime = null;
+				this.new_datetime_edits = '';
+			}
+		},
+		clickedSubmitDatetimeEdits: function(e) {
+			this.editing_sequence_datetime = null;
+			this.new_datetime_edits = '';
+			this.submitSequenceDatetimeEdits(e);
+		},
 		seconds_to_hms: function (seconds) {
 			const leadingZero = (num) => (0 + num.toString()).slice(-2);
 			let tot = Number(seconds);
@@ -261,6 +294,7 @@ export default {
 
 
 <style scoped>
+	.datetimecontent_actions button,
 	.namecontent_actions button {
 		margin: 2px 2px;
 	}
@@ -282,6 +316,7 @@ export default {
 	tr > td {
 		vertical-align: middle;
 	}
+	.datetimecontent_actions,
 	.namecontent_actions {
 		position: absolute;
 		right: 5px;
@@ -290,13 +325,15 @@ export default {
 		display: flex;
 		justify-content: flex-end;
 	}
+	.datetimecontent_title,
 	.namecontent_title {
 		width: 75%;
 	}
+	.sequence_datetime,
 	.sequence_name {
 		font-weight: 800;
-		line-height: 1em;
 	}
+	.sequence_datetime.editing,
 	.sequence_name.editing {
 		border: 5px solid red;
 		padding: 2px 2px;

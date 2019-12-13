@@ -29,7 +29,7 @@
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
+		<TrailDataGrid :sequences="sequences" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
 		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
 
@@ -468,6 +468,19 @@ export default {
 			let sequence_uuid = e.target['sequence_uuid'].value;
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].name = e.target['new_name_edits'].value;
+			this.sequences[sequence_num].matches_file = false;
+			this.sequences[sequence_num].acknowledged = false;
+			e.preventDefault();
+		},
+		submitSequenceDatetimeEdits: function (e) {
+			let sequence_uuid = e.target['sequence_uuid'].value;
+			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
+			let delta = e.target['new_datetime_edits'].value - this.sequences[sequence_num].start_time;
+			this.sequences[sequence_num].start_time += delta;
+			this.sequences[sequence_num].end_time += delta;
+			for (let p of this.sequences[sequence_num].points) {
+				p.time += delta;
+			}
 			this.sequences[sequence_num].matches_file = false;
 			this.sequences[sequence_num].acknowledged = false;
 			e.preventDefault();
