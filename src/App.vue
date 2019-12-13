@@ -29,7 +29,7 @@
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
+		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
 		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
 
@@ -79,24 +79,20 @@ export default {
 		};
 	},
 	computed: {
-		exif_photos: function() {
+		exif_photos_uuids: function() {
 			return this.photos.filter( photo => photo.has_exif_data ).map(obj => obj.uuid);
-		},
-		noexif_photos: function() {
-			return this.photos.filter( photo => !photo.has_exif_data ).map(obj => obj.uuid);
 		},
 		indexed_photos: function() { // index photos by the sequence that they fall within, time-wise
 			let indexed = {};
 			for (let sequence of this.sequences) {
 				indexed[sequence.uuid] = this.photos
-					.filter(photo => (sequence.start_time <= photo.datetime && photo.datetime <= sequence.end_time))
-					.map(obj => obj.uuid);
+					.filter(photo => (sequence.start_time <= photo.datetime && photo.datetime <= sequence.end_time));
 			}
 			return indexed;
 		},
-		unindexed_photo_uuids: function() {
+		unindexed_photos_uuids: function() {
 			let unindexed = [];
-			for (let photo_uuid of this.exif_photos) {
+			for (let photo_uuid of this.exif_photos_uuids) {
 				let photo_is_indexed = false;
 				for (let sequence_uuid of Object.keys(this.indexed_photos)) {
 					if (this.indexed_photos[sequence_uuid].includes(photo_uuid)) {
@@ -111,7 +107,7 @@ export default {
 			return unindexed;
 		},
 		unindexed_photos: function() {
-			return this.unindexed_photo_uuids.map(uuid => this.photos[this.photos.findIndex(p => p.uuid === uuid)]);
+			return this.unindexed_photos_uuids.map(uuid => this.photos[this.photos.findIndex(p => p.uuid === uuid)]);
 		}
 	},
 	mounted() {

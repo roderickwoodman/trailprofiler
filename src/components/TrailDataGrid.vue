@@ -70,7 +70,10 @@
 						<td class="photos_action" v-on:click="toggleShowPhotos(sequence.uuid)">
 							<b-button class="btn btn-sm btn-primary"><font-awesome-icon icon="camera"></font-awesome-icon></b-button>
 						</td>
-						<td>
+						<td v-if="sequence.show_photos">
+							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
+						</td>
+						<td v-if="!sequence.show_photos">
 							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
 						</td>
 					</tr>
@@ -106,7 +109,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'unindexed_photos', 'units', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
+	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'units', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,
