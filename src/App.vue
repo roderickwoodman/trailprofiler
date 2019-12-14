@@ -31,7 +31,7 @@
 		</div>
 		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
-		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :plotted_classes="plotted_classes" :clickedDeletePhoto="clickedDeletePhoto" />
+		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :clickedDeletePhoto="clickedDeletePhoto" />
 
 	</div>
 </template>
@@ -560,22 +560,11 @@ export default {
 			let date = new Date(...params);
 			return date.getTime();
 		},
-		plotted_classes: function (my_uuid) {
-			let plot_order_index = this.plot_order.findIndex(uuid => uuid === my_uuid);
-			if (plot_order_index !== -1) { // uuid is an imported sequence
+		plotted_classes: function (sequence_uuid) {
+			let plot_order_index = this.plot_order.findIndex(uuid => uuid === sequence_uuid);
+			if (plot_order_index !== -1) {
 				return this.plotted_labels[plot_order_index];
 			} else {
-				let my_photo_index = this.photos.findIndex(photo => photo.uuid === my_uuid);
-				if (my_photo_index !== -1) { // uuid is an imported photo
-					for (let check_sequence_uuid of this.plot_order) {
-						let check_sequence_index = this.sequences.findIndex(sequence => sequence.uuid === check_sequence_uuid);
-						if (this.sequences[check_sequence_index].start_time <= this.photos[my_photo_index].datetime
-						&& this.photos[my_photo_index].datetime <= this.sequences[check_sequence_index].end_time) {
-							plot_order_index = this.plot_order.findIndex(uuid => uuid === check_sequence_uuid);
-							return this.plotted_labels[plot_order_index];
-						}
-					}
-				}
 				return 'not_plotted';
 			}
 		}

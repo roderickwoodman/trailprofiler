@@ -15,14 +15,14 @@
 				</thead>
 				<tbody>
 					<tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos" v-bind:class="{ hasInfo: !photo.has_exif_data, acknowledged: photo.acknowledged }">
-						<td :class="plotted_classes(photo.uuid)">{{ epoch_to_datestring(photo.datetime) }}
+						<td>{{ epoch_to_datestring(photo.datetime) }}
 						- {{ epoch_to_timestring(photo.datetime) }}</td>
 						<td @mouseover="hoveringon_uuid = photo.uuid" @mouseleave="hoveringon_uuid = null" class="hoverable_cell">
 							<div class="hoverablecell_title">
 								{{ photo.filename }}
 							</div>
 							<div class="hoverablecell_actions" v-show="hoveringon_uuid === photo.uuid">
-								<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeletePhoto(photo.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(photo.uuid)" /></b-button>
+								<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeletePhoto(photo.uuid)"><font-awesome-icon icon="trash" /></b-button>
 							</div>
 							<div class="hoverablecell_details">
 								<span v-if="!photo.has_exif_data && !photo.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> this file has no EXIF data - <a href="" v-on:click="acknowledgeInfo(photo.uuid)">Dismiss</a></span>
@@ -43,7 +43,7 @@
 <script>
 
 export default {
-	props: ['photos', 'epoch_to_timestring', 'epoch_to_datestring', 'acknowledgeInfo', 'plotted_classes', 'clickedDeletePhoto'],
+	props: ['photos', 'epoch_to_timestring', 'epoch_to_datestring', 'acknowledgeInfo', 'clickedDeletePhoto'],
 	data() {
 		return {
 			epoch: 0,
