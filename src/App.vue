@@ -26,12 +26,13 @@
 		<select v-model="time_format">
 			<option value="ampm" selected>AM/PM</option>
 			<option value="24hr">24-hr</option>
+			<option value="epoch">epoch</option>
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
+		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
 
-		<TrailPhotosGrid :photos="photos" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :clickedDeletePhoto="clickedDeletePhoto" />
+		<TrailPhotosGrid :photos="photos" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :clickedDeletePhoto="clickedDeletePhoto" />
 
 	</div>
 </template>
@@ -541,6 +542,7 @@ export default {
 		},
 		epoch_to_timestring: function (epoch) {
 			if (!Number.isInteger(epoch)) return '?';
+			if (this.time_format === 'epoch') return epoch;
 			const leadingZero = (num) => (0 + num.toString()).slice(-2);
 			let date = new Date(epoch);
 			let hours = (this.time_format === 'ampm') ? (date.getHours() + 11) % 12 + 1 : date.getHours();

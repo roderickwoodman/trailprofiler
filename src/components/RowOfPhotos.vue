@@ -2,9 +2,9 @@
     <div class="row_of_photos">
         <div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_container">
             <img :src="photo.filename">
-            <figcaption>{{photo.datetime}}</figcaption>
-            <figcaption>{{epoch_to_datestring(photo.datetime)}}</figcaption>
-            <figcaption>{{epoch_to_timestring(photo.datetime)}}</figcaption>
+            <figcaption v-if="time_format === 'epoch'">{{ photo.datetime }}</figcaption>
+            <figcaption v-if="time_format !== 'epoch'">{{epoch_to_datestring(photo.datetime)}}</figcaption>
+            <figcaption v-if="time_format !== 'epoch'">{{epoch_to_timestring(photo.datetime)}}</figcaption>
             <figcaption>{{photo.camera}}</figcaption>
         </div>
     </div>
@@ -14,7 +14,7 @@
 <script>
 
 export default {
-	props: ['row_photos', 'epoch_to_datestring', 'epoch_to_timestring'],
+	props: ['row_photos', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring'],
 	data() {
 		return {
 		};

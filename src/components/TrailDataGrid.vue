@@ -26,7 +26,8 @@
 						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = sequence.uuid" @mouseleave="hoveringon_datetime_uuid = null" scope="row">
 							<div>
 								<div class="datetimecontent_title">
-									<span>{{ epoch_to_datestring(sequence.start_time) }}</span>
+									<span v-if="time_format !== 'epoch'">{{ epoch_to_datestring(sequence.start_time) }}</span>
+									<span v-if="time_format === 'epoch' && !show_details">{{ sequence.start_time }}</span>
 								</div>
 								<div class="datetimecontent_actions" v-show="hoveringon_datetime_uuid === sequence.uuid">
 									<b-button v-if="editing_sequence_datetime!==sequence.uuid" v-b-tooltip.hover title="Edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequenceDatetime(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
@@ -116,7 +117,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'units', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
+	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,

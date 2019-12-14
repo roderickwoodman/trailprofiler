@@ -15,8 +15,9 @@
 				</thead>
 				<tbody>
 					<tr v-bind:key="photo.uuid" v-for="photo in sortedPhotos" v-bind:class="{ hasInfo: !photo.has_exif_data, acknowledged: photo.acknowledged }">
-						<td>{{ epoch_to_datestring(photo.datetime) }}
+						<td v-if="time_format !== 'epoch'">{{ epoch_to_datestring(photo.datetime) }}
 						- {{ epoch_to_timestring(photo.datetime) }}</td>
+						<td v-if="time_format === 'epoch'">{{ photo.datetime }}</td>
 						<td @mouseover="hoveringon_uuid = photo.uuid" @mouseleave="hoveringon_uuid = null" class="hoverable_cell">
 							<div class="hoverablecell_title">
 								{{ photo.filename }}
@@ -43,7 +44,7 @@
 <script>
 
 export default {
-	props: ['photos', 'epoch_to_timestring', 'epoch_to_datestring', 'acknowledgeInfo', 'clickedDeletePhoto'],
+	props: ['photos', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'acknowledgeInfo', 'clickedDeletePhoto'],
 	data() {
 		return {
 			epoch: 0,
