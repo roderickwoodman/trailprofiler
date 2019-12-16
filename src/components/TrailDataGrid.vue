@@ -35,8 +35,10 @@
 								</div>
 							</div>
 							<div class="datetimecontent_details">
-								<span v-if="show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
-								<span v-if="show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
+								<span v-if="time_format !== 'epoch' && show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
+								<span v-if="time_format !== 'epoch' && show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
+								<span v-if="time_format === 'epoch' && show_details" class="sequence_details">start: {{ sequence.start_time }}</span>
+								<span v-if="time_format === 'epoch' && show_details" class="sequence_details">end: {{ sequence.end_time }}</span>
 							</div>
 							<form v-if="editing_sequence_datetime===sequence.uuid" @submit="clickedSubmitDatetimeEdits">
 								<input name="new_datetime_edits" class="sequence_datetime editing" v-model="new_datetime_edits" />
@@ -99,7 +101,7 @@
 				<tbody>
 					<tr>
 						<td>
-							<RowOfPhotos :row_photos="unindexed_photos" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
+							<RowOfPhotos :row_photos="unindexed_photos" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
 						</td>
 					</tr>
 				</tbody>

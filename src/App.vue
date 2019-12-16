@@ -542,7 +542,7 @@ export default {
 		},
 		epoch_to_timestring: function (epoch) {
 			if (!Number.isInteger(epoch)) return '?';
-			if (this.time_format === 'epoch') return epoch;
+			if (this.time_format === 'epoch') return '?';
 			const leadingZero = (num) => (0 + num.toString()).slice(-2);
 			let date = new Date(epoch);
 			let hours = (this.time_format === 'ampm') ? (date.getHours() + 11) % 12 + 1 : date.getHours();
@@ -552,6 +552,7 @@ export default {
 		},
 		epoch_to_datestring: function (epoch) {
 			if (!Number.isInteger(epoch)) return '?';
+			if (this.time_format === 'epoch') return '?';
 			let converted = new Date(epoch);
 			return converted.toDateString();
 		},
