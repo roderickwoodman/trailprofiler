@@ -23,7 +23,7 @@
 				</thead>
 				<tbody>
 					<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
-						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = sequence.uuid" @mouseleave="hoveringon_datetime_uuid = null" scope="row">
+						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = sequence.uuid" @mouseleave="hoveringon_datetime_uuid = null">
 							<div>
 								<div class="datetimecontent_title">
 									<span v-if="time_format !== 'epoch'">{{ epoch_to_datestring(sequence.start_time) }}</span>
@@ -308,6 +308,9 @@ export default {
 	.datetimecontent_actions button,
 	.namecontent_actions button {
 		margin: 2px 2px;
+	}
+	.datetimecontent_actions button {
+		color: black;
 	}
 	.photo_actions {
 		margin: 0;
