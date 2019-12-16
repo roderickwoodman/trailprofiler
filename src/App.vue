@@ -602,9 +602,6 @@ export default {
 	.info_message {
 		font-style: italic;
 	}
-	.hoverable_cell {
-		position: relative;
-	}
 	.hoverablecell_actions {
 		position: absolute;
 		right: 5px;
