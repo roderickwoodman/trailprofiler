@@ -1,10 +1,10 @@
 <template>
 	<div class="row_of_numbers">
-        <div class="number text-right">{{ seconds_to_hm(sequence.total_time) }}</div>
-        <div class="number text-center">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</div>
-        <div class="number text-right">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</div>
-        <div class="number text-right">{{ to_desired_units("m", sequence.minimum_elevation) | round_it }}</div>
-        <div class="number text-right">{{ to_desired_units("m", sequence.maximum_elevation) | round_it }}</div>
+		<div class="number text-right">{{ seconds_to_hm(sequence.total_time) }}</div>
+		<div class="number text-center">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</div>
+		<div class="number text-right">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</div>
+		<div class="number text-right">{{ to_desired_units("m", sequence.minimum_elevation) | round_it }}</div>
+		<div class="number text-right">{{ to_desired_units("m", sequence.maximum_elevation) | round_it }}</div>
 	</div>
 </template>
 
@@ -89,11 +89,11 @@ export default {
 
 
 <style scoped>
-    .row_of_numbers {
-        display: flex;
-        justify-content: space-evenly;
-    }
-    .number {
-        flex: 0 0 20%;
-    }
+	.row_of_numbers {
+		display: flex;
+		justify-content: space-evenly;
+	}
+	.number {
+		flex: 0 0 20%;
+	}
 </style>
