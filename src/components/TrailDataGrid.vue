@@ -80,10 +80,10 @@
 								<div>({{ indexed_photos[sequence.uuid].length }})</div>
 							</b-button>
 						</td>
-						<td v-if="sequence.show_photos">
+						<td v-if="sequence.show_photos" class="details_columns">
 							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
 						</td>
-						<td v-if="!sequence.show_photos">
+						<td v-if="!sequence.show_photos" class="details_columns">
 							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
 						</td>
 					</tr>
@@ -371,5 +371,9 @@ export default {
 	}
 	.sortable {
 		cursor: pointer;
+	}
+	.details_columns {
+		max-width: 600px;
+		min-width: 600px;
 	}
 </style>

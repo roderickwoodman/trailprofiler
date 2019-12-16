@@ -39,6 +39,8 @@ export default {
 	.row_of_photos {
 		display: flex;
 		justify-content: flex-start;
+		width: 100%;
+		overflow-x: auto;
 	}
 	.row_of_photos .info_message {
 		width: 100%;
@@ -51,6 +53,8 @@ export default {
 		flex-direction: column;
 		align-items:center;
 		margin: 5px;
+		flex-shrink: 0;
+		height: 100%;
 	}
 	figcaption {
 		font-size: 0.8em;
