@@ -84,7 +84,7 @@
 							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
 						</td>
 						<td v-if="!sequence.show_photos" class="details_columns">
-							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
+							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :show_date="false"/>
 						</td>
 					</tr>
 				</tbody>
@@ -101,7 +101,7 @@
 				<tbody>
 					<tr>
 						<td>
-							<RowOfPhotos :row_photos="unindexed_photos" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" />
+							<RowOfPhotos :row_photos="unindexed_photos" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" />
 						</td>
 					</tr>
 				</tbody>
