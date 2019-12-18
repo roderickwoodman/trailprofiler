@@ -7,7 +7,7 @@
 			<figcaption v-if="time_format === 'epoch'">{{ photo.datetime }}</figcaption>
 			<figcaption v-if="time_format !== 'epoch' && show_date">{{epoch_to_datestring(photo.datetime)}}</figcaption>
 			<figcaption v-if="time_format !== 'epoch'">{{epoch_to_timestring(photo.datetime)}}</figcaption>
-			<figcaption>{{photo.camera}}</figcaption>
+			<figcaption v-if="show_details">{{photo.camera}}</figcaption>
 		</div>
 	</div>
 	</div>
@@ -17,7 +17,7 @@
 <script>
 
 export default {
-	props: ['row_photos', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date'],
+	props: ['row_photos', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details'],
 	data() {
 		return {
 		};
