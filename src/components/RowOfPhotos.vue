@@ -3,8 +3,8 @@
 		<div v-if="!row_photos.length" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
 		<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_item">
 			<div class="photo_container">
-				<img :src="photo.filename">
-				<figcaption class="photo_overlay">
+				<img :src="photo.filename" v-bind:class="{darkened: show_image_specs}">
+				<figcaption v-if="show_image_specs" class="photo_overlay">
 					<div>{{ photo.aperture_printable }}</div>
 					<div>{{ photo.shutter_printable }}</div>
 					<div>{{ photo.iso }}</div>
@@ -22,7 +22,7 @@
 <script>
 
 export default {
-	props: ['row_photos', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details'],
+	props: ['row_photos', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details', 'show_image_specs'],
 	data() {
 		return {
 		};
@@ -69,6 +69,10 @@ export default {
 		background-color: black;
 	}
 	.photo_container > img {
+		width: 100%;
+		height: 100%;
+	}
+	.photo_container > img.darkened {
 		opacity: 0.7;
 		width: 100%;
 		height: 100%;

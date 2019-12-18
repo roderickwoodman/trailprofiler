@@ -5,11 +5,14 @@
 		<h1 v-if="!show_only_plotted">Sequences ({{ sequences.length }})</h1>
 		<div class="container table-responsive-sm p-0">
 			<label for="show_only_plotted">
-			<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
+				<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
 				show row only if plotted</label>
 			<label for="show_details">
 				<input type="checkbox" id="show_details" value="false" v-model="show_details">
 				show details of each row</label>
+			<label for="show_image_specs">
+				<input type="checkbox" id="show_image_specs" value="false" v-model="show_image_specs">
+				show image specs</label>
 			<table class="table table-sm">
 				<thead>
 					<tr>
@@ -81,7 +84,7 @@
 							</b-button>
 						</td>
 						<td v-if="sequence.show_photos" class="details_columns">
-							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" />
+							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" />
 						</td>
 						<td v-if="!sequence.show_photos" class="details_columns">
 							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
@@ -101,7 +104,7 @@
 				<tbody>
 					<tr>
 						<td>
-							<RowOfPhotos :row_photos="unindexed_photos" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" :show_details="show_details" />
+							<RowOfPhotos :row_photos="unindexed_photos" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" :show_details="show_details" :show_image_specs="show_image_specs" />
 						</td>
 					</tr>
 				</tbody>
@@ -128,6 +131,7 @@ export default {
 	data() {
 		return {
 			show_details: false,
+			show_image_specs: false,
 			show_only_plotted: false,
 			sort_key: 'total_distance',
 			sort_dir_asc: true,
