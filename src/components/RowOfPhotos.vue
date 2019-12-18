@@ -1,5 +1,4 @@
 <template>
-	<div>
 	<div class="row_of_photos">
 		<div v-if="!row_photos.length" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
 		<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_container">
@@ -9,7 +8,6 @@
 			<figcaption v-if="time_format !== 'epoch'">{{epoch_to_timestring(photo.datetime)}}</figcaption>
 			<figcaption v-if="show_details">{{photo.camera}}</figcaption>
 		</div>
-	</div>
 	</div>
 </template>
 
@@ -47,7 +45,6 @@ export default {
 		text-align: center;
 	}
 	.photo_container {
-		width: 125px;
 		display: flex;
 		justify-content: flex-start;
 		flex-direction: column;
