@@ -6,7 +6,7 @@
 			<figcaption v-if="time_format === 'epoch'">{{ photo.datetime }}</figcaption>
 			<figcaption v-if="time_format !== 'epoch' && show_date">{{epoch_to_datestring(photo.datetime)}}</figcaption>
 			<figcaption v-if="time_format !== 'epoch'">{{epoch_to_timestring(photo.datetime)}}</figcaption>
-			<figcaption v-if="show_details">{{photo.camera}}</figcaption>
+			<figcaption v-if="show_details" class="camera">{{photo.camera_model}}</figcaption>
 		</div>
 	</div>
 </template>
@@ -51,7 +51,9 @@ export default {
 		align-items:center;
 		margin: 5px;
 		flex-shrink: 0;
+		width: 100px;
 		height: 100%;
+		text-align: center;
 	}
 	figcaption {
 		font-size: 0.8em;

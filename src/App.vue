@@ -197,7 +197,8 @@ export default {
 						console.log('file ' + file.name + ' has no exif data');
 						new_photo['has_exif_data'] = false;
 						new_photo['datetime'] = '?';
-						new_photo['camera'] = '?';
+						new_photo['camera_make'] = '?';
+						new_photo['camera_model'] = '?';
 						new_photo['iso'] = '?';
 						new_photo['aperture'] = '?';
 						new_photo['shutter_printable'] = '?';
@@ -210,7 +211,8 @@ export default {
 						params[1] = parseInt(params[1]) - 1;
 						let date = new Date(...params);
 						new_photo['datetime'] = date.getTime();
-						new_photo['camera'] = exif.Make + ' ' + exif.Model;
+						new_photo['camera_make'] = exif.Make;
+						new_photo['camera_model'] = exif.Model;
 						new_photo['iso'] = Math.round(exif.ISOSpeedRatings);
 						new_photo['aperture'] = exif.ApertureValue.numerator / exif.ApertureValue.denominator;
 						new_photo['aperture_printable'] = 'F' + Math.round(new_photo.aperture*10)/10;
