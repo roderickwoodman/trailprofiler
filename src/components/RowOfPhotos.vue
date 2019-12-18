@@ -1,19 +1,26 @@
 <template>
-	<div class="row_of_photos">
+	<div>
 		<div v-if="!row_photos.length" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
-		<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_item">
-			<div class="photo_container">
-				<img :src="photo.filename" v-bind:class="{darkened: show_image_specs}">
-				<figcaption v-if="show_image_specs" class="photo_overlay">
-					<div>{{ photo.aperture_printable }}</div>
-					<div>{{ photo.shutter_printable }}</div>
-					<div>{{ photo.iso }}</div>
-				</figcaption>
+		<div v-if="row_photos.length">
+			<ul class="camera_list" v-bind:key="camera" v-for="(count, camera) in camera_counts">
+				<li class="camera">{{ count }} x {{ camera }}</li>
+			</ul>
+			<div class="row_of_photos">
+				<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_item">
+					<div class="photo_container">
+						<img :src="photo.filename" v-bind:class="{darkened: show_image_specs}">
+						<figcaption v-if="show_image_specs" class="photo_overlay">
+							<div>{{ photo.aperture_printable }}</div>
+							<div>{{ photo.shutter_printable }}</div>
+							<div>{{ photo.iso }}</div>
+						</figcaption>
+					</div>
+					<figcaption v-if="time_format === 'epoch'">{{ photo.datetime }}</figcaption>
+					<figcaption v-if="time_format !== 'epoch' && show_date">{{epoch_to_datestring(photo.datetime)}}</figcaption>
+					<figcaption v-if="time_format !== 'epoch'">{{epoch_to_timestring(photo.datetime)}}</figcaption>
+					<figcaption v-if="show_details">{{photo.camera_model}}</figcaption>
+				</div>
 			</div>
-			<figcaption v-if="time_format === 'epoch'">{{ photo.datetime }}</figcaption>
-			<figcaption v-if="time_format !== 'epoch' && show_date">{{epoch_to_datestring(photo.datetime)}}</figcaption>
-			<figcaption v-if="time_format !== 'epoch'">{{epoch_to_timestring(photo.datetime)}}</figcaption>
-			<figcaption v-if="show_details" class="camera">{{photo.camera_model}}</figcaption>
 		</div>
 	</div>
 </template>
@@ -33,6 +40,17 @@ export default {
 			return cloned.sort(function(a,b) {
 				return (a.datetime > b.datetime) ? 1 : -1;
 			});
+		},
+		camera_counts: function() {
+			let counts = {};
+			for (let photo of this.row_photos) {
+				if (photo.has_exif_data && counts.hasOwnProperty(photo.camera_model)) {
+					counts[photo.camera_model] += 1;
+				} else {
+					counts[photo.camera_model] = 1;
+				}
+			}
+			return counts;
 		}
 	}
 };
@@ -88,6 +106,14 @@ export default {
 		text-align: left;
 	}
 	figcaption {
+		font-size: 0.8em;
+	}
+	.camera_list {
+		display: inline-block;
+		margin: 0;
+		margin-right: 20px;
+		padding: 0;
+		list-style: none;
 		font-size: 0.8em;
 	}
 </style>
