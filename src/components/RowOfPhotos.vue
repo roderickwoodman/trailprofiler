@@ -3,7 +3,7 @@
 		<div v-if="!row_photos.length" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
 		<div v-if="row_photos.length">
 			<ul class="camera_list" v-bind:key="camera" v-for="(count, camera) in camera_counts">
-				<li class="camera" @click="toggleCameraInclusion(camera)">{{ count }} x {{ camera }}</li>
+				<li class="camera" v-bind:class="{ excluded: excluded_cameras.includes(camera) }" @click="toggleCameraInclusion(camera)">{{ count }} x {{ camera }}</li>
 			</ul>
 			<div class="row_of_photos">
 				<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_item">
@@ -120,10 +120,12 @@ export default {
 	}
 	.camera {
 		padding: 1px 5px;
-		border: 1px solid black;
-		border-radius: 5px;
 	}
 	.camera:hover {
 		cursor: pointer;
+	}
+	.camera.excluded {
+		text-decoration: line-through;
+		border: 0;
 	}
 </style>
