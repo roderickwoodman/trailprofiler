@@ -12,8 +12,11 @@
 			</ul>
 			<div class="row_of_photos">
 				<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_item">
-					<div class="photo_container">
-						<img :src="photo.filename" v-bind:class="{darkened: show_image_specs}">
+					<div class="photo_image" @mouseover="hoveringon_uuid = photo.uuid" @mouseleave="hoveringon_uuid = null">
+						<img class="hoverable_cell" :src="photo.filename" v-bind:class="{darkened: show_image_specs || hoveringon_uuid === photo.uuid}">
+						<div class="photo_actions" v-show="hoveringon_uuid === photo.uuid">
+							<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeletePhoto(photo.uuid)"><font-awesome-icon icon="trash" /></b-button>
+						</div>
 						<figcaption v-if="show_image_specs" class="photo_overlay">
 							<div>{{ photo.aperture_printable }}</div>
 							<div>{{ photo.shutter_printable }}</div>
@@ -34,9 +37,10 @@
 <script>
 
 export default {
-	props: ['row_photos', 'excluded_cameras', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details', 'show_image_specs', 'toggleCameraInclusion'],
+	props: ['row_photos', 'excluded_cameras', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details', 'show_image_specs', 'toggleCameraInclusion', 'clickedDeletePhoto'],
 	data() {
 		return {
+			hoveringon_uuid: null
 		};
 	},
 	computed: {
@@ -90,17 +94,17 @@ export default {
 		height: 100%;
 		text-align: center;
 	}
-	.photo_container {
+	.photo_image {
 		width: 75px;
 		height: 75px;
 		position: relative;
 		background-color: black;
 	}
-	.photo_container > img {
+	.photo_image > img {
 		width: 100%;
 		height: 100%;
 	}
-	.photo_container > img.darkened {
+	.photo_image > img.darkened {
 		opacity: 0.7;
 		width: 100%;
 		height: 100%;
@@ -117,6 +121,18 @@ export default {
 	}
 	figcaption {
 		font-size: 0.8em;
+	}
+	.photo_actions {
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 0 7px;
+	}
+	.photo_actions button {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		color: white;
 	}
 	.camera_list {
 		display: inline-block;

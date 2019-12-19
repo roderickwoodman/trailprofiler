@@ -73,7 +73,7 @@
 								<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 							</div>
 						</td>
-						<td class="photo_actions" :set="[shown_photo_count=indexed_photos[sequence.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=indexed_photos[sequence.uuid].length]">
+						<td class="photorow_actions" :set="[shown_photo_count=indexed_photos[sequence.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=indexed_photos[sequence.uuid].length]">
 							<b-button v-if="!sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(sequence.uuid)">
 								<font-awesome-icon icon="camera"></font-awesome-icon>
 								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
@@ -86,7 +86,7 @@
 							</b-button>
 						</td>
 						<td v-if="sequence.show_photos" class="details_columns">
-							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" />
+							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" :clickedDeletePhoto="clickedDeletePhoto" />
 						</td>
 						<td v-if="!sequence.show_photos" class="details_columns">
 							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
@@ -107,7 +107,7 @@
 				<tbody>
 					<tr>
 						<td>
-							<RowOfPhotos :row_photos="unindexed_photos" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" />
+							<RowOfPhotos :row_photos="unindexed_photos" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" :clickedDeletePhoto="clickedDeletePhoto" />
 						</td>
 					</tr>
 				</tbody>
@@ -125,7 +125,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos', 'toggleCameraInclusion'],
+	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,
@@ -321,11 +321,11 @@ export default {
 	.datetimecontent_actions button {
 		color: black;
 	}
-	.photo_actions {
+	.photorow_actions {
 		margin: 0;
 		padding: 0;
 	}
-	.photo_actions button {
+	.photorow_actions button {
 		min-width: 65px;
 		display: flex;
 		flex-direction: column;
@@ -333,7 +333,8 @@ export default {
 		align-items: center;
 	}
 	.show_photos {
-		padding: 10px;
+		margin: 2px;
+		padding: 8px;
 		border: 0;
 		color: black;
 	}
