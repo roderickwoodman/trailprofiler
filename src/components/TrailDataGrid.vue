@@ -73,14 +73,16 @@
 								<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
 							</div>
 						</td>
-						<td class="photo_actions">
+						<td class="photo_actions" :set="[shown_photo_count=indexed_photos[sequence.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=indexed_photos[sequence.uuid].length]">
 							<b-button v-if="!sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(sequence.uuid)">
 								<font-awesome-icon icon="camera"></font-awesome-icon>
-								<div>({{ indexed_photos[sequence.uuid].length }})</div>
+								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
+								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
 							</b-button>
 							<b-button v-if="sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(sequence.uuid)">
 								<font-awesome-icon icon="table"></font-awesome-icon>
-								<div>({{ indexed_photos[sequence.uuid].length }})</div>
+								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
+								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
 							</b-button>
 						</td>
 						<td v-if="sequence.show_photos" class="details_columns">
@@ -97,8 +99,9 @@
 		<div class="container table-responsive-sm p-0">
 			<table class="table table-sm">
 				<thead>
-					<tr>
-						<th>Unassigned Photos ({{ unindexed_photos.length }})</th>
+					<tr :set="[shown_photo_count=unindexed_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=unindexed_photos.length]">
+						<th v-if="shown_photo_count === total_photo_count">Unassigned Photos ({{ shown_photo_count }})</th>
+						<th v-if="shown_photo_count !== total_photo_count">Unassigned Photos ({{ shown_photo_count }} of {{ total_photo_count }} shown)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -321,6 +324,13 @@ export default {
 	.photo_actions {
 		margin: 0;
 		padding: 0;
+	}
+	.photo_actions button {
+		min-width: 65px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
 	}
 	.show_photos {
 		padding: 10px;
