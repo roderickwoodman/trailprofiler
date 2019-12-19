@@ -86,7 +86,7 @@
 							</b-button>
 						</td>
 						<td v-if="sequence.show_photos" class="details_columns">
-							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :excluded_cameras="excluded_cameras" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" />
+							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" />
 						</td>
 						<td v-if="!sequence.show_photos" class="details_columns">
 							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
