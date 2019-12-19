@@ -1,7 +1,11 @@
 <template>
 	<div :set="[shown_photo_count=row_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=row_photos.length]">
-		<div v-if="!shown_photo_count && !total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
-		<div v-if="!shown_photo_count && total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> all photos from this sequence were taken with excluded cameras </div>
+		<div v-if="!shown_photo_count && !total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> no photos fall within the time range of this sequence </div>
+		<div v-if="!shown_photo_count && total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> all photos within this time range were taken with excluded cameras:
+			<span v-bind:key="camera" v-for="camera in my_excluded_cameras">
+				<span class="camera excluded" @click="toggleCameraInclusion(camera)">{{ camera }}</span>
+			</span>
+		</div>
 		<div v-if="shown_photo_count">
 			<ul class="camera_list" v-bind:key="camera" v-for="(count, camera) in camera_counts">
 				<li class="camera" v-bind:class="{ excluded: excluded_cameras.includes(camera) }" @click="toggleCameraInclusion(camera)">{{ count }} x {{ camera }}</li>
@@ -53,9 +57,12 @@ export default {
 				}
 			}
 			return counts;
+		},
+		my_excluded_cameras: function() {
+			let cameras = this.excluded_cameras.filter(camera => this.row_photos.some(photo => photo.camera_model === camera));
+			return cameras;
 		}
-	},
-
+	}
 };
 
 </script>
