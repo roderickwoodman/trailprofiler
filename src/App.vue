@@ -119,6 +119,9 @@ export default {
 		if (localStorage.photos) {
 			this.photos = JSON.parse(localStorage.photos);
 		}
+		if (localStorage.excluded_cameras) {
+			this.excluded_cameras = JSON.parse(localStorage.excluded_cameras);
+		}
 		if (localStorage.units) {
 			this.units = JSON.parse(localStorage.units);
 		}
@@ -141,6 +144,11 @@ export default {
 				localStorage.photos = JSON.stringify(new_photos);
 			},
 			deep: true
+		},
+		excluded_cameras: {
+			handler: function (new_excluded_cameras) {
+				localStorage.excluded_cameras = JSON.stringify(new_excluded_cameras);
+			}
 		},
 		units: {
 			handler: function (new_units) {
