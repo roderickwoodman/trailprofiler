@@ -1,7 +1,8 @@
 <template>
-	<div>
-		<div v-if="!row_photos.length" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
-		<div v-if="row_photos.length">
+	<div :set="[shown_photo_count=row_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=row_photos.length]">
+		<div v-if="!shown_photo_count && !total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
+		<div v-if="!shown_photo_count && total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> all photos from this sequence were taken with excluded cameras </div>
+		<div v-if="shown_photo_count">
 			<ul class="camera_list" v-bind:key="camera" v-for="(count, camera) in camera_counts">
 				<li class="camera" v-bind:class="{ excluded: excluded_cameras.includes(camera) }" @click="toggleCameraInclusion(camera)">{{ count }} x {{ camera }}</li>
 			</ul>
