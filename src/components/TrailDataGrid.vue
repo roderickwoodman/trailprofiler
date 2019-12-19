@@ -84,7 +84,7 @@
 							</b-button>
 						</td>
 						<td v-if="sequence.show_photos" class="details_columns">
-							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" />
+							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :excluded_cameras="excluded_cameras" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" />
 						</td>
 						<td v-if="!sequence.show_photos" class="details_columns">
 							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
@@ -104,7 +104,7 @@
 				<tbody>
 					<tr>
 						<td>
-							<RowOfPhotos :row_photos="unindexed_photos" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" :show_details="show_details" :show_image_specs="show_image_specs" />
+							<RowOfPhotos :row_photos="unindexed_photos" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="true" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" />
 						</td>
 					</tr>
 				</tbody>
@@ -122,7 +122,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos'],
+	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'toggleShowPhotos', 'toggleCameraInclusion'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,

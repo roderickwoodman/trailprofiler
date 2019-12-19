@@ -30,7 +30,7 @@
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" />
+		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 		<TrailPhotosGrid :photos="photos" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :clickedDeletePhoto="clickedDeletePhoto" />
 
@@ -55,6 +55,7 @@ export default {
 	data() {
 		return {
 			photos: [],
+			excluded_cameras: [],
 			sequences: [],
 			plot_order: [],
 			units: 'english',
@@ -533,6 +534,14 @@ export default {
 		toggleShowPhotos: function(sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
 			this.sequences[sequence_num].show_photos = !this.sequences[sequence_num].show_photos;
+		},
+		toggleCameraInclusion: function(camera) {
+			let camera_index = this.excluded_cameras.indexOf(camera);
+			if (camera_index === -1) {
+				this.excluded_cameras.push(camera);
+			} else {
+				this.excluded_cameras.splice(camera_index, 1);
+			}
 		},
 		acknowledgeSequenceInfo: function (sequence_uuid) {
 			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);

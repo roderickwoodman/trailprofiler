@@ -3,7 +3,7 @@
 		<div v-if="!row_photos.length" class="info_message"><font-awesome-icon icon="info-circle" /> this sequence has no photos </div>
 		<div v-if="row_photos.length">
 			<ul class="camera_list" v-bind:key="camera" v-for="(count, camera) in camera_counts">
-				<li class="camera">{{ count }} x {{ camera }}</li>
+				<li class="camera" @click="toggleCameraInclusion(camera)">{{ count }} x {{ camera }}</li>
 			</ul>
 			<div class="row_of_photos">
 				<div v-bind:key="photo.uuid" v-for="photo in sorted_photos" class="photo_item">
@@ -29,7 +29,7 @@
 <script>
 
 export default {
-	props: ['row_photos', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details', 'show_image_specs'],
+	props: ['row_photos', 'excluded_cameras', 'time_format', 'epoch_to_datestring', 'epoch_to_timestring', 'show_date', 'show_details', 'show_image_specs', 'toggleCameraInclusion'],
 	data() {
 		return {
 		};
@@ -37,7 +37,8 @@ export default {
 	computed: {
 		sorted_photos: function() {
 			let cloned = [...this.row_photos];
-			return cloned.sort(function(a,b) {
+			let filtered = cloned.filter(photo => !photo.hasOwnProperty('camera_model') || !this.excluded_cameras.includes(photo.camera_model));
+			return filtered.sort(function(a,b) {
 				return (a.datetime > b.datetime) ? 1 : -1;
 			});
 		},
@@ -52,7 +53,8 @@ export default {
 			}
 			return counts;
 		}
-	}
+	},
+
 };
 
 </script>
@@ -111,9 +113,17 @@ export default {
 	.camera_list {
 		display: inline-block;
 		margin: 0;
-		margin-right: 20px;
+		margin-right: 15px;
 		padding: 0;
 		list-style: none;
 		font-size: 0.8em;
+	}
+	.camera {
+		padding: 1px 5px;
+		border: 1px solid black;
+		border-radius: 5px;
+	}
+	.camera:hover {
+		cursor: pointer;
 	}
 </style>
