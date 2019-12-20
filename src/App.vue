@@ -8,31 +8,32 @@
 			<label for="my-gpx-files" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
 			<input @change="onGpxFileChange" id="my-gpx-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
 		</form>
+
 		<form id="image-file-input-form" class="mx-auto pt-3" style="width: 300px">
 			<label for="my-image-files" class="btn btn-primary" style="width: 100%">Import Images <font-awesome-icon icon="upload" /></label>
 			<input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" multiple type="file" />
 		</form>
 
 		<div>
-		<span>Units: 
-		<select v-model="units">
-			<option value="english" selected>English</option>
-			<option value="metric">Metric</option>
-		</select>
-		</span>
+			<span>Units: 
+			<select v-model="units">
+				<option value="english" selected>English</option>
+				<option value="metric">Metric</option>
+			</select>
+			</span>
 		</div>
-		<div>
-		<span>Time Format: 
-		<select v-model="time_format">
-			<option value="ampm" selected>AM/PM</option>
-			<option value="24hr">24-hr</option>
-			<option value="epoch">epoch</option>
-		</select>
-		</span>
-		</div>
-		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
-		<TrailPhotosGrid :photos="photos" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :clickedDeletePhoto="clickedDeletePhoto" />
+		<div>
+			<span>Time Format: 
+			<select v-model="time_format">
+				<option value="ampm" selected>AM/PM</option>
+				<option value="24hr">24-hr</option>
+				<option value="epoch">epoch</option>
+			</select>
+			</span>
+		</div>
+
+		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 	</div>
 </template>
@@ -41,7 +42,6 @@
 <script>
 import TrailDataChart from './components/TrailDataChart.vue';
 import TrailDataGrid from './components/TrailDataGrid.vue';
-import TrailPhotosGrid from './components/TrailPhotosGrid.vue';
 
 import EXIF from 'exif-js';
 
@@ -49,8 +49,7 @@ export default {
 	name: 'app',
 	components: {
 		TrailDataChart,
-		TrailDataGrid,
-		TrailPhotosGrid
+		TrailDataGrid
 	},
 	data() {
 		return {
