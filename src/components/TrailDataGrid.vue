@@ -337,6 +337,7 @@ export default {
 		padding: 8px;
 		border: 0;
 		color: black;
+		border: 1px solid transparent;
 	}
 	.show_photos button {
 		color: black;
