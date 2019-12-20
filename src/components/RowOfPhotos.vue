@@ -1,6 +1,6 @@
 <template>
 	<div :set="[shown_photo_count=row_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=row_photos.length]">
-		<div v-if="!shown_photo_count && !total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> no photos fall within the time range of this sequence </div>
+		<div v-if="!shown_photo_count && !total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> no imported photos fall within the time range of this sequence </div>
 		<div v-if="!shown_photo_count && total_photo_count" class="info_message"><font-awesome-icon icon="info-circle" /> all photos within this time range were taken with excluded cameras:
 			<span v-bind:key="camera" v-for="camera in my_excluded_cameras">
 				<span class="camera excluded" @click="toggleCameraInclusion(camera)">{{ camera }}</span>

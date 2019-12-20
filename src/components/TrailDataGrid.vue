@@ -96,12 +96,12 @@
 			</table>
 		</div>
 
-		<div class="container table-responsive-sm p-0">
+		<div v-if="photo_count" class="container table-responsive-sm p-0">
 			<table class="table table-sm">
 				<thead>
-					<tr :set="[shown_photo_count=unindexed_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=unindexed_photos.length]">
-						<th v-if="shown_photo_count === total_photo_count">Unassigned Photos ({{ shown_photo_count }})</th>
-						<th v-if="shown_photo_count !== total_photo_count">Unassigned Photos ({{ shown_photo_count }} of {{ total_photo_count }} shown)</th>
+					<tr :set="[shown_unindexed_photo_count=unindexed_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_unindexed_photo_count=unindexed_photos.length]">
+						<th v-if="shown_unindexed_photo_count === total_unindexed_photo_count">Unassigned Photos ({{ shown_unindexed_photo_count }})</th>
+						<th v-if="shown_unindexed_photo_count !== total_unindexed_photo_count">Unassigned Photos ({{ shown_unindexed_photo_count }} of {{ total_unindexed_photo_count }} shown)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -125,7 +125,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
+	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,

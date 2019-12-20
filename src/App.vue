@@ -30,7 +30,7 @@
 		</select>
 		</span>
 		</div>
-		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
+		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 		<TrailPhotosGrid :photos="photos" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgePhotoInfo" :clickedDeletePhoto="clickedDeletePhoto" />
 
