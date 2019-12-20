@@ -1,8 +1,8 @@
 <template>
 	<div class="row_of_numbers">
-		<div class="number text-right">{{ seconds_to_hm(trail.total_time) }}</div>
+		<div class="number text-center">{{ seconds_to_hm(trail.total_time) }}</div>
 		<div class="number text-center">{{ to_desired_units("km", trail.total_distance) | to_tenths }}</div>
-		<div class="number text-right">{{ seconds_to_hms(to_desired_units("secsperkm", trail.average_pace)) }}</div>
+		<div class="number text-center">{{ seconds_to_hms(to_desired_units("secsperkm", trail.average_pace)) }}</div>
 		<div class="number text-right">{{ to_desired_units("m", trail.minimum_elevation) | round_it }}</div>
 		<div class="number text-right">{{ to_desired_units("m", trail.maximum_elevation) | round_it }}</div>
 	</div>

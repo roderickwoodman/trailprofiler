@@ -20,7 +20,9 @@
 						<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
 						<th scope="col"></th>
 						<th scope="col" class="variable_content_columns">
-							<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
+							<div>
+								<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
+							</div>
 						</th>
 					</tr>
 				</thead>
@@ -355,6 +357,9 @@ export default {
 		margin: 5px 0;
 		max-width: 250px;
 		cursor: pointer;
+	}
+	table > thead > tr > th {
+		vertical-align: middle;
 	}
 	tr > td {
 		vertical-align: middle;
