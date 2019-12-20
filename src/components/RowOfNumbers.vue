@@ -1,10 +1,10 @@
 <template>
 	<div class="row_of_numbers">
-		<div class="number text-right">{{ seconds_to_hm(sequence.total_time) }}</div>
-		<div class="number text-center">{{ to_desired_units("km", sequence.total_distance) | to_tenths }}</div>
-		<div class="number text-right">{{ seconds_to_hms(to_desired_units("secsperkm", sequence.average_pace)) }}</div>
-		<div class="number text-right">{{ to_desired_units("m", sequence.minimum_elevation) | round_it }}</div>
-		<div class="number text-right">{{ to_desired_units("m", sequence.maximum_elevation) | round_it }}</div>
+		<div class="number text-right">{{ seconds_to_hm(trail.total_time) }}</div>
+		<div class="number text-center">{{ to_desired_units("km", trail.total_distance) | to_tenths }}</div>
+		<div class="number text-right">{{ seconds_to_hms(to_desired_units("secsperkm", trail.average_pace)) }}</div>
+		<div class="number text-right">{{ to_desired_units("m", trail.minimum_elevation) | round_it }}</div>
+		<div class="number text-right">{{ to_desired_units("m", trail.maximum_elevation) | round_it }}</div>
 	</div>
 </template>
 
@@ -12,7 +12,7 @@
 <script>
 
 export default {
-	props: ['sequence', 'units', 'epoch_to_timestring', 'epoch_to_datestring'],
+	props: ['trail', 'units', 'epoch_to_timestring', 'epoch_to_datestring'],
 	data() {
 		return {
 		};

@@ -8,7 +8,7 @@
 import Chartist from 'chartist';
 
 export default {
-	props: ['units', 'sequences', 'plot_order'],
+	props: ['units', 'trails', 'plot_order'],
 	data() {
 		return {
 			add_these: [],
@@ -584,7 +584,7 @@ export default {
 	},
 	computed: {
 		isPlottedUuids: function() {
-			return this.sequences.filter(obj => obj.is_plotted === true).map(obj => obj.uuid);
+			return this.trails.filter(obj => obj.is_plotted === true).map(obj => obj.uuid);
 		}
 	},
 	mounted() {
@@ -594,11 +594,11 @@ export default {
 		units: {
 			handler: function () {
 
-				this.removeAllSequencesFromChart();
+				this.removeAllTrailsFromChart();
 
 				let self = this;
 				this.plot_order.forEach(function (uuid) {
-					self.addSequenceToChart(uuid);
+					self.addTrailToChart(uuid);
 				});
 			}
 		},
@@ -608,32 +608,32 @@ export default {
 				let self = this;
 				let add_these = [], remove_these = [];
 
-				// new sequence uuids will be added to the chart
+				// new trail uuids will be added to the chart
 				add_these = new_plotted_uuids.filter(uuid => !old_plotted_uuids.includes(uuid));
 				add_these.forEach(function (uuid) {
-					self.addSequenceToChart(uuid);
+					self.addTrailToChart(uuid);
 				});
 
-				// missing sequence uuids will be removed from the chart
+				// missing trail uuids will be removed from the chart
 				remove_these = old_plotted_uuids.filter(uuid => !new_plotted_uuids.includes(uuid));
 				remove_these.forEach(function(uuid) {
-					self.removeSequenceFromChart(uuid);
+					self.removeTrailFromChart(uuid);
 				});
 			}
 		}
 	},
 	methods: {
-		addSequenceToChart: function (sequence_uuid) {
+		addTrailToChart: function (trail_uuid) {
 
 			let x_scale_factor = (this.units === 'english') ? 0.621371 : 1; // mi or km
 			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
-			let sequence = this.sequences.find(s => s.uuid === sequence_uuid);
+			let trail = this.trails.find(s => s.uuid === trail_uuid);
 
 			// determine chart data
 			let new_chart_data = this.chart_data, new_series = {}, new_series_data = [];
-			new_series['uuid'] = sequence.uuid;
-			sequence.points.forEach(function(point, idx) {
-				let chart_point = { x: sequence.arr_distance_aggrs[idx] * x_scale_factor, y: point.elevation * y_scale_factor };
+			new_series['uuid'] = trail.uuid;
+			trail.points.forEach(function(point, idx) {
+				let chart_point = { x: trail.arr_distance_aggrs[idx] * x_scale_factor, y: point.elevation * y_scale_factor };
 				new_series_data.push(chart_point);
 			});
 			new_series['data'] = new_series_data;
@@ -645,7 +645,7 @@ export default {
 			this.chart_data = new_chart_data;
 
 			// determine chart options
-			let series_low = sequence.minimum_elevation * y_scale_factor;
+			let series_low = trail.minimum_elevation * y_scale_factor;
 			let new_chart_options = {};
 			if (Object.keys(this.chart_options).length === 0) {
 				new_chart_options = Object.assign({}, this.default_options);
@@ -660,14 +660,14 @@ export default {
 			// update the chart
 			this.chart_instance.update(this.chart_data, this.chart_options);
 		},
-		removeSequenceFromChart: function (sequence_uuid) {
+		removeTrailFromChart: function (trail_uuid) {
 
 			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
 
 			// determine chart data
 			let new_chart_data = Object.assign({}, this.chart_data);
 			for (let [index,series] of this.chart_data.series.entries()) {
-				if (series.uuid === sequence_uuid) {
+				if (series.uuid === trail_uuid) {
 					new_chart_data.series.splice(index, 1);
 				}
 			}
@@ -676,11 +676,11 @@ export default {
 			// determine chart options
 			let lowest_minimum = 0;
 			let self = this;
-			this.sequences.forEach( function(sequence) {
-				if (self.isPlottedUuids.includes(sequence.uuid)) {
-					let sequence_minimum = sequence.minimum_elevation * y_scale_factor;
-					if (sequence_minimum < lowest_minimum) {
-						lowest_minimum = sequence_minimum;
+			this.trails.forEach( function(trail) {
+				if (self.isPlottedUuids.includes(trail.uuid)) {
+					let trail_minimum = trail.minimum_elevation * y_scale_factor;
+					if (trail_minimum < lowest_minimum) {
+						lowest_minimum = trail_minimum;
 					}
 				}
 			});
@@ -691,7 +691,7 @@ export default {
 			// update the chart
 			this.chart_instance.update(this.chart_data, this.chart_options);
 		},
-		removeAllSequencesFromChart: function () {
+		removeAllTrailsFromChart: function () {
 			let new_chart_data = JSON.parse(JSON.stringify(this.chart_data));
 			new_chart_data.series = [];
 			this.chart_data = new_chart_data;

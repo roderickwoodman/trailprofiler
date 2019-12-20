@@ -2,7 +2,7 @@
 	<div id="app">
 
 		<h1>Trail Chart</h1>
-		<TrailDataChart :units="units" :sequences="sequences" :plot_order="plot_order" />
+		<TrailDataChart :units="units" :trails="trails" :plot_order="plot_order" />
 
 		<form id="gpx-file-input-form" class="mx-auto pt-3" style="width: 300px">
 			<label for="my-gpx-files" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
@@ -33,7 +33,7 @@
 			</span>
 		</div>
 
-		<TrailDataGrid :sequences="sequences" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeSequenceInfo" :plotted_classes="plotted_classes" :submitSequenceEdits="submitSequenceEdits" :submitSequenceDatetimeEdits="submitSequenceDatetimeEdits" :clickedPlotSequence="clickedPlotSequence" :clickedSaveSequence="clickedSaveSequence" :clickedDeleteSequence="clickedDeleteSequence" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
+		<TrailDataGrid :trails="trails" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 	</div>
 </template>
@@ -55,7 +55,7 @@ export default {
 		return {
 			photos: [],
 			excluded_cameras: [],
-			sequences: [],
+			trails: [],
 			plot_order: [],
 			units: 'english',
 			time_format: 'ampm',
@@ -83,11 +83,11 @@ export default {
 		exif_photos_uuids: function() {
 			return this.photos.filter( photo => photo.has_exif_data ).map(obj => obj.uuid);
 		},
-		indexed_photos: function() { // index photos by the sequence that they fall within, time-wise
+		indexed_photos: function() { // index photos by the trail that they fall within, time-wise
 			let indexed = {};
-			for (let sequence of this.sequences) {
-				indexed[sequence.uuid] = this.photos
-					.filter(photo => (sequence.start_time <= photo.datetime && photo.datetime <= sequence.end_time));
+			for (let trail of this.trails) {
+				indexed[trail.uuid] = this.photos
+					.filter(photo => (trail.start_time <= photo.datetime && photo.datetime <= trail.end_time));
 			}
 			return indexed;
 		},
@@ -95,8 +95,8 @@ export default {
 			let unindexed = [];
 			for (let photo_uuid of this.exif_photos_uuids) {
 				let photo_is_indexed = false;
-				for (let sequence_uuid of Object.keys(this.indexed_photos)) {
-					if (this.indexed_photos[sequence_uuid].includes(photo_uuid)) {
+				for (let trail_uuid of Object.keys(this.indexed_photos)) {
+					if (this.indexed_photos[trail_uuid].includes(photo_uuid)) {
 						photo_is_indexed = true;
 						break;
 					}
@@ -112,8 +112,8 @@ export default {
 		}
 	},
 	mounted() {
-		if (localStorage.sequences) {
-			this.sequences = JSON.parse(localStorage.sequences);
+		if (localStorage.trails) {
+			this.trails = JSON.parse(localStorage.trails);
 		}
 		if (localStorage.photos) {
 			this.photos = JSON.parse(localStorage.photos);
@@ -132,9 +132,9 @@ export default {
 		}
 	},
 	watch: {
-		sequences: {
-			handler: function (new_sequences) {
-				localStorage.sequences = JSON.stringify(new_sequences);
+		trails: {
+			handler: function (new_trails) {
+				localStorage.trails = JSON.stringify(new_trails);
 			},
 			deep: true
 		},
@@ -178,7 +178,7 @@ export default {
 				const file = files[i];
 				const reader = new FileReader();
 				reader.onload = (evt) => {
-					this.addSequence(file.name, evt.target.result);
+					this.addTrail(file.name, evt.target.result);
 				};
 				reader.readAsText(file);
 			});
@@ -235,7 +235,7 @@ export default {
 			let sum = arr.reduce( (sum, curr) => sum + curr );
 			return sum / arr.length;
 		},
-		addSequence: function(filename, gpx_xml) {
+		addTrail: function(filename, gpx_xml) {
 
 			let parser, xml_doc;
 			let start_new_segment = true, last_datapoint = false;
@@ -262,8 +262,8 @@ export default {
 			let wholefile_distance_deltas = [0], wholefile_distance_aggrs = [0], wholefile_time_deltas = [0], wholefile_time_aggrs = [0];
 			let segment_start_index = 0, segment_num = 0;
 
-			for (let sequence of this.sequences) {
-				if (sequence.filename === filename) {
+			for (let trail of this.trails) {
+				if (trail.filename === filename) {
 					return; // don't add duplicates
 				}
 			}
@@ -352,7 +352,7 @@ export default {
 					start_new_segment = true;
 				}
 
-				// the current datapoint is not an outlier, so include it in the segment sequence
+				// the current datapoint is not an outlier, so include it in the segment trail
 				if (!start_new_segment) {
 
 					segment_distance_deltas.push(new_segment_ddelta);
@@ -369,7 +369,7 @@ export default {
 					new_segment.points.push(new_point);
 				}
 
-				// record all datapoints in the whole file sequence unless the datapoint has already been recorded
+				// record all datapoints in the whole file trail unless the datapoint has already been recorded
 				if (!doing_point_again) {
 
 					wholefile_distance_deltas.push(new_wholefile_ddelta);
@@ -422,8 +422,8 @@ export default {
 						new_segment['maximum_elevation'] = segment_max_ele;
 						new_segment['minimum_elevation'] = segment_min_ele;
 						// eslint-disable-next-line no-console
-						console.log('  saved ' + new_segment.points.length + ' points for sequence: ' + new_segment.name);
-						this.sequences.push(new_segment);
+						console.log('  saved ' + new_segment.points.length + ' points for trail: ' + new_segment.name);
+						this.trails.push(new_segment);
 					}
 
 					// the current segment is the last segment
@@ -444,8 +444,8 @@ export default {
 						wholefile['maximum_elevation'] = wholefile_max_ele;
 						wholefile['minimum_elevation'] = wholefile_min_ele;
 						// eslint-disable-next-line no-console
-						console.log('  saved ' + wholefile.points.length + ' points for sequence: ' + wholefile.name);
-						this.sequences.push(wholefile);
+						console.log('  saved ' + wholefile.points.length + ' points for trail: ' + wholefile.name);
+						this.trails.push(wholefile);
 					}
 
 					if (!last_datapoint) {
@@ -471,46 +471,46 @@ export default {
 		deg2rad: function(deg) {
 			return deg * (Math.PI/180);
 		},
-		submitSequenceEdits: function (e) {
-			let sequence_uuid = e.target['sequence_uuid'].value;
-			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			this.sequences[sequence_num].name = e.target['new_name_edits'].value;
-			this.sequences[sequence_num].matches_file = false;
-			this.sequences[sequence_num].acknowledged = false;
+		submitTrailEdits: function (e) {
+			let trail_uuid = e.target['trail_uuid'].value;
+			let trail_num = this.trails.findIndex(s => s.uuid === trail_uuid);
+			this.trails[trail_num].name = e.target['new_name_edits'].value;
+			this.trails[trail_num].matches_file = false;
+			this.trails[trail_num].acknowledged = false;
 			e.preventDefault();
 		},
-		submitSequenceDatetimeEdits: function (e) {
-			let sequence_uuid = e.target['sequence_uuid'].value;
-			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			let delta = e.target['new_datetime_edits'].value - this.sequences[sequence_num].start_time;
-			this.sequences[sequence_num].start_time += delta;
-			this.sequences[sequence_num].end_time += delta;
-			for (let p of this.sequences[sequence_num].points) {
+		submitTrailDatetimeEdits: function (e) {
+			let trail_uuid = e.target['trail_uuid'].value;
+			let trail_num = this.trails.findIndex(s => s.uuid === trail_uuid);
+			let delta = e.target['new_datetime_edits'].value - this.trails[trail_num].start_time;
+			this.trails[trail_num].start_time += delta;
+			this.trails[trail_num].end_time += delta;
+			for (let p of this.trails[trail_num].points) {
 				p.time += delta;
 			}
-			this.sequences[sequence_num].matches_file = false;
-			this.sequences[sequence_num].acknowledged = false;
+			this.trails[trail_num].matches_file = false;
+			this.trails[trail_num].acknowledged = false;
 			e.preventDefault();
 		},
-		clickedPlotSequence: function (sequence_uuid) {
-			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			this.sequences[sequence_num].is_plotted = !this.sequences[sequence_num].is_plotted;
-			let plot_order_num = this.plot_order.indexOf(sequence_uuid);
+		clickedPlotTrail: function (trail_uuid) {
+			let trail_num = this.trails.findIndex(s => s.uuid === trail_uuid);
+			this.trails[trail_num].is_plotted = !this.trails[trail_num].is_plotted;
+			let plot_order_num = this.plot_order.indexOf(trail_uuid);
 			if (plot_order_num === -1) {
-				this.plot_order.push(sequence_uuid);
+				this.plot_order.push(trail_uuid);
 			} else {
 				this.plot_order.splice(plot_order_num, 1);
 			}
 		},
-		clickedSaveSequence: function (sequence_uuid) {
+		clickedSaveTrail: function (trail_uuid) {
 
-			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			let filename = this.sequences[sequence_num].new_filename;
-			let content_to_write=this.sequences[sequence_num].file_content;
-			content_to_write = content_to_write.replace(/<name>[\s\S]*?<\/name>/, '<name>' + this.sequences[sequence_num].name + '</name>');
-			content_to_write = content_to_write.replace(/creator="[\s\S]*?"/, 'creator="' + this.sequences[sequence_num].creator + '"');
-			content_to_write = content_to_write.replace(/<link href="[\s\S]*?">/, '<link href="' + this.sequences[sequence_num].metadata_link + '">');
-			content_to_write = content_to_write.replace(/<text>[\s\S]*?<\/text>/, '<text>' + this.sequences[sequence_num].metadata_linktext + '</text>');
+			let trail_num = this.trails.findIndex(s => s.uuid === trail_uuid);
+			let filename = this.trails[trail_num].new_filename;
+			let content_to_write=this.trails[trail_num].file_content;
+			content_to_write = content_to_write.replace(/<name>[\s\S]*?<\/name>/, '<name>' + this.trails[trail_num].name + '</name>');
+			content_to_write = content_to_write.replace(/creator="[\s\S]*?"/, 'creator="' + this.trails[trail_num].creator + '"');
+			content_to_write = content_to_write.replace(/<link href="[\s\S]*?">/, '<link href="' + this.trails[trail_num].metadata_link + '">');
+			content_to_write = content_to_write.replace(/<text>[\s\S]*?<\/text>/, '<text>' + this.trails[trail_num].metadata_linktext + '</text>');
 
 			var pom = document.createElement('a');
 			pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content_to_write));
@@ -525,12 +525,12 @@ export default {
 				pom.click();
 			}
 		},
-		clickedDeleteSequence: function (sequence_uuid) {
-			this.sequences = this.sequences.filter(function (obj) {
-				return obj.uuid !== sequence_uuid;
+		clickedDeleteTrail: function (trail_uuid) {
+			this.trails = this.trails.filter(function (obj) {
+				return obj.uuid !== trail_uuid;
 			});
 			this.plot_order = this.plot_order.filter(function (uuid) {
-				return uuid !== sequence_uuid;
+				return uuid !== trail_uuid;
 			});
 		},
 		clickedDeletePhoto: function (photo_uuid) {
@@ -538,9 +538,9 @@ export default {
 				return obj.uuid !== photo_uuid;
 			});
 		},
-		toggleShowPhotos: function(sequence_uuid) {
-			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			this.sequences[sequence_num].show_photos = !this.sequences[sequence_num].show_photos;
+		toggleShowPhotos: function(trail_uuid) {
+			let trail_num = this.trails.findIndex(s => s.uuid === trail_uuid);
+			this.trails[trail_num].show_photos = !this.trails[trail_num].show_photos;
 		},
 		toggleCameraInclusion: function(camera) {
 			let camera_index = this.excluded_cameras.indexOf(camera);
@@ -550,9 +550,9 @@ export default {
 				this.excluded_cameras.splice(camera_index, 1);
 			}
 		},
-		acknowledgeSequenceInfo: function (sequence_uuid) {
-			let sequence_num = this.sequences.findIndex(s => s.uuid === sequence_uuid);
-			this.sequences[sequence_num].acknowledged = true;
+		acknowledgeTrailInfo: function (trail_uuid) {
+			let trail_num = this.trails.findIndex(s => s.uuid === trail_uuid);
+			this.trails[trail_num].acknowledged = true;
 		},
 		acknowledgePhotoInfo: function (photo_uuid) {
 			let photo_num = this.photos.findIndex(p => p.uuid === photo_uuid);
@@ -581,8 +581,8 @@ export default {
 			let date = new Date(...params);
 			return date.getTime();
 		},
-		plotted_classes: function (sequence_uuid) {
-			let plot_order_index = this.plot_order.findIndex(uuid => uuid === sequence_uuid);
+		plotted_classes: function (trail_uuid) {
+			let plot_order_index = this.plot_order.findIndex(uuid => uuid === trail_uuid);
 			if (plot_order_index !== -1) {
 				return this.plotted_labels[plot_order_index];
 			} else {
@@ -607,12 +607,12 @@ export default {
 	tr.acknowledged:hover {
 		background-color: #dee2e6; /* light gray */
 	}
-	.sequence_name,
+	.trail_name,
 	.info_message {
 		padding: 7px 7px;
 		display: block;
 	}
-	.sequence_details,
+	.trail_details,
 	.info_message {
 		font-size: 0.75em;
 		line-height: 0.75em;

@@ -1,8 +1,8 @@
 <template>
 	<div>
 
-		<h1 v-if="show_only_plotted">Sequences ({{ sortedSequences.length }} of {{ sequences.length }} shown)</h1>
-		<h1 v-if="!show_only_plotted">Sequences ({{ sequences.length }})</h1>
+		<h1 v-if="show_only_plotted">Trails ({{ sortedTrails.length }} of {{ trails.length }} shown)</h1>
+		<h1 v-if="!show_only_plotted">Trails ({{ trails.length }})</h1>
 		<div class="container table-responsive-sm p-0">
 			<label for="show_only_plotted">
 				<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
@@ -25,71 +25,71 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-bind:key="sequence.uuid" v-for="sequence in sortedSequences" v-bind:class="{ hasInfo: !sequence.matches_file, acknowledged: sequence.acknowledged }">
-						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = sequence.uuid" @mouseleave="hoveringon_datetime_uuid = null">
+					<tr v-bind:key="trail.uuid" v-for="trail in sortedTrails" v-bind:class="{ hasInfo: !trail.matches_file, acknowledged: trail.acknowledged }">
+						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = trail.uuid" @mouseleave="hoveringon_datetime_uuid = null">
 							<div>
 								<div class="datetimecontent_title">
-									<span v-if="time_format !== 'epoch'">{{ epoch_to_datestring(sequence.start_time) }}</span>
-									<span v-if="time_format === 'epoch' && !show_details">{{ sequence.start_time }}</span>
-									<div class="datetimecontent_actions" v-show="hoveringon_datetime_uuid === sequence.uuid">
-										<b-button v-if="editing_sequence_datetime!==sequence.uuid" v-b-tooltip.hover title="Edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequenceDatetime(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
-										<b-button v-if="editing_sequence_datetime===sequence.uuid" v-b-tooltip.hover title="Cancel edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequenceDatetime(sequence.uuid)"><font-awesome-icon icon="edit" /></b-button>
+									<span v-if="time_format !== 'epoch'">{{ epoch_to_datestring(trail.start_time) }}</span>
+									<span v-if="time_format === 'epoch' && !show_details">{{ trail.start_time }}</span>
+									<div class="datetimecontent_actions" v-show="hoveringon_datetime_uuid === trail.uuid">
+										<b-button v-if="editing_trail_datetime!==trail.uuid" v-b-tooltip.hover title="Edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrailDatetime(trail.uuid)"><font-awesome-icon icon="edit" /></b-button>
+										<b-button v-if="editing_trail_datetime===trail.uuid" v-b-tooltip.hover title="Cancel edit datetime" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrailDatetime(trail.uuid)"><font-awesome-icon icon="edit" /></b-button>
 									</div>
 								</div>
 							</div>
 							<div class="datetimecontent_details">
-								<span v-if="time_format !== 'epoch' && show_details" class="sequence_details">start: {{ epoch_to_timestring(sequence.start_time) }}</span>
-								<span v-if="time_format !== 'epoch' && show_details" class="sequence_details">end: {{ epoch_to_timestring(sequence.end_time) }}</span>
-								<span v-if="time_format === 'epoch' && show_details" class="sequence_details">start: {{ sequence.start_time }}</span>
-								<span v-if="time_format === 'epoch' && show_details" class="sequence_details">end: {{ sequence.end_time }}</span>
+								<span v-if="time_format !== 'epoch' && show_details" class="trail_details">start: {{ epoch_to_timestring(trail.start_time) }}</span>
+								<span v-if="time_format !== 'epoch' && show_details" class="trail_details">end: {{ epoch_to_timestring(trail.end_time) }}</span>
+								<span v-if="time_format === 'epoch' && show_details" class="trail_details">start: {{ trail.start_time }}</span>
+								<span v-if="time_format === 'epoch' && show_details" class="trail_details">end: {{ trail.end_time }}</span>
 							</div>
-							<form v-if="editing_sequence_datetime===sequence.uuid" @submit="clickedSubmitDatetimeEdits">
-								<input name="new_datetime_edits" class="sequence_datetime editing" v-model="new_datetime_edits" />
-								<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
+							<form v-if="editing_trail_datetime===trail.uuid" @submit="clickedSubmitDatetimeEdits">
+								<input name="new_datetime_edits" class="trail_datetime editing" v-model="new_datetime_edits" />
+								<input name="trail_uuid" type="hidden" :value="trail.uuid" />
 							</form>
 						</td>
-						<td class="hoverable_cell" @mouseover="hoveringon_uuid = sequence.uuid" @mouseleave="hoveringon_uuid = null">
-							<div :class="plotted_classes(sequence.uuid)">
+						<td class="hoverable_cell" @mouseover="hoveringon_uuid = trail.uuid" @mouseleave="hoveringon_uuid = null">
+							<div :class="plotted_classes(trail.uuid)">
 								<div class="namecontent_title">
-									<span v-if="editing_uuid!==sequence.uuid" class="sequence_name">{{ sequence.name }}</span>
-									<form v-if="editing_uuid===sequence.uuid" @submit="clickedSubmitEdits">
-										<input name="new_name_edits" class="sequence_name editing" v-model="new_name_edits" />
-										<input name="sequence_uuid" type="hidden" :value="sequence.uuid" />
+									<span v-if="editing_uuid!==trail.uuid" class="trail_name">{{ trail.name }}</span>
+									<form v-if="editing_uuid===trail.uuid" @submit="clickedSubmitEdits">
+										<input name="new_name_edits" class="trail_name editing" v-model="new_name_edits" />
+										<input name="trail_uuid" type="hidden" :value="trail.uuid" />
 									</form>
-									<div class="namecontent_actions" v-show="hoveringon_uuid === sequence.uuid">
-										<b-button v-if="editing_uuid!==sequence.uuid" v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(sequence.uuid)" /></b-button>
-										<b-button v-if="editing_uuid===sequence.uuid" v-b-tooltip.hover title="Cancel edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditSequence(sequence.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(sequence.uuid)" /></b-button>
-										<b-button v-if="!sequence.is_plotted" v-b-tooltip.hover title="Plot sequence" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="chart-line" :class="plotted_classes(sequence.uuid)" /></b-button>
-										<b-button v-if="sequence.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotSequence(sequence.uuid)"><font-awesome-icon icon="ban" :class="plotted_classes(sequence.uuid)" /></b-button>
-										<b-button v-if="!sequence.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveSequence(sequence.uuid)"><font-awesome-icon icon="save" :class="plotted_classes(sequence.uuid)" /></b-button>
-										<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteSequence(sequence.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(sequence.uuid)" /></b-button>
+									<div class="namecontent_actions" v-show="hoveringon_uuid === trail.uuid">
+										<b-button v-if="editing_uuid!==trail.uuid" v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrail(trail.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(trail.uuid)" /></b-button>
+										<b-button v-if="editing_uuid===trail.uuid" v-b-tooltip.hover title="Cancel edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrail(trail.uuid)"><font-awesome-icon icon="edit" :class="plotted_classes(trail.uuid)" /></b-button>
+										<b-button v-if="!trail.is_plotted" v-b-tooltip.hover title="Plot trail" class="btn btn-sm bg-transparent" v-on:click="clickedPlotTrail(trail.uuid)"><font-awesome-icon icon="chart-line" :class="plotted_classes(trail.uuid)" /></b-button>
+										<b-button v-if="trail.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotTrail(trail.uuid)"><font-awesome-icon icon="ban" :class="plotted_classes(trail.uuid)" /></b-button>
+										<b-button v-if="!trail.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveTrail(trail.uuid)"><font-awesome-icon icon="save" :class="plotted_classes(trail.uuid)" /></b-button>
+										<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteTrail(trail.uuid)"><font-awesome-icon icon="trash" :class="plotted_classes(trail.uuid)" /></b-button>
 									</div>
 								</div>
 							</div>
 							<div class="namecontent_details">
-								<span v-if="show_details" class="sequence_details">file: {{ sequence.filename_printed }}</span>
-								<span v-if="show_details" class="sequence_details">creator: {{ sequence.creator }}</span>
-								<span v-if="show_details" class="sequence_details">link: <a :href="sequence.metadata_link">{{ sequence.metadata_linktext }}</a></span>
-								<span v-if="!sequence.matches_file && !sequence.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(sequence.uuid)">Dismiss</a></span>
+								<span v-if="show_details" class="trail_details">file: {{ trail.filename_printed }}</span>
+								<span v-if="show_details" class="trail_details">creator: {{ trail.creator }}</span>
+								<span v-if="show_details" class="trail_details">link: <a :href="trail.metadata_link">{{ trail.metadata_linktext }}</a></span>
+								<span v-if="!trail.matches_file && !trail.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(trail.uuid)">Dismiss</a></span>
 							</div>
 						</td>
-						<td class="photorow_actions" :set="[shown_photo_count=indexed_photos[sequence.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=indexed_photos[sequence.uuid].length]">
-							<b-button v-if="!sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(sequence.uuid)">
+						<td class="photorow_actions" :set="[shown_photo_count=indexed_photos[trail.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=indexed_photos[trail.uuid].length]">
+							<b-button v-if="!trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(trail.uuid)">
 								<font-awesome-icon icon="camera"></font-awesome-icon>
 								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
 								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
 							</b-button>
-							<b-button v-if="sequence.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(sequence.uuid)">
+							<b-button v-if="trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(trail.uuid)">
 								<font-awesome-icon icon="table"></font-awesome-icon>
 								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
 								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
 							</b-button>
 						</td>
-						<td v-if="sequence.show_photos" class="details_columns">
-							<RowOfPhotos :row_photos="indexed_photos[sequence.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" :clickedDeletePhoto="clickedDeletePhoto" />
+						<td v-if="trail.show_photos" class="details_columns">
+							<RowOfPhotos :row_photos="indexed_photos[trail.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" :clickedDeletePhoto="clickedDeletePhoto" />
 						</td>
-						<td v-if="!sequence.show_photos" class="details_columns">
-							<RowOfNumbers :sequence="sequence" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
+						<td v-if="!trail.show_photos" class="details_columns">
+							<RowOfNumbers :trail="trail" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
 						</td>
 					</tr>
 				</tbody>
@@ -125,7 +125,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['sequences', 'indexed_photos', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitSequenceEdits', 'submitSequenceDatetimeEdits', 'clickedPlotSequence', 'clickedSaveSequence', 'clickedDeleteSequence', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
+	props: ['trails', 'indexed_photos', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitTrailEdits', 'submitTrailDatetimeEdits', 'clickedPlotTrail', 'clickedSaveTrail', 'clickedDeleteTrail', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,
@@ -138,7 +138,7 @@ export default {
 			show_only_plotted: false,
 			sort_key: 'total_distance',
 			sort_dir_asc: true,
-			editing_sequence_datetime: null,
+			editing_trail_datetime: null,
 			editing_uuid: null,
 			new_datetime_edits: '',
 			new_name_edits: '',
@@ -147,11 +147,11 @@ export default {
 		};
 	},
 	computed: {
-		sortedSequences: function() {
-			let cloned = [...this.sequences];
+		sortedTrails: function() {
+			let cloned = [...this.trails];
 			let showing = [];
 			if (this.show_only_plotted) {
-				showing = cloned.filter(seq => seq.is_plotted === true);
+				showing = cloned.filter(trail => trail.is_plotted === true);
 			} else {
 				showing = cloned;
 			}
@@ -234,11 +234,11 @@ export default {
 				}
 			}
 		},
-		clickedEditSequence: function(sequence_uuid) {
-			let sequence_index = this.sequences.findIndex(sequence => sequence.uuid === sequence_uuid);
-			if (this.editing_uuid !== sequence_uuid) {
-				this.editing_uuid = sequence_uuid;
-				this.new_name_edits = this.sequences[sequence_index].name;
+		clickedEditTrail: function(trail_uuid) {
+			let trail_index = this.trails.findIndex(trail => trail.uuid === trail_uuid);
+			if (this.editing_uuid !== trail_uuid) {
+				this.editing_uuid = trail_uuid;
+				this.new_name_edits = this.trails[trail_index].name;
 			} else {
 				this.editing_uuid = null;
 				this.new_name_edits = '';
@@ -247,22 +247,22 @@ export default {
 		clickedSubmitEdits: function(e) {
 			this.editing_uuid = null;
 			this.new_name_edits = '';
-			this.submitSequenceEdits(e);
+			this.submitTrailEdits(e);
 		},
-		clickedEditSequenceDatetime: function(sequence_uuid) {
-			let sequence_index = this.sequences.findIndex(sequence => sequence.uuid === sequence_uuid);
-			if (this.editing_sequence_datetime !== sequence_uuid) {
-				this.editing_sequence_datetime = sequence_uuid;
-				this.new_datetime_edits = this.sequences[sequence_index].start_time;
+		clickedEditTrailDatetime: function(trail_uuid) {
+			let trail_index = this.trails.findIndex(trail => trail.uuid === trail_uuid);
+			if (this.editing_trail_datetime !== trail_uuid) {
+				this.editing_trail_datetime = trail_uuid;
+				this.new_datetime_edits = this.trails[trail_index].start_time;
 			} else {
-				this.editing_sequence_datetime = null;
+				this.editing_trail_datetime = null;
 				this.new_datetime_edits = '';
 			}
 		},
 		clickedSubmitDatetimeEdits: function(e) {
-			this.editing_sequence_datetime = null;
+			this.editing_trail_datetime = null;
 			this.new_datetime_edits = '';
-			this.submitSequenceDatetimeEdits(e);
+			this.submitTrailDatetimeEdits(e);
 		},
 		seconds_to_hms: function (seconds) {
 			const leadingZero = (num) => (0 + num.toString()).slice(-2);
@@ -371,17 +371,17 @@ export default {
 		position: relative;
 		width: 100%;
 	}
-	.sequence_datetime,
-	.sequence_name {
+	.trail_datetime,
+	.trail_name {
 		font-weight: 800;
 	}
-	.sequence_datetime.editing,
-	.sequence_name.editing {
+	.trail_datetime.editing,
+	.trail_name.editing {
 		border: 5px solid red;
 		padding: 2px 2px;
 		width: 100%;
 	}
-	.sequence_details {
+	.trail_details {
 		padding: 4px 4px;
 		display: block;
 	}
