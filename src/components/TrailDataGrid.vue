@@ -19,7 +19,7 @@
 						<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
 						<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
 						<th scope="col"></th>
-						<th scope="col">
+						<th scope="col" class="variable_content_columns">
 							<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
 						</th>
 					</tr>
@@ -85,10 +85,10 @@
 								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
 							</b-button>
 						</td>
-						<td v-if="trail.show_photos" class="details_columns">
+						<td v-if="trail.show_photos" class="variable_content_columns">
 							<RowOfPhotos :row_photos="indexed_photos[trail.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" :clickedDeletePhoto="clickedDeletePhoto" />
 						</td>
-						<td v-if="!trail.show_photos" class="details_columns">
+						<td v-if="!trail.show_photos" class="variable_content_columns">
 							<RowOfNumbers :trail="trail" :units="units" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" />
 						</td>
 					</tr>
@@ -322,11 +322,12 @@ export default {
 		color: black;
 	}
 	.photorow_actions {
+		width: 50px;
 		margin: 0;
 		padding: 0;
 	}
 	.photorow_actions button {
-		min-width: 65px;
+		width: 50px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -389,8 +390,7 @@ export default {
 	.sortable {
 		cursor: pointer;
 	}
-	.details_columns {
-		max-width: 600px;
-		min-width: 600px;
+	.variable_content_columns {
+		width: 500px;
 	}
 </style>
