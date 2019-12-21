@@ -112,12 +112,13 @@
 			<div v-if="!trails.length" class="no_trails"><span class="info_message"><font-awesome-icon icon="info-circle" />Please import a GPS data file above.</span></div>
 		</div>
 
+		<div v-if="!photo_count" class="no_photos"><span class="info_message"><font-awesome-icon icon="info-circle" />Please import an image file above.</span></div>
 		<div v-if="photo_count" class="container table-responsive-sm p-0">
 			<table class="table table-sm">
 				<thead>
 					<tr :set="[shown_unindexed_photo_count=unindexed_photos.filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_unindexed_photo_count=unindexed_photos.length]">
-						<th v-if="shown_unindexed_photo_count === total_unindexed_photo_count">Unassigned Photos ({{ shown_unindexed_photo_count }})</th>
-						<th v-if="shown_unindexed_photo_count !== total_unindexed_photo_count">Unassigned Photos ({{ shown_unindexed_photo_count }} of {{ total_unindexed_photo_count }} shown)</th>
+						<th v-if="shown_unindexed_photo_count === total_unindexed_photo_count"><span v-if="trails.length">Unassigned </span>Photos ({{ shown_unindexed_photo_count }})</th>
+						<th v-if="shown_unindexed_photo_count !== total_unindexed_photo_count"><span v-if="trails.length">Unassigned </span>Photos ({{ shown_unindexed_photo_count }} of {{ total_unindexed_photo_count }} shown)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -462,7 +463,8 @@ export default {
 		box-shadow: 0px 0px 3px inset;
 		background: #eee;
 	}
-	.no_trails {
+	.no_trails,
+	.no_photos {
 		display: flex;
 		justify-content: center;
 		align-items: center;
