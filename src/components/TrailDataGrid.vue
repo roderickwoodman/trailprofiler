@@ -109,6 +109,7 @@
 					</tr>
 				</tbody>
 			</table>
+			<div v-if="!trails.length" class="no_trails"><span class="info_message"><font-awesome-icon icon="info-circle" />Please import a GPS data file above.</span></div>
 		</div>
 
 		<div v-if="photo_count" class="container table-responsive-sm p-0">
@@ -460,5 +461,14 @@ export default {
 	input.chk_btn:checked + label {
 		box-shadow: 0px 0px 3px inset;
 		background: #eee;
+	}
+	.no_trails {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 5em;
+		background-color: #fadadd;
+		border: 5px dashed palevioletred;
+		border-radius: 5px;
 	}
 </style>
