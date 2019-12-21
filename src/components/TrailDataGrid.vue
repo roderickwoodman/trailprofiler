@@ -31,7 +31,7 @@
 					<tr>
 						<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
 						<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
-						<th scope="col"></th>
+						<th scope="col"><span class="text-center linebreak">Photos</span><span class="text-center linebreak">{{ photo_count }}</span></th>
 						<th scope="col" class="variable_content_columns">
 							<div>
 								<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
@@ -339,7 +339,8 @@ export default {
 		color: black;
 	}
 	.photorow_actions {
-		width: 50px;
+		display: flex;
+		justify-content: center;
 		margin: 0;
 		padding: 0;
 	}
@@ -373,6 +374,9 @@ export default {
 	}
 	tr > td {
 		vertical-align: middle;
+	}
+	th > span.linebreak {
+		display: block;
 	}
 	.datetimecontent_actions,
 	.namecontent_actions {
