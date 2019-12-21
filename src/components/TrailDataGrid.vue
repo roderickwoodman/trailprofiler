@@ -9,11 +9,11 @@
 				</div>
 				<div class="import_buttons">
 					<form id="gpx-file-input-form">
-						<label for="my-gpx-files" class="btn btn-primary">Import GPS Data <font-awesome-icon icon="upload" /></label>
+						<label for="my-gpx-files" class="btn btn-transparent">Import GPS Data <font-awesome-icon icon="upload" /></label>
 						<input @change="add_trails" id="my-gpx-files" name="files[]" accept=".gpx" multiple type="file" />
 					</form>
 					<form id="image-file-input-form">
-						<label for="my-image-files" class="btn btn-primary">Import Images <font-awesome-icon icon="upload" /></label>
+						<label for="my-image-files" class="btn btn-transparent">Import Images <font-awesome-icon icon="upload" /></label>
 						<input @change="add_images" id="my-image-files" name="files[]" accept=".jpg" multiple type="file" />
 					</form>
 				</div>
@@ -433,11 +433,11 @@ export default {
 	}
 	.import_buttons label {
 		width: 175px;
-		height: 1.5em;
-		line-height: 1.25em;
+		border: 1px solid silver;
 	}
 	.import_buttons label:hover {
 		cursor: pointer;
+		background: #eee;
 	}
 	.view_checkbox_buttons {
 		display:flex;
