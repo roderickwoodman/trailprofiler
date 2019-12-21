@@ -4,15 +4,12 @@
 		<h1 v-if="show_only_plotted">Trails ({{ sortedTrails.length }} of {{ trails.length }} shown)</h1>
 		<h1 v-if="!show_only_plotted">Trails ({{ trails.length }})</h1>
 		<div class="container table-responsive-sm p-0">
-			<label for="show_only_plotted">
-				<input type="checkbox" id="show_only_plotted" value="false" v-model="show_only_plotted">
-				show row only if plotted</label>
-			<label for="show_details">
-				<input type="checkbox" id="show_details" value="false" v-model="show_details">
-				show details of each row</label>
-			<label for="show_image_specs">
-				<input type="checkbox" id="show_image_specs" value="false" v-model="show_image_specs">
-				show image specs</label>
+			<input type="checkbox" id="show_only_plotted" class="chk_btn" value="false" v-model="show_only_plotted" hidden>
+			<label for="show_only_plotted"><font-awesome-icon icon="chart-line"></font-awesome-icon></label>
+			<input type="checkbox" id="show_details" class="chk_btn" value="false" v-model="show_details" hidden>
+			<label for="show_details"><font-awesome-icon icon="align-left"></font-awesome-icon></label>
+			<input type="checkbox" id="show_image_specs" class="chk_btn" value="false" v-model="show_image_specs" hidden>
+			<label for="show_image_specs"><font-awesome-icon icon="camera-retro"></font-awesome-icon></label>
 			<table class="table table-sm">
 				<thead>
 					<tr>
@@ -353,11 +350,6 @@ export default {
 		border-radius: 5px;
 		cursor: pointer;
 	}
-	label {
-		margin: 5px 0;
-		max-width: 250px;
-		cursor: pointer;
-	}
 	table > thead > tr > th {
 		vertical-align: middle;
 	}
@@ -397,5 +389,23 @@ export default {
 	}
 	.variable_content_columns {
 		width: 500px;
+	}
+	input.chk_btn {
+		display: none;
+	}
+	input.chk_btn + label {
+		border: 1px solid grey;
+		background: white;
+		padding: 5px 8px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+	input.chk_btn:not(:checked) + label:hover {
+		box-shadow: 0px 1px 3px;
+	}
+	input.chk_btn + label:active,
+	input.chk_btn:checked + label {
+		box-shadow: 0px 0px 3px inset;
+		background: #eee;
 	}
 </style>
