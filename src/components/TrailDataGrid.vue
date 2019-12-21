@@ -352,6 +352,7 @@ export default {
 		align-items: center;
 	}
 	.show_photos {
+		min-width: 75px;
 		margin: 2px;
 		padding: 8px;
 		border: 0;
