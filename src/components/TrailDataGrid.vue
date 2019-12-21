@@ -1,15 +1,21 @@
 <template>
 	<div>
 
-		<h1 v-if="show_only_plotted">Trails ({{ sortedTrails.length }} of {{ trails.length }} shown)</h1>
-		<h1 v-if="!show_only_plotted">Trails ({{ trails.length }})</h1>
 		<div class="container table-responsive-sm p-0">
-			<input type="checkbox" id="show_only_plotted" class="chk_btn" value="false" v-model="show_only_plotted" hidden>
-			<label for="show_only_plotted"><font-awesome-icon icon="chart-line"></font-awesome-icon></label>
-			<input type="checkbox" id="show_details" class="chk_btn" value="false" v-model="show_details" hidden>
-			<label for="show_details"><font-awesome-icon icon="align-left"></font-awesome-icon></label>
-			<input type="checkbox" id="show_image_specs" class="chk_btn" value="false" v-model="show_image_specs" hidden>
-			<label for="show_image_specs"><font-awesome-icon icon="camera-retro"></font-awesome-icon></label>
+			<div class="table_header_section">
+				<div class="table_title">
+					<h1 v-if="show_only_plotted">Trails ({{ sortedTrails.length }} of {{ trails.length }} shown)</h1>
+					<h1 v-if="!show_only_plotted">Trails ({{ trails.length }})</h1>
+				</div>
+				<div class="view_checkbox_buttons">
+					<input type="checkbox" id="show_only_plotted" class="chk_btn" value="false" v-model="show_only_plotted" hidden>
+					<label for="show_only_plotted"><font-awesome-icon icon="chart-line"></font-awesome-icon></label>
+					<input type="checkbox" id="show_details" class="chk_btn" value="false" v-model="show_details" hidden>
+					<label for="show_details"><font-awesome-icon icon="align-left"></font-awesome-icon></label>
+					<input type="checkbox" id="show_image_specs" class="chk_btn" value="false" v-model="show_image_specs" hidden>
+					<label for="show_image_specs"><font-awesome-icon icon="camera-retro"></font-awesome-icon></label>
+				</div>
+			</div>
 			<table class="table table-sm">
 				<thead>
 					<tr>
@@ -389,6 +395,11 @@ export default {
 	}
 	.variable_content_columns {
 		width: 500px;
+	}
+	.table_header_section {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
 	}
 	input.chk_btn {
 		display: none;
