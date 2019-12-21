@@ -7,6 +7,16 @@
 					<h1 v-if="show_only_plotted">Trails ({{ sortedTrails.length }} of {{ trails.length }} shown)</h1>
 					<h1 v-if="!show_only_plotted">Trails ({{ trails.length }})</h1>
 				</div>
+				<div class="import_buttons">
+					<form id="gpx-file-input-form">
+						<label for="my-gpx-files" class="btn btn-primary">Import GPS Data <font-awesome-icon icon="upload" /></label>
+						<input @change="add_trails" id="my-gpx-files" name="files[]" accept=".gpx" multiple type="file" />
+					</form>
+					<form id="image-file-input-form">
+						<label for="my-image-files" class="btn btn-primary">Import Images <font-awesome-icon icon="upload" /></label>
+						<input @change="add_images" id="my-image-files" name="files[]" accept=".jpg" multiple type="file" />
+					</form>
+				</div>
 				<div class="view_checkbox_buttons">
 					<input type="checkbox" id="show_only_plotted" class="chk_btn" value="false" v-model="show_only_plotted" hidden>
 					<label for="show_only_plotted"><font-awesome-icon icon="chart-line"></font-awesome-icon></label>
@@ -130,7 +140,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['trails', 'indexed_photos', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitTrailEdits', 'submitTrailDatetimeEdits', 'clickedPlotTrail', 'clickedSaveTrail', 'clickedDeleteTrail', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
+	props: ['add_trails', 'add_images', 'trails', 'indexed_photos', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitTrailEdits', 'submitTrailDatetimeEdits', 'clickedPlotTrail', 'clickedSaveTrail', 'clickedDeleteTrail', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,
@@ -400,6 +410,38 @@ export default {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-end;
+	}
+	.table_header_section > * {
+		flex: 1 1 33%;
+	}
+	.table_header_section > .import_buttons {
+		flex: 0 0 175px;
+	}
+	.import_buttons {
+		padding: 5px 0;
+		width: 33%;
+	}
+	.import_buttons form,
+	.import_buttons form .btn {
+		margin: 0;
+		padding: 0;
+	}
+	.import_buttons input {
+		visibility: hidden;
+		height: 0;
+		width: 0;
+	}
+	.import_buttons label {
+		width: 175px;
+		height: 1.5em;
+		line-height: 1.25em;
+	}
+	.import_buttons label:hover {
+		cursor: pointer;
+	}
+	.view_checkbox_buttons {
+		display:flex;
+		justify-content: flex-end;
 	}
 	input.chk_btn {
 		display: none;

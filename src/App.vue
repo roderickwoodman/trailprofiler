@@ -4,16 +4,6 @@
 		<h1>Trail Chart</h1>
 		<TrailDataChart :units="units" :trails="trails" :plot_order="plot_order" />
 
-		<form id="gpx-file-input-form" class="mx-auto pt-3" style="width: 300px">
-			<label for="my-gpx-files" class="btn btn-primary" style="width: 100%">Import GPS Data <font-awesome-icon icon="upload" /></label>
-			<input @change="onGpxFileChange" id="my-gpx-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".gpx" multiple type="file" />
-		</form>
-
-		<form id="image-file-input-form" class="mx-auto pt-3" style="width: 300px">
-			<label for="my-image-files" class="btn btn-primary" style="width: 100%">Import Images <font-awesome-icon icon="upload" /></label>
-			<input @change="onImageFileChange" id="my-image-files" style="visibility:hidden; height:0; width:0;" name="files[]" accept=".jpg" multiple type="file" />
-		</form>
-
 		<div>
 			<span>Units: 
 			<select v-model="units">
@@ -33,7 +23,7 @@
 			</span>
 		</div>
 
-		<TrailDataGrid :trails="trails" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
+		<TrailDataGrid :add_trails="onGpxFileChange" :add_images="onImageFileChange" :trails="trails" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 	</div>
 </template>
