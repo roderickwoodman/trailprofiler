@@ -29,9 +29,9 @@
 			<table class="table table-sm">
 				<thead>
 					<tr>
-						<th scope="col" class="sortable" @click="do_sort('start_time')">Date</th>
-						<th scope="col" class="sortable" @click="do_sort('name')">Name</th>
-						<th scope="col"><span class="text-center linebreak">Photos</span><span class="text-center linebreak">{{ photo_count }}</span></th>
+						<th scope="col" class="datecol sortable" @click="do_sort('start_time')">Date</th>
+						<th scope="col" class="namecol sortable" @click="do_sort('name')">Name</th>
+						<th scope="col" class="actioncol"><span class="text-center linebreak">Photos</span><span class="text-center linebreak">{{ photo_count }}</span></th>
 						<th scope="col" class="variable_content_columns">
 							<div>
 								<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
@@ -370,6 +370,22 @@ export default {
 		border-radius: 5px;
 		cursor: pointer;
 	}
+	table {
+		table-layout: fixed;
+	}
+	th.datecol {
+		width: 15%;
+	}
+	th.namecol {
+		width: 30%;
+	}
+	th.actioncol {
+		width: 80px;
+		max-width: 80px;
+	}
+	.variable_content_columns {
+		width: 500px;
+	}
 	table > thead > tr > th {
 		vertical-align: middle;
 	}
@@ -409,9 +425,6 @@ export default {
 	}
 	.sortable {
 		cursor: pointer;
-	}
-	.variable_content_columns {
-		width: 500px;
 	}
 	.table_header_section {
 		display: flex;
