@@ -31,7 +31,11 @@
 					<tr>
 						<th scope="col" class="datecol sortable" @click="do_sort('start_time')">Date</th>
 						<th scope="col" class="namecol sortable" @click="do_sort('name')">Name</th>
-						<th scope="col" class="actioncol"><span class="text-center linebreak">Photos</span><span class="text-center linebreak">{{ photo_count }}</span></th>
+						<th scope="col" class="actioncol">
+							<span class="text-center linebreak">Photos</span>
+							<span v-if="photo_count === shown_photo_count" class="text-center linebreak">{{ photo_count }}</span>
+							<span v-if="photo_count !== shown_photo_count" class="text-center linebreak">{{ shown_photo_count }} of {{ photo_count }}</span>
+						</th>
 						<th scope="col" class="variable_content_columns">
 							<div>
 								<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
@@ -88,16 +92,16 @@
 								<span v-if="!trail.matches_file && !trail.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(trail.uuid)">Dismiss</a></span>
 							</div>
 						</td>
-						<td class="photorow_actions" :set="[shown_photo_count=indexed_photos[trail.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photo_count=indexed_photos[trail.uuid].length]">
+						<td class="photorow_actions" :set="[shown_photorow_count=indexed_photos[trail.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photorow_count=indexed_photos[trail.uuid].length]">
 							<b-button v-if="!trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(trail.uuid)">
 								<font-awesome-icon icon="camera"></font-awesome-icon>
-								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
-								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
+								<div v-if="shown_photorow_count === total_photorow_count">({{ shown_photorow_count }})</div>
+								<div v-if="shown_photorow_count !== total_photorow_count">({{ shown_photorow_count }} of {{ total_photorow_count }})</div>
 							</b-button>
 							<b-button v-if="trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(trail.uuid)">
 								<font-awesome-icon icon="table"></font-awesome-icon>
-								<div v-if="shown_photo_count === total_photo_count">({{ shown_photo_count }})</div>
-								<div v-if="shown_photo_count !== total_photo_count">({{ shown_photo_count }} of {{ total_photo_count }})</div>
+								<div v-if="shown_photorow_count === total_photorow_count">({{ shown_photorow_count }})</div>
+								<div v-if="shown_photorow_count !== total_photorow_count">({{ shown_photorow_count }} of {{ total_photorow_count }})</div>
 							</b-button>
 						</td>
 						<td v-if="trail.show_photos" class="variable_content_columns">
@@ -142,7 +146,7 @@ import RowOfNumbers from './RowOfNumbers.vue';
 import RowOfPhotos from './RowOfPhotos.vue';
 
 export default {
-	props: ['add_trails', 'add_images', 'trails', 'indexed_photos', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitTrailEdits', 'submitTrailDatetimeEdits', 'clickedPlotTrail', 'clickedSaveTrail', 'clickedDeleteTrail', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
+	props: ['add_trails', 'add_images', 'trails', 'photos', 'indexed_photos', 'unindexed_photos_uuids', 'unindexed_photos', 'photo_count', 'excluded_cameras', 'units', 'time_format', 'epoch_to_timestring', 'epoch_to_datestring', 'plotted_classes', 'acknowledgeInfo', 'submitTrailEdits', 'submitTrailDatetimeEdits', 'clickedPlotTrail', 'clickedSaveTrail', 'clickedDeleteTrail', 'clickedDeletePhoto', 'toggleShowPhotos', 'toggleCameraInclusion'],
 	components: {
 		HeaderRowForNumbers,
 		RowOfNumbers,
@@ -181,6 +185,12 @@ export default {
 					return (a[key] > b[key]) ? 1 : -1;
 				}
 			});
+		},
+		shown_photo_count: function() {
+			return this.photos
+				.filter(p => !this.excluded_cameras.includes(p.camera_model))
+				.filter(p => !this.unindexed_photos_uuids.includes(p.uuid))
+				.length;
 		}
 	},
 	mounted() {

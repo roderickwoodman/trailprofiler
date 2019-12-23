@@ -23,7 +23,7 @@
 			</span>
 		</div>
 
-		<TrailDataGrid :add_trails="onGpxFileChange" :add_images="onImageFileChange" :trails="trails" :indexed_photos="indexed_photos" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
+		<TrailDataGrid :add_trails="onGpxFileChange" :add_images="onImageFileChange" :trails="trails" :photos="photos" :indexed_photos="indexed_photos" :unindexed_photos_uuids="unindexed_photos_uuids" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 	</div>
 </template>
