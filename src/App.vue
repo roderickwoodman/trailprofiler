@@ -1,28 +1,32 @@
 <template>
 	<div id="app">
 
-		<h1>Trail Chart</h1>
+		<div class="page_header_section">
+			<div class="page_title">
+				<h1>Trail Chart</h1>
+			</div>
+			<div class="page_settings_buttons">
+				<div>
+					<span>Units: 
+					<select v-model="units">
+						<option value="english" selected>English</option>
+						<option value="metric">Metric</option>
+					</select>
+					</span>
+				</div>
+				<div>
+					<span>Time Format: 
+					<select v-model="time_format">
+						<option value="ampm" selected>AM/PM</option>
+						<option value="24hr">24-hr</option>
+						<option value="epoch">epoch</option>
+					</select>
+					</span>
+				</div>
+
+			</div>
+		</div>
 		<TrailDataChart :units="units" :trails="trails" :plot_order="plot_order" />
-
-		<div>
-			<span>Units: 
-			<select v-model="units">
-				<option value="english" selected>English</option>
-				<option value="metric">Metric</option>
-			</select>
-			</span>
-		</div>
-
-		<div>
-			<span>Time Format: 
-			<select v-model="time_format">
-				<option value="ampm" selected>AM/PM</option>
-				<option value="24hr">24-hr</option>
-				<option value="epoch">epoch</option>
-			</select>
-			</span>
-		</div>
-
 		<TrailDataGrid :add_trails="onGpxFileChange" :add_images="onImageFileChange" :trails="trails" :photos="photos" :indexed_photos="indexed_photos" :unindexed_photos_uuids="unindexed_photos_uuids" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 	</div>
@@ -628,5 +632,18 @@ export default {
 		border: 0;
 		margin: 0;
 		padding: 3px;
+	}
+	.page_header_section {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+	.page_header_section > * {
+		display: inline-block;
+		flex: 1 1 50%;
+	}
+	.page_settings_buttons {
+		display:flex;
+		justify-content: flex-end;
 	}
 </style>
