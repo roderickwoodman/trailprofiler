@@ -7,23 +7,28 @@
 			</div>
 			<div class="page_settings_buttons">
 				<div>
-					<span>Units: 
-					<select v-model="units">
-						<option value="english" selected>English</option>
-						<option value="metric">Metric</option>
-					</select>
-					</span>
+					<b-button id="popover-3" variant="primary"><font-awesome-icon icon="cog"></font-awesome-icon></b-button>
+					<b-popover target="popover-3" triggers="hover focus" placement="bottomleft">
+						<template v-slot:title>Page Settings</template>
+						<div>
+							<span>Units: 
+							<select v-model="units">
+								<option value="english" selected>English</option>
+								<option value="metric">Metric</option>
+							</select>
+							</span>
+						</div>
+						<div>
+							<span>Time Format: 
+							<select v-model="time_format">
+								<option value="ampm" selected>AM/PM</option>
+								<option value="24hr">24-hr</option>
+								<option value="epoch">epoch</option>
+							</select>
+							</span>
+						</div>
+					</b-popover>
 				</div>
-				<div>
-					<span>Time Format: 
-					<select v-model="time_format">
-						<option value="ampm" selected>AM/PM</option>
-						<option value="24hr">24-hr</option>
-						<option value="epoch">epoch</option>
-					</select>
-					</span>
-				</div>
-
 			</div>
 		</div>
 		<TrailDataChart :units="units" :trails="trails" :plot_order="plot_order" />
