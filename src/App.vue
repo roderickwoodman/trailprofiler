@@ -651,4 +651,17 @@ export default {
 		display:flex;
 		justify-content: flex-end;
 	}
+	.page_settings_buttons button {
+		color: black;
+		border: 1px solid grey;
+		background: white;
+		padding: 5px 8px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+	.page_settings_buttons button:hover {
+		color: black;
+		background: white;
+		box-shadow: 0px 1px 3px;
+	}
 </style>
