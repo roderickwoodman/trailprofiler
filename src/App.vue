@@ -9,8 +9,8 @@
 				<div>
 					<b-button id="popover-3" variant="primary"><font-awesome-icon icon="cog"></font-awesome-icon></b-button>
 					<b-popover target="popover-3" triggers="hover focus" placement="bottomleft">
-						<template v-slot:title>Page Settings</template>
-						<div>
+						<template v-slot:title class="text-middle">Page Settings</template>
+						<div class="text-right m-2">
 							<span>Units: 
 							<select v-model="units">
 								<option value="english" selected>English</option>
@@ -18,7 +18,7 @@
 							</select>
 							</span>
 						</div>
-						<div>
+						<div class="text-right m-2">
 							<span>Time Format: 
 							<select v-model="time_format">
 								<option value="ampm" selected>AM/PM</option>
