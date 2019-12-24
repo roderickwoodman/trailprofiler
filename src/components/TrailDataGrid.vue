@@ -477,6 +477,7 @@ export default {
 		display: none;
 	}
 	input.chk_btn + label {
+		margin: 6px 3px;
 		border: 1px solid grey;
 		background: white;
 		padding: 5px 8px;

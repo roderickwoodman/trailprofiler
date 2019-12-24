@@ -652,6 +652,7 @@ export default {
 		justify-content: flex-end;
 	}
 	.page_settings_buttons button {
+		margin: 6px 0;
 		color: black;
 		border: 1px solid grey;
 		background: white;
