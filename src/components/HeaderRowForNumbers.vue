@@ -3,7 +3,8 @@
 		<div class="headers sortable text-center" @click="do_sort('total_time')">
 			<div>
 				<span>Time</span>
-				<span>&#9650;</span>
+				<span v-if="sort_key==='total_time' && sort_dir_asc">&#9660;</span>
+				<span v-if="sort_key==='total_time' && !sort_dir_asc">&#9650;</span>
 			</div>
 		</div>
 		<div class="headers sortable text-center" @click="do_sort('total_distance')">
@@ -12,7 +13,8 @@
 					<span class="linebreak">Distance</span>
 					<span class="linebreak">({{ units === 'english' ? 'mi' : 'km' }})</span>
 				</span>
-				<span>&#9650;</span>
+				<span v-if="sort_key==='total_distance' && sort_dir_asc">&#9660;</span>
+				<span v-if="sort_key==='total_distance' && !sort_dir_asc">&#9650;</span>
 			</div>
 		</div>
 		<div class="headers sortable text-center" @click="do_sort('average_pace')">
@@ -21,7 +23,8 @@
 					<span class="linebreak">Pace</span>
 					<span class="linebreak">(per {{ units === 'english' ? 'mi' : 'km' }})</span>
 				</span>
-				<span>&#9650;</span>
+				<span v-if="sort_key==='average_pace' && sort_dir_asc">&#9660;</span>
+				<span v-if="sort_key==='average_pace' && !sort_dir_asc">&#9650;</span>
 			</div>
 		</div>
 		<div class="headers sortable text-right" @click="do_sort('minimum_elevation')">
@@ -30,7 +33,8 @@
 					<span class="linebreak">Min Elev.</span>
 					<span class="linebreak">({{ units === 'english' ? 'ft' : 'm' }})</span>
 				</span>
-				<span>&#9650;</span>
+				<span v-if="sort_key==='minimum_elevation' && sort_dir_asc">&#9660;</span>
+				<span v-if="sort_key==='minimum_elevation' && !sort_dir_asc">&#9650;</span>
 			</div>
 		</div>
 		<div class="headers sortable text-right" @click="do_sort('maximum_elevation')">
@@ -39,7 +43,8 @@
 					<span class="linebreak">Max Elev.</span>
 					<span class="linebreak">({{ units === 'english' ? 'ft' : 'm' }})</span>
 				</span>
-				<span>&#9650;</span>
+				<span v-if="sort_key==='maximum_elevation' && sort_dir_asc">&#9660;</span>
+				<span v-if="sort_key==='maximum_elevation' && !sort_dir_asc">&#9650;</span>
 			</div>
 		</div>
 	</div>
@@ -49,7 +54,7 @@
 <script>
 
 export default {
-	props: ['units', 'do_sort'],
+	props: ['units', 'do_sort', 'sort_key', 'sort_dir_asc'],
 	data() {
 		return {
 		};

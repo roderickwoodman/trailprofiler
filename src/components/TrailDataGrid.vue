@@ -34,7 +34,8 @@
 								<span>
 									Date
 								</span>
-								<span>&#9650;</span>
+								<span v-if="sort_key==='start_time' && sort_dir_asc">&#9660;</span>
+								<span v-if="sort_key==='start_time' && !sort_dir_asc">&#9650;</span>
 							</div>
 						</th>
 						<th scope="col" class="namecol sortable" @click="do_sort('name')">
@@ -42,7 +43,8 @@
 								<span>
 									Name
 								</span>
-								<span>&#9650;</span>
+								<span v-if="sort_key==='name' && sort_dir_asc">&#9660;</span>
+								<span v-if="sort_key==='name' && !sort_dir_asc">&#9650;</span>
 							</div>
 						</th>
 						<th scope="col" class="actioncol">
@@ -52,7 +54,7 @@
 						</th>
 						<th scope="col" class="variable_content_columns">
 							<div>
-								<HeaderRowForNumbers :units="units" :do_sort="do_sort" />
+								<HeaderRowForNumbers :units="units" :do_sort="do_sort" :sort_key="sort_key" :sort_dir_asc="sort_dir_asc" />
 							</div>
 						</th>
 					</tr>
