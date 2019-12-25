@@ -29,8 +29,22 @@
 			<table class="table table-sm">
 				<thead>
 					<tr>
-						<th scope="col" class="datecol sortable" @click="do_sort('start_time')">Date</th>
-						<th scope="col" class="namecol sortable" @click="do_sort('name')">Name</th>
+						<th scope="col" class="datecol sortable" @click="do_sort('start_time')">
+							<div>
+								<span>
+									Date
+								</span>
+								<span>&#9650;</span>
+							</div>
+						</th>
+						<th scope="col" class="namecol sortable" @click="do_sort('name')">
+							<div>
+								<span>
+									Name
+								</span>
+								<span>&#9650;</span>
+							</div>
+						</th>
 						<th scope="col" class="actioncol">
 							<span class="text-center linebreak">Photos</span>
 							<span v-if="photo_count === shown_photo_count" class="text-center linebreak">{{ photo_count }}</span>
@@ -404,6 +418,9 @@ export default {
 	}
 	th > span.linebreak {
 		display: block;
+	}
+	th.sortable > div {
+		display: flex;
 	}
 	.datetimecontent_actions,
 	.namecontent_actions {

@@ -1,10 +1,47 @@
 <template>
 	<div class="header_row_for_numbers">
-		<div class="headers sortable text-center" @click="do_sort('total_time')"><span>Time</span></div>
-		<div class="headers sortable text-center" @click="do_sort('total_distance')"><span>Distance</span><span>({{ units === 'english' ? 'mi' : 'km' }})</span></div>
-		<div class="headers sortable text-center" @click="do_sort('average_pace')"><span>Pace</span><span>(per {{ units === 'english' ? 'mi' : 'km' }})</span></div>
-		<div class="headers sortable text-right" @click="do_sort('minimum_elevation')"><span>Min Elev.</span><span>({{ units === 'english' ? 'ft' : 'm' }})</span></div>
-		<div class="headers sortable text-right" @click="do_sort('maximum_elevation')"><span>Max Elev.</span><span>({{ units === 'english' ? 'ft' : 'm' }})</span></div>
+		<div class="headers sortable text-center" @click="do_sort('total_time')">
+			<div>
+				<span>Time</span>
+				<span>&#9650;</span>
+			</div>
+		</div>
+		<div class="headers sortable text-center" @click="do_sort('total_distance')">
+			<div>
+				<span>
+					<span class="linebreak">Distance</span>
+					<span class="linebreak">({{ units === 'english' ? 'mi' : 'km' }})</span>
+				</span>
+				<span>&#9650;</span>
+			</div>
+		</div>
+		<div class="headers sortable text-center" @click="do_sort('average_pace')">
+			<div>
+				<span>
+					<span class="linebreak">Pace</span>
+					<span class="linebreak">(per {{ units === 'english' ? 'mi' : 'km' }})</span>
+				</span>
+				<span>&#9650;</span>
+			</div>
+		</div>
+		<div class="headers sortable text-right" @click="do_sort('minimum_elevation')">
+			<div>
+				<span>
+					<span class="linebreak">Min Elev.</span>
+					<span class="linebreak">({{ units === 'english' ? 'ft' : 'm' }})</span>
+				</span>
+				<span>&#9650;</span>
+			</div>
+		</div>
+		<div class="headers sortable text-right" @click="do_sort('maximum_elevation')">
+			<div>
+				<span>
+					<span class="linebreak">Max Elev.</span>
+					<span class="linebreak">({{ units === 'english' ? 'ft' : 'm' }})</span>
+				</span>
+				<span>&#9650;</span>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -36,5 +73,10 @@ export default {
 	}
 	.sortable {
 		cursor: pointer;
+	}
+	.sortable > div {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>
