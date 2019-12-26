@@ -32,7 +32,7 @@
 			</div>
 		</div>
 		<TrailDataChart :units="units" :trails="trails" :plot_order="plot_order" />
-		<TrailDataGrid :add_trails="onGpxFileChange" :add_images="onImageFileChange" :trails="trails" :photos="photos" :indexed_photos="indexed_photos" :unindexed_photos_uuids="unindexed_photos_uuids" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :plotted_classes="plotted_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
+		<TrailDataGrid :add_trails="onGpxFileChange" :add_images="onImageFileChange" :trails="trails" :photos="photos" :indexed_photos="indexed_photos" :unindexed_photos_uuids="unindexed_photos_uuids" :unindexed_photos="unindexed_photos" :photo_count="photos.length" :excluded_cameras="excluded_cameras" :units="units" :time_format="time_format" :epoch_to_timestring="epoch_to_timestring" :epoch_to_datestring="epoch_to_datestring" :acknowledgeInfo="acknowledgeTrailInfo" :button_classes="button_classes" :submitTrailEdits="submitTrailEdits" :submitTrailDatetimeEdits="submitTrailDatetimeEdits" :clickedPlotTrail="clickedPlotTrail" :clickedSaveTrail="clickedSaveTrail" :clickedDeleteTrail="clickedDeleteTrail" :clickedDeletePhoto="clickedDeletePhoto" :toggleShowPhotos="toggleShowPhotos" :toggleCameraInclusion="toggleCameraInclusion" />
 
 	</div>
 </template>
@@ -580,13 +580,15 @@ export default {
 			let date = new Date(...params);
 			return date.getTime();
 		},
-		plotted_classes: function (trail_uuid) {
+		button_classes: function (trail_uuid) {
+			let classes = [];
 			let plot_order_index = this.plot_order.findIndex(uuid => uuid === trail_uuid);
 			if (plot_order_index !== -1) {
-				return this.plotted_labels[plot_order_index];
+				classes.push(this.plotted_labels[plot_order_index]);
 			} else {
-				return 'not_plotted';
+				classes.push('not_plotted');
 			}
+			return classes;
 		}
 	}
 };
