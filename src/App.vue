@@ -13,7 +13,7 @@
 						<div class="text-right m-2">
 							<span>Units: 
 							<select v-model="units">
-								<option value="english" selected>English</option>
+								<option value="imperial" selected>Imperial</option>
 								<option value="metric">Metric</option>
 							</select>
 							</span>
@@ -56,7 +56,7 @@ export default {
 			excluded_cameras: [],
 			trails: [],
 			plot_order: [],
-			units: 'english',
+			units: 'imperial',
 			time_format: 'ampm',
 			plotted_labels: [
 				'plotted-label-a',

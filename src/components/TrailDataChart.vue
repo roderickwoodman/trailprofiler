@@ -625,8 +625,8 @@ export default {
 	methods: {
 		addTrailToChart: function (trail_uuid) {
 
-			let x_scale_factor = (this.units === 'english') ? 0.621371 : 1; // mi or km
-			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
+			let x_scale_factor = (this.units === 'imperial') ? 0.621371 : 1; // mi or km
+			let y_scale_factor = (this.units === 'imperial') ? 3.28084 : 1;  // ft or m
 			let trail = this.trails.find(s => s.uuid === trail_uuid);
 
 			// determine chart data
@@ -662,7 +662,7 @@ export default {
 		},
 		removeTrailFromChart: function (trail_uuid) {
 
-			let y_scale_factor = (this.units === 'english') ? 3.28084 : 1;  // ft or m
+			let y_scale_factor = (this.units === 'imperial') ? 3.28084 : 1;  // ft or m
 
 			// determine chart data
 			let new_chart_data = Object.assign({}, this.chart_data);

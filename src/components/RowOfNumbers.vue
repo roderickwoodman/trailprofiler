@@ -20,19 +20,19 @@ export default {
 	methods: {
 		to_desired_units: function (starting_units, value) {
 			if (starting_units === 'm') {  // meters to feet
-				if (this.units === 'english') {
+				if (this.units === 'imperial') {
 					return value * 3.28084;
 				} else {
 					return value;
 				}
 			} else if (starting_units === 'km') {  // kilometers to miles
-				if (this.units === 'english') {
+				if (this.units === 'imperial') {
 					return value * 0.621371;
 				} else {
 					return value;
 				}
 			} else if (starting_units === 'secsperkm') {  // seconds per km to seconds per mi
-				if (this.units === 'english') {
+				if (this.units === 'imperial') {
 					return value * 1.60934;
 				} else {
 					return value;
