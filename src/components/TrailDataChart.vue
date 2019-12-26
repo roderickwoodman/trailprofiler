@@ -887,4 +887,25 @@ export default {
 		background-color: transparent;
 		stroke: rgb(129,38,192);
 	}
+	.plotted-label-a.editing,
+	.plotted-label-b.editing,
+	.plotted-label-c.editing,
+	.plotted-label-d.editing,
+	.plotted-label-e.editing,
+	.plotted-label-f.editing,
+	.plotted-label-g.editing,
+	.plotted-label-h.editing,
+	.plotted-label-i.editing,
+	.plotted-label-j.editing,
+	.plotted-label-k.editing,
+	.plotted-label-l.editing,
+	.plotted-label-m.editing,
+	.plotted-label-n.editing,
+	.plotted-label-o.editing,
+	.plotted-label-p.editing,
+	.not_plotted.editing {
+		color: black;
+		background-color: white;
+		stroke: black;
+	}
 </style>

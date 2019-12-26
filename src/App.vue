@@ -580,13 +580,16 @@ export default {
 			let date = new Date(...params);
 			return date.getTime();
 		},
-		button_classes: function (trail_uuid) {
+		button_classes: function (trail_uuid, editing_uuid) {
 			let classes = [];
 			let plot_order_index = this.plot_order.findIndex(uuid => uuid === trail_uuid);
 			if (plot_order_index !== -1) {
 				classes.push(this.plotted_labels[plot_order_index]);
 			} else {
 				classes.push('not_plotted');
+			}
+			if (trail_uuid === editing_uuid) {
+				classes.push('editing');
 			}
 			return classes;
 		}

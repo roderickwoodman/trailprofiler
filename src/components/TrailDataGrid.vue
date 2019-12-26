@@ -88,7 +88,7 @@
 						</td>
 						<!-- NAME COLUMN -->
 						<td class="hoverable_cell" @mouseover="hoveringon_uuid = trail.uuid" @mouseleave="hoveringon_uuid = null">
-							<div :class="button_classes(trail.uuid)">
+							<div :class="button_classes(trail.uuid, editing_uuid)">
 								<div class="namecontent_title">
 									<span v-if="editing_uuid!==trail.uuid" class="trail_name">{{ trail.name }}</span>
 									<form v-if="editing_uuid===trail.uuid" @submit="clickedSubmitEdits">
@@ -96,12 +96,12 @@
 										<input name="trail_uuid" type="hidden" :value="trail.uuid" />
 									</form>
 									<div class="namecontent_actions" v-show="hoveringon_uuid === trail.uuid">
-										<b-button v-if="editing_uuid!==trail.uuid" v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrail(trail.uuid)"><font-awesome-icon icon="edit" :class="button_classes(trail.uuid)" /></b-button>
-										<b-button v-if="editing_uuid===trail.uuid" v-b-tooltip.hover title="Cancel edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrail(trail.uuid)"><font-awesome-icon icon="edit" :class="button_classes(trail.uuid)" /></b-button>
-										<b-button v-if="!trail.is_plotted" v-b-tooltip.hover title="Plot trail" class="btn btn-sm bg-transparent" v-on:click="clickedPlotTrail(trail.uuid)"><font-awesome-icon icon="chart-line" :class="button_classes(trail.uuid)" /></b-button>
-										<b-button v-if="trail.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotTrail(trail.uuid)"><font-awesome-icon icon="ban" :class="button_classes(trail.uuid)" /></b-button>
-										<b-button v-if="!trail.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveTrail(trail.uuid)"><font-awesome-icon icon="save" :class="button_classes(trail.uuid)" /></b-button>
-										<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteTrail(trail.uuid)"><font-awesome-icon icon="trash" :class="button_classes(trail.uuid)" /></b-button>
+										<b-button v-if="editing_uuid!==trail.uuid" v-b-tooltip.hover title="Edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrail(trail.uuid)"><font-awesome-icon icon="edit" :class="button_classes(trail.uuid, editing_uuid)" /></b-button>
+										<b-button v-if="editing_uuid===trail.uuid" v-b-tooltip.hover title="Cancel edit name" class="btn btn-sm btn-primary bg-transparent" v-on:click="clickedEditTrail(trail.uuid)"><font-awesome-icon icon="edit" :class="button_classes(trail.uuid, editing_uuid)" /></b-button>
+										<b-button v-if="!trail.is_plotted" v-b-tooltip.hover title="Plot trail" class="btn btn-sm bg-transparent" v-on:click="clickedPlotTrail(trail.uuid)"><font-awesome-icon icon="chart-line" :class="button_classes(trail.uuid, editing_uuid)" /></b-button>
+										<b-button v-if="trail.is_plotted" v-b-tooltip.hover title="Remove from plot" class="btn btn-sm bg-transparent" v-on:click="clickedPlotTrail(trail.uuid)"><font-awesome-icon icon="ban" :class="button_classes(trail.uuid, editing_uuid)" /></b-button>
+										<b-button v-if="!trail.matches_file" v-b-tooltip.hover title="Save to file" class="btn btn-sm bg-transparent" v-on:click="clickedSaveTrail(trail.uuid)"><font-awesome-icon icon="save" :class="button_classes(trail.uuid, editing_uuid)" /></b-button>
+										<b-button v-b-tooltip.hover title="Remove from browser" class="btn btn-sm bg-transparent" v-on:click="clickedDeleteTrail(trail.uuid)"><font-awesome-icon icon="trash" :class="button_classes(trail.uuid, editing_uuid)" /></b-button>
 									</div>
 								</div>
 							</div>
