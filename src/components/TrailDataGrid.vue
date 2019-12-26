@@ -27,6 +27,7 @@
 				</div>
 			</div>
 			<table class="table table-sm">
+				<!-- TABLE HEADER -->
 				<thead>
 					<tr>
 						<th scope="col" class="datecol sortable" @click="do_sort('start_time')">
@@ -59,8 +60,10 @@
 						</th>
 					</tr>
 				</thead>
+				<!-- TABLE BODY -->
 				<tbody>
 					<tr v-bind:key="trail.uuid" v-for="trail in sortedTrails" v-bind:class="{ hasInfo: !trail.matches_file, acknowledged: trail.acknowledged }">
+						<!-- DATE COLUMN -->
 						<td class="hoverable_cell" @mouseover="hoveringon_datetime_uuid = trail.uuid" @mouseleave="hoveringon_datetime_uuid = null">
 							<div>
 								<div class="datetimecontent_title">
@@ -83,6 +86,7 @@
 								<input name="trail_uuid" type="hidden" :value="trail.uuid" />
 							</form>
 						</td>
+						<!-- NAME COLUMN -->
 						<td class="hoverable_cell" @mouseover="hoveringon_uuid = trail.uuid" @mouseleave="hoveringon_uuid = null">
 							<div :class="plotted_classes(trail.uuid)">
 								<div class="namecontent_title">
@@ -108,18 +112,22 @@
 								<span v-if="!trail.matches_file && !trail.acknowledged" class="info_message"><font-awesome-icon icon="info-circle" /> please save this segment and re-import it - <a href="" v-on:click="acknowledgeInfo(trail.uuid)">Dismiss</a></span>
 							</div>
 						</td>
-						<td class="photorow_actions" :set="[shown_photorow_count=indexed_photos[trail.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photorow_count=indexed_photos[trail.uuid].length]">
-							<b-button v-if="!trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(trail.uuid)">
-								<font-awesome-icon icon="camera"></font-awesome-icon>
-								<div v-if="shown_photorow_count === total_photorow_count">({{ shown_photorow_count }})</div>
-								<div v-if="shown_photorow_count !== total_photorow_count">({{ shown_photorow_count }} of {{ total_photorow_count }})</div>
-							</b-button>
-							<b-button v-if="trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(trail.uuid)">
-								<font-awesome-icon icon="table"></font-awesome-icon>
-								<div v-if="shown_photorow_count === total_photorow_count">({{ shown_photorow_count }})</div>
-								<div v-if="shown_photorow_count !== total_photorow_count">({{ shown_photorow_count }} of {{ total_photorow_count }})</div>
-							</b-button>
+						<!-- CONTENT TOGGLE COLUMN -->
+						<td class="content_control" :set="[shown_photorow_count=indexed_photos[trail.uuid].filter(photo => !excluded_cameras.includes(photo.camera_model)).length, total_photorow_count=indexed_photos[trail.uuid].length]">
+							<div>
+								<b-button v-if="!trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show photos" v-on:click="toggleShowPhotos(trail.uuid)">
+									<font-awesome-icon icon="camera"></font-awesome-icon>
+									<div v-if="shown_photorow_count === total_photorow_count">({{ shown_photorow_count }})</div>
+									<div v-if="shown_photorow_count !== total_photorow_count">({{ shown_photorow_count }} of {{ total_photorow_count }})</div>
+								</b-button>
+								<b-button v-if="trail.show_photos" class="show_photos btn btn-sm bg-transparent" v-b-tooltip.hover title="Show data" v-on:click="toggleShowPhotos(trail.uuid)">
+									<font-awesome-icon icon="table"></font-awesome-icon>
+									<div v-if="shown_photorow_count === total_photorow_count">({{ shown_photorow_count }})</div>
+									<div v-if="shown_photorow_count !== total_photorow_count">({{ shown_photorow_count }} of {{ total_photorow_count }})</div>
+								</b-button>
+							</div>
 						</td>
+						<!-- VARIABLE CONTENT COLUMNS (DATA OR PHOTOS) -->
 						<td v-if="trail.show_photos" class="variable_content_columns">
 							<RowOfPhotos :row_photos="indexed_photos[trail.uuid]" :excluded_cameras="excluded_cameras" :time_format="time_format" :epoch_to_datestring="epoch_to_datestring" :epoch_to_timestring="epoch_to_timestring" :show_date="false" :show_details="show_details" :show_image_specs="show_image_specs" :toggleCameraInclusion="toggleCameraInclusion" :clickedDeletePhoto="clickedDeletePhoto" />
 						</td>
@@ -258,19 +266,19 @@ export default {
 		},
 		to_desired_units: function (starting_units, value) {
 			if (starting_units === 'm') {  // meters to feet
-				if (this.units === 'imperial') {
+				if (this.units === 'english') {
 					return value * 3.28084;
 				} else {
 					return value;
 				}
 			} else if (starting_units === 'km') {  // kilometers to miles
-				if (this.units === 'imperial') {
+				if (this.units === 'english') {
 					return value * 0.621371;
 				} else {
 					return value;
 				}
 			} else if (starting_units === 'secsperkm') {  // seconds per km to seconds per mi
-				if (this.units === 'imperial') {
+				if (this.units === 'english') {
 					return value * 1.60934;
 				} else {
 					return value;
@@ -364,13 +372,14 @@ export default {
 	.datetimecontent_actions button {
 		color: black;
 	}
-	.photorow_actions {
+	.content_control div {
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
-		margin: 0;
-		padding: 0;
+		align-items: center;
+		height: 100%;
 	}
-	.photorow_actions button {
+	.content_control button {
 		width: 50px;
 		display: flex;
 		flex-direction: column;
