@@ -607,10 +607,6 @@ export default {
 	tr.hasInfo.acknowledged {
 		background-color: white;
 	}
-	tr:hover,
-	tr.acknowledged:hover {
-		background-color: #dee2e6; /* light gray */
-	}
 	.trail_name,
 	.info_message {
 		padding: 7px 7px;
