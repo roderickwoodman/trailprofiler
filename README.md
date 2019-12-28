@@ -1,10 +1,12 @@
 # trailprofiler
 
-Many websites will plot your GPS data from your hike/run/bike on a map. This is can be a great visual. But really, map plots are only good at showing you where you went on that day. Tomorrow's outing may be somewhere completely different, and it may not even fit on that same map.
+GPS trails are fun to plot on a map, but then what? If they are from different places, it is difficult to compare them on the same map.
 
-But **Trailprofiler** lets you compare your journeys to one another by plotting them side-by-side on the same chart. It shows you your data from an elevation profile perspective so that you can quantify with distances and climbs how much harder your last hike/run/bike really was.
+But **Trailprofiler** lets you compare your journeys side-by-side on the same chart. With the elevation profile perspective, you can quantify your pace and your climbs so that you know how much harder your last hike/run/bike really was.
 
-In addition, in case there was an error in recording and your device recorded multiple sessions in one file, **Trailprofiler** will detect these dissimilar sections of data and will automatically plot these chunks separately, alongside the full data series of the file.
+And when you import your photos, it will associate them with the proper GPS trail and display them together.
+
+Basically, **Trailprofiler** is an app to throw your GPX and JPG files into. And within this sandbox, you can correct the timestamps on photos and GPS trails in case your (old-school) device was off by a timezone or Daylight Savings Time. And the tool will also detect and plot dissimilar chunks of GPS data separately, in case your (old-school) device logged multiple sessions to the same file.
 
 ## Built with Vue CLI...
 
