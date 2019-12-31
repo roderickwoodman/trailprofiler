@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && rm -rf docs && mv dist docs",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -61,5 +61,5 @@
   "bugs": {
     "url": "https://github.com/roderickwoodman/trailprofiler/issues"
   },
-  "homepage": "https://github.com/roderickwoodman/trailprofiler#readme"
+  "homepage": "https://roderickwoodman.github.io/trailprofiler"
 }
