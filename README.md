@@ -10,30 +10,24 @@ In addition to GPX file imports, this app also accepts image file imports, displ
 
 **Trailprofiler** also lets you correct for simple old-school device errors. It lets you shift the timestamps on photos and GPS trails in case your device was off by a timezone or Daylight Savings Time. And it will also detect separate dissimilar chunks of GPS data in case your device logged multiple sessions to the same GPX file.
 
-## Built with Vue CLI...
+## Running the code
 
-```
-npm install
-```
+This project was bootstrapped with [Vue CLI](https://cli.vuejs.org/)
 
-### Compiles and hot-reloads for development
+From the project directory, you can run:
 
-```
-npm run serve
-```
+### `npm install`
+### `npm run serve`
 
-### Compiles and minifies for production
+This runs the app in the development mode.<br>
+Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
-```
-npm run build
-```
+### Compiling and minifying for production
 
-### Lints and fixes files
+From the project directory, run:
 
-```
-npm run lint
-```
+### `npm run build`
 
-### Customize configuration
+This runs the app in production mode
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+For more information, see [Configuration Reference](https://cli.vuejs.org/config/).
