@@ -1,33 +1,24 @@
 ## Trailprofiler Overview
 
-GPS trails are fun to plot on a map, but once you start collecting several of them from different places, it gets difficult to compare them on the same map.
+GPS trails are fun to plot on a map. But once you have a handful of them from different places, seeing them on maps is not very useful if your goal is to compare them.
 
-But **Trailprofiler** lets you compare your journeys side-by-side on the same chart. Using elevation profiles, you can visually quantify your climbs so that you know how much harder your last hike/run/bike really was.
+But **Trailprofiler** uses elevation plotting to show you your journeys side-by-side on the same chart. With this view, you can compare your climbs from different days with only a quick glance, telling you how much harder your last hike/run/bike really was.
 
 ## Additional Features
 
-In addition to GPX file imports, this app also accepts image file imports, displaying both types together as the same session.
+The core of the app is plotting the information contained in GPX files. But this app also accepts JPG file imports, so that you can see both the data and the photos of where you were grouped together.
 
-**Trailprofiler** also lets you correct for simple old-school device errors. It lets you shift the timestamps on photos and GPS trails in case your device was off by a timezone or Daylight Savings Time. And it will also detect separate dissimilar chunks of GPS data in case your device logged multiple sessions to the same GPX file.
+The app also lets you correct for certain old-school device errors. It lets you shift the timestamps on photos and GPS trails in case your recording device was off by a timezone or Daylight Savings Time. And it will also detect separate dissimilar chunks of GPS data in case your device logged multiple sessions to the same GPX file. In other words, **Trailprofiler** can account for timestamps that are recorded innacurately, since not everybody's data files were recorded by modern apps running on a modern smartphone.
 
-## Running the code
+## Running in Development Mode
 
-This project was bootstrapped with [Vue CLI](https://cli.vuejs.org/)
-
-From the project directory, you can run:
+From the project directory, run the following shell commands in order to start the app in development mode:
 
 ### `npm install`
 ### `npm run serve`
 
-This runs the app in the development mode.<br>
-Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
+Then, open [http://localhost:8080](http://localhost:8080) in order to view the app in the browser.
 
-### Compiling and minifying for production
+## Vue CLI
 
-From the project directory, run:
-
-### `npm run build`
-
-This runs the app in production mode
-
-For more information, see [Configuration Reference](https://cli.vuejs.org/config/).
+Note that this project was bootstrapped with [Vue CLI](https://cli.vuejs.org/).
