@@ -1,14 +1,20 @@
 ## Trailprofiler Overview
 
-GPS trails are fun to plot on a map. But once you have a handful of them from different places, seeing them on maps is not very useful if your goal is to compare them.
+GPS data is fun to plot on a map. You can really see where you have gone. But if you keep recording your outings, at some point you will have too many trails from too many different locations to fit on the same map. But this is exactly when an elevation plot becomes the right visual for bringing together all of your journeys.
 
-But **Trailprofiler** uses elevation plotting to show you your journeys side-by-side on the same chart. With this view, you can compare your climbs from different days with only a quick glance, telling you how much harder your last hike/run/bike really was.
+The core of the **Trailprofiler** app is visualizing the information contained in GPX files. But this app also integrates photos from JPG files so that you can add your own visuals to the treks that you logged.
+
+## Imported GPX Files ##
+
+All of the imported GPX files can be plotted side-by-side on the same elevation profile chart. This app also tabulates the metadata from all of these files too. Both the chart and the table are shown on the same dashboard, letting you play with the sortable numeric data and the visual elevation traces at the same time. This is a powerful tool for quantifying how much harder your last hike/run/bike really was.
+
+## Imported JPG Files ##
+
+When an imported JPG file has a (EXIF) timestamp that falls within the time range of the recorded GPX file, then the app will associate the two together. This leads to much stronger visuals and comparisons than either file type alone could.
 
 ## Additional Features
 
-The core of the app is plotting the information contained in GPX files. But this app also accepts JPG file imports, so that you can see both the data and the photos of where you were grouped together.
-
-The app also lets you correct for certain old-school device errors. It lets you shift the timestamps on photos and GPS trails in case your recording device was off by a timezone or Daylight Savings Time. And it will also detect separate dissimilar chunks of GPS data in case your device logged multiple sessions to the same GPX file. In other words, **Trailprofiler** can account for timestamps that are recorded innacurately, since not everybody's data files were recorded by modern apps running on a modern smartphone.
+The app also lets you correct for certain device-specific recording errors. Not everyone created these files using modern smartphones, and so it is possible for files to be off by multiple timezons or by Daylight Savings Time. But **Trailprofiler** lets you modify the original file data so that you can shift these timestamps. It also will detect separate dissimilar chunks of GPS data in case your legacy device logged multiple sessions to the same GPX file.
 
 ## Running in Development Mode
 
