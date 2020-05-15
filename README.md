@@ -27,17 +27,20 @@ For most people, [the link above](https://roderickwoodman.github.io/trailprofile
 
 For developers, be aware that there is no backend server for this app. So, based on this deployment design, thumbnail generation is not yet possible.
 
-### Running Locally
+### Running This App Locally (aka: Development Mode)
 
-This app was bootstrapped with [Vue CLI](https://cli.vuejs.org/).
+As a one-time setup, copy the code for this app to your local machine. 
+```
+git clone https://github.com/roderickwoodman/trailprofiler.git
+cd trailprofiler
+npm install
+```
 
-As with other Vue CLI projects, from the project directory you can run:
+Now, every time you want to run the app, just run a script that starts up a development server with the code. This will run the app in development mode.
+```
+npm start
+```
 
-#### `npm install`
-#### `npm run serve`
+Doing this will open a browser tab for viewing the app at [http://localhost:8080](http://localhost:8080). The page will reload if you make edits to your local code copies. You will also see any lint errors in the browser console. 
 
-This runs the app in the development mode.<br> 
- Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+FYI, this project was bootstrapped with [Vue CLI](https://cli.vuejs.org/).
